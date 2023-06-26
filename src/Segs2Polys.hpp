@@ -35,10 +35,10 @@
 #include "Line2.hpp"
 #include "Cell.hpp"
 #include "CellInternal.hpp"
-//#include "SweepLineAlgorithm.hpp"
+// #include "SweepLineAlgorithm.hpp"
 #include "SimpleSplitSegs.hpp"
 #include "EarClipping.hpp"
-#include "Csv2Line2.hpp"
+// #include "Csv2Line2.hpp"
 
 #if DEBUG_LOG || DEBUG_TIMER || DEBUG_TIMER_TOTAL
 #include <string>
@@ -691,10 +691,7 @@ public:
 			minchain = 2;
 
 		if (sn + 2 >= poly.size() || sn + minchain >= poly.size())
-		{
-			std::cout << "01_out" << std::endl;
 			return false;
-		}
 
 		rmargin = std::abs(rmargin);
 		r *= Mathf::DEG2RED;
@@ -724,10 +721,7 @@ public:
 		}
 
 		if (i - sn < minchain)
-		{
-			std::cout << "03_out" << std::endl;
 			return false;
-		}
 
 		//size_t mn = (i - sn) * 0.5;
 		size_t mn = sn + 1;
@@ -735,10 +729,7 @@ public:
 		Line2 t2 = Line2(poly[mn], poly[mn + 1], false).perpendicular();
 
 		if (!Line2::isCrossInf(t1, t2))
-		{
-			std::cout << "04_out" << std::endl;
 			return false;
-		}
 
 		*en = i;
 		*s = poly[sn];
