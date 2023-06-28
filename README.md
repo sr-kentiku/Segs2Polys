@@ -1,3 +1,6 @@
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://github.com/sr-kentiku/Segs2Polys/blob/main/LICENSE)
+
+
 # Segs2Polys
 
 ---
