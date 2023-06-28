@@ -2,7 +2,7 @@
 
 ---
 
-### 初めに
+## 初めに
 
 スタティックな内部バッファを2つ持っていて基本はバッファのインデックスを指定して任意の操作を行います。
 
@@ -23,7 +23,45 @@
 
 ---
 
-### バッファクリア
+## 関数とバッファーの相関図
+
+```mermaid
+sequenceDiagram
+    Note left of Segs2Polys: 線分の追加、取得、変換
+    Segs2Polys ->> Segs: ClearSegs()
+    Segs2Polys ->> Segs: AddSeg()
+    Segs2Polys ->> Segs: AddSegArc()
+    Segs ->> Segs2Polys: GetSegCnt()
+    Segs ->> Segs2Polys: GetSeg()
+    Segs ->> Segs2Polys: GetSegS()
+    Segs ->> Segs2Polys: GetSegE()
+    Segs ->> Segs2Polys: GetSegArc()
+    Segs ->> Polys: CnvSegs2Poly()
+
+    Note left of Segs2Polys: ポリゴンの追加、取得、変換
+    Segs2Polys ->> Polys: AddPoly()
+    Segs2Polys ->> Polys: AddPolyVec()
+    Segs2Polys ->> Polys: AddPolyArc()
+    Polys ->> Segs2Polys: GetPolyCnt()
+    Polys ->> Segs2Polys: GetPolyVecCnt()
+    Polys ->> Segs2Polys: GetPolyVec()
+    Polys ->> Segs2Polys: GetPolyArc()
+    Polys ->> Segs: CnvPoly2Segs()
+
+    Note left of Segs2Polys: 各種演算
+    Segs ->> Segs: CalcExtendMarginIntersection()
+    Segs ->> Segs: CalcSplitLines()
+    Segs ->> Polys: CalcSegs2Polys()
+    Polys ->> Polys: CalcMergePolysLines()
+    Polys ->> Polys: CalcEarClip()
+    Polys ->> Polys: CalcEarClipHoles()
+    Polys ->> Polys: CalcDirectionRotatePoly()
+    Polys ->> Polys: CalcDirectionRotatePolys()
+```
+
+---
+
+## バッファクリア
 
 <details><summary>Clear</summary>
 
@@ -57,7 +95,7 @@ INT ClearPolys()
 
 ---
 
-### 線分の追加、取得、変換
+## 線分の追加、取得、変換
 
 <details><summary>AddSeg</summary>
 
@@ -187,7 +225,7 @@ INT CnvSegs2Poly()
 
 ---
 
-### ポリゴンの追加、取得、変換
+## ポリゴンの追加、取得、変換
 
 <details><summary>AddPoly</summary>
 
@@ -313,7 +351,7 @@ INT CnvPoly2Segs(LONG pn)
 
 ---
 
-### 各種演算
+## 各種演算
 
 <details><summary>CalcExtendMarginIntersection</summary>
 
