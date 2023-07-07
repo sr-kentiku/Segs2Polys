@@ -17,10 +17,14 @@ class CellInternal
 {
 private:
 #if !DEBUG_LOG
-	static constexpr double kcon = Vec2::kEpsilon * 100;
+	// static constexpr double kcon = Vec2::kEpsilon * 100;
+	static constexpr double kcon = 0.1;
 #else
+	// static constexpr double kcon = Vec2::kEpsilon;
 	static constexpr double kcon = Vec2::kEpsilon * 100;
-	//static constexpr double kcon = 0.1;
+	// static constexpr double kcon = 0.1;
+	// static constexpr double kcon = 200;
+	// static constexpr double kcon = 100;
 #endif
 
 public:
@@ -203,8 +207,11 @@ private:
 			}
 		}
 
+		if (raysLineSrc.size() <= 0)
+			calcVHCentorOfMass(swh, ewh);
+
 		// single
-		if (raysLineSrc.size() == 1)
+		else if (raysLineSrc.size() == 1)
 			calcNoVHCentorOfMassSingle(raysLineSrc, raysLinef, raysLineb, vhRaysLineSrc);
 		
 		// all parallel

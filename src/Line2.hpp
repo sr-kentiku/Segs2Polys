@@ -113,6 +113,16 @@ public:
 		);
 	}
 
+	double distancePointLineDist(Vec2& p, const int isqr = 0)
+	{
+		double d = distance(isqr);
+		if (d == 0)
+			return Vec2::distance(s, p, isqr);
+		double d1 = Vec2::distance(s, p, isqr);
+		double d2 = Vec2::distance(e, p, isqr);
+		return (std::min)({ d1, d2 });
+	}
+
 	double distancePointLineT(Vec2& p, const int isqr = 0)
 	{
 		double d = distance(isqr);

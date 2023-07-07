@@ -42,7 +42,7 @@ EXPORT INT WINAPI AddSegArc(DOUBLE x1, DOUBLE y1, DOUBLE x2, DOUBLE y2, DOUBLE c
 	try
 	{
 		ls = Segs2Polys::arc2segs(Vec2((double)x1, (double)y1),
-							      Vec2((double)x2, (double)y2), 
+							      Vec2((double)x2, (double)y2),
 			                      Vec2((double)cx, (double)cy),
 								  (long)id, (double)r);
 		for (size_t i = 0; i < ls.size(); i++)
@@ -202,7 +202,7 @@ EXPORT INT WINAPI AddPolyArc(LONG pn, DOUBLE x1, DOUBLE y1, DOUBLE x2, DOUBLE y2
 	try
 	{
 		vs = Segs2Polys::arc2vecs(Vec2((double)x1, (double)y1),
-							      Vec2((double)x2, (double)y2), 
+							      Vec2((double)x2, (double)y2),
 			                      Vec2((double)cx, (double)cy),
 								  (long)id, (double)r);
 		for (size_t i = 0; i < vs.size(); i++)
@@ -444,6 +444,50 @@ EXPORT INT WINAPI CalcDirectionRotatePolys(INT r)
 	try
 	{
 		Segs2Polys::directionRotatePolys(gPolys, (int)r);
+	}
+	catch (...)
+	{
+		o = -1;
+	}
+	return o;
+}
+
+//
+// Debug
+//
+
+EXPORT INT WINAPI DebugCellRays()
+{
+	INT o = 0;
+	try
+	{
+		std::vector<std::vector<Cell>> cells = Segs2Polys::createGrid(gSegs);
+		gPolys.emplace_back(std::vector<Vec2>());
+		for (size_t	i = 0; i < cells.size(); i++)
+			for (size_t	j = 0; j < cells[i].size(); j++)
+				for (size_t	k = 0; k < cells[i][j].shape.rays.size(); k++)
+					gPolys.back().emplace_back(cells[i][j].shape.rays[k]);
+	}
+	catch (...)
+	{
+		o = -1;
+	}
+	return o;
+}
+
+EXPORT INT WINAPI DebugRayLinks()
+{
+	INT o = 0;
+	try
+	{
+		std::vector<std::vector<Cell>> cells = Segs2Polys::createGrid(gSegs);
+		std::vector<stCellLink> links = Segs2Polys::getLinkRaycast(cells);
+		gPolys.emplace_back(std::vector<Vec2>());
+		for (size_t	i = 0; i < links.size(); i++)
+		{
+			gPolys.back().emplace_back(cells[links[i].cell11][links[i].cell12].shape.rays[links[i].cellLink1]);
+			gPolys.back().emplace_back(cells[links[i].cell21][links[i].cell22].shape.rays[links[i].cellLink2]);
+		}
 	}
 	catch (...)
 	{

@@ -1,6 +1,6 @@
 #pragma once
 
-#define TEST				false
+#define TEST				true
 #if TEST
 #define DEBUG_LOG			true
 #define DEBUG_TIMER			true
@@ -56,26 +56,21 @@ struct stCellLink
 	size_t cellLink1;
 	size_t cellLink2;
 
-	bool		  cell1flg;
-	bool		  cell2flg;
-
 #if DEBUG_LOG
 	void debug()
 	{
-		if (!cell1flg)
-			std::cout << "cell1 : (" << cell12 << ", " << cell11 << ") " << cellLink1;
-		if (!cell2flg)
-		{
-			if (!cell1flg)
-				std::cout << "\t";
-			else
-				std::cout << "\t\t";
-			std::cout << "cell2 : (" << cell22 << ", " << cell21 << ") " << cellLink2;
-		}
-		if (!cell1flg || !cell2flg)
-			std::cout << std::endl;
+		std::cout << "cell1 : (" << cell12 << ", " << cell11 << ") " << cellLink1;
+		std::cout << "\t";
+		std::cout << "cell2 : (" << cell22 << ", " << cell21 << ") " << cellLink2;
+		std::cout << std::endl;
 	}
 #endif
+};
+
+struct stLineLink
+{
+	Line2 me;
+	std::vector<Line2> lines;
 };
 
 class Segs2Polys
@@ -171,7 +166,6 @@ public:
 	static std::vector<stCellLink> getLinkRaycast(std::vector<std::vector<Cell>>& cells)
 	{
 		std::vector<stCellLink> links;
-		stCellLink s;
 		std::vector<size_t> r;
 
 		size_t h = cells.size();
@@ -188,16 +182,31 @@ public:
 					{
 						for (size_t k = 0; k < r.size(); k += 2)
 						{
-							s = {
+							links.emplace_back((stCellLink){
 								i,    j,
 								i,    j + 1,
-								r[k], r[k + 1],
-								false, false
-							};
-							links.emplace_back(s);
+								r[k], r[k + 1]
+							});
 						}
 					}
 				}
+
+				// // left
+				// if (j > 1)
+				// {
+				// 	r = cells[i][j].getRayNoHitPair(cells[i][j - 1]);
+				// 	if (r.size() > 0)
+				// 	{
+				// 		for (size_t k = 0; k < r.size(); k += 2)
+				// 		{
+				// 			links.emplace_back((stCellLink){
+				// 				i,    j,
+				// 				i,    j - 1,
+				// 				r[k], r[k + 1]
+				// 			});
+				// 		}
+				// 	}
+				// }
 
 				// up
 				if (i < h - 1)
@@ -207,17 +216,31 @@ public:
 					{
 						for (size_t k = 0; k < r.size(); k += 2)
 						{
-							s = {
+							links.emplace_back((stCellLink){
 								i,     j,
 								i + 1, j,
-								r[k], r[k + 1],
-								false, false
-							};
-							links.emplace_back(s);
+								r[k],  r[k + 1]
+							});
 						}
-
 					}
 				}
+
+				// // down
+				// if (i > 1)
+				// {
+				// 	r = cells[i][j].getRayNoHitPair(cells[i - 1][j]);
+				// 	if (r.size() > 0)
+				// 	{
+				// 		for (size_t k = 0; k < r.size(); k += 2)
+				// 		{
+				// 			links.emplace_back((stCellLink){
+				// 				i,     j,
+				// 				i - 1, j,
+				// 				r[k],  r[k + 1]
+				// 			});
+				// 		}
+				// 	}
+				// }
 			}
 		return links;
 	}
@@ -296,11 +319,17 @@ public:
 							f = true;
 							for (size_t l = 0; l < lines.size(); l++)
 								if ((*line).s == lines[l].s && (*line).e == lines[l].e)
+								{
 									f = false;
+									break;
+								}
 							if (f)
 								lines.emplace_back(*line);
 						}
 					}
+
+					if (lines.size() < 3)
+						continue;
 
 					// trail
 					poly = trailLines(lines);
@@ -432,7 +461,7 @@ public:
 		for (size_t i = 0; i < segs.size(); i++)
 		{
 			interL.clear();
-			interI.clear();
+			// interI.clear();
 			inter.clear();
 			dis.clear();
 			for (size_t j = 0; j < segs.size(); j++)
@@ -441,10 +470,10 @@ public:
 					continue;
 				if (segs[i].isCrossInf(segs[j]))
 					interL.emplace_back(j);
-				else if (segs[i].distancePointLine(segs[j].s) <= dist)
-					interI.emplace_back(j);
-				else if (segs[i].distancePointLine(segs[j].e) <= dist)
-					interI.emplace_back(j);
+				// else if (segs[i].distancePointLine(segs[j].s) <= dist)
+				// 	interI.emplace_back(j);
+				// else if (segs[i].distancePointLine(segs[j].e) <= dist)
+				// 	interI.emplace_back(j);
 			}
 			for (size_t j = 0; j < interL.size(); j++)
 			{
@@ -452,14 +481,23 @@ public:
 				if (segs[i].distancePointLine(c) <= dist)
 					inter.emplace_back(c);
 			}
-			for (size_t j = 0; j < interI.size(); j++)
-			{
-				c = segs[i].getCross(segs[interI[j]]);
-				inter.emplace_back(c);
-			}
+			// for (size_t j = 0; j < interI.size(); j++)
+			// {
+			// 	c = segs[i].getCross(segs[interI[j]]);
+			// 	inter.emplace_back(c);
+			// 	// if (segs[i].distancePointLine(segs[interI[j]].s) <= dist)
+			// 	// 	inter.emplace_back(segs[interI[j]].s);
+			// 	// else
+			// 	// 	inter.emplace_back(segs[interI[j]].e);
+			// }
 
-			inter.emplace_back(segs[i].s);
-			inter.emplace_back(segs[i].e);
+			// inter.emplace_back(segs[i].s);
+			// inter.emplace_back(segs[i].e);
+
+			// debug
+			segs[i].debug();
+			for (size_t j = 1; j < inter.size(); j++)
+				std::cout << j << "\t" << "(" << inter[j].x << "," << inter[j].y << ")," << std::endl; 
 
 			c = inter[0];
 			for (size_t j = 1; j < inter.size(); j++)
@@ -740,74 +778,154 @@ public:
 		return true;
 	}
 
-private:
+// debug
+// private:
+public:
 	static std::vector<Vec2> trailLines(std::vector<Line2>& lines)
 	{
 		std::vector<Vec2> poly;
 
-		// sort
-		for (size_t i = 0; i < lines.size(); i++)
-			for (size_t j = 0; j < lines.size() - i - 1; j++)
-				if (lines[j].s.x > lines[j + 1].s.x)
-					std::swap(lines[j], lines[j + 1]);
-				else if (lines[j].s.x == lines[j].e.x && lines[j].s.y > lines[j].e.y)
-					std::swap(lines[j], lines[j + 1]);
+		std::vector<stLineLink> link;
+		std::vector<std::vector<Vec2>> linkedLine;
 
+#if DEBUG_LOG
 		for (size_t i = 0; i < lines.size(); i++)
-			lines[i].w = 1;
-
-		//trail
-		poly.emplace_back(lines[0].s);
-		poly.emplace_back(lines[0].e);
-		lines[0].w = -1;
-		bool f;
-		bool fw = true;
-		while (poly.size() < lines.size())
 		{
-			f = false;
-			for (size_t k = 0; k < lines.size(); k++)
+			lines[i].debug(0, 0, false);
+			std::cout << "," << std::endl;
+		}
+		std::cout << std::endl;
+#endif
+
+		// make link
+		{
+			std::vector<Line2> desLines;
+			std::vector<Line2> lks;
+			bool ff;
+			bool fp;
+			size_t k;
+			for (size_t i = 0; i < lines.size(); i++)
 			{
-				if (lines[k].w == -1)
-					continue;
-
-				if (poly[0] == lines[k].s)
+				lks.clear();
+				ff = false;
+				fp = false;
+				for (size_t j = 0; j < lines.size(); j++)
 				{
-					poly.insert(poly.begin(), lines[k].e);
-					lines[k].w = -1;
-					f = true;
+					if (i == j)
+						continue;
+					
+					if (lines[i].s == lines[j].s || lines[i].s == lines[j].e)
+					{
+						ff = true;
+						lks.emplace_back(lines[j]);
+					}
+					else if (lines[i].e == lines[j].s || lines[i].e == lines[j].e)
+					{
+						fp = true;
+						lks.emplace_back(lines[j]);
+					}
 				}
-				else if (poly[0] == lines[k].e)
-				{
-					poly.insert(poly.begin(), lines[k].s);
-					lines[k].w = -1;
-					f = true;
-				}
-				else if (poly.back() == lines[k].s)
-				{
-					poly.emplace_back(lines[k].e);
-					lines[k].w = -1;
-					f = true;
-				}
-				else if (poly.back() == lines[k].e)
-				{
-					poly.emplace_back(lines[k].s);
-					lines[k].w = -1;
-					f = true;
-				}
-
-				if (f)
-					break;
+				if (lks.size() > 0 && ff && fp)
+					link.emplace_back((stLineLink){ lines[i], lks });		
+				else
+					desLines.emplace_back(lines[i]);
 			}
-			if (!f)
+
+			for (size_t i = 0; i < desLines.size(); i++)
+				for (size_t j = 0; j < link.size(); j++)
+				{
+					k = 0;
+					while (k < link[j].lines.size())
+						if (link[j].lines[k] == desLines[i])
+							link[j].lines.erase(link[j].lines.cbegin() + k);
+						else
+							k++;
+				}
+			
+			k = 0;
+			while (k < link.size())
+				if (link[k].lines.size() < 2)
+					link.erase(link.cbegin() + k);
+				else
+					k++;
+		}
+
+		if (link.size() <= 0)
+			return std::vector<Vec2>(0);
+
+		// make linkedLine
+		{
+			std::vector<Vec2> linked;
+			for (size_t i = 0; i < link.size(); i++)
 			{
-				fw = false;
-				break;
+				linked.clear();
+				linked.emplace_back(link[i].me.s);
+				linked.emplace_back(link[i].me.e);
+				for (size_t j = 0; j < link[i].lines.size(); j++)
+					if (linked.back() == link[i].lines[j].s)
+					{
+						linked.emplace_back(link[i].lines[j].e);
+						break;
+					}
+					else if (linked.back() == link[i].lines[j].e)
+					{
+						linked.emplace_back(link[i].lines[j].e);
+						break;
+					}
+				linkedLine.emplace_back(linked);
 			}
 		}
-		if (fw)
-			return poly;
-		else
-			return std::vector<Vec2>(0);
+
+		// trail
+		{
+			bool f;
+			poly.emplace_back(linkedLine[0][0]);
+			while (true)
+			{
+				f = false;
+				for (size_t i = 0; i < linkedLine.size(); i++)
+				{
+					if (poly[0] == linkedLine[i][0])
+					{
+						poly.insert(poly.begin(), linkedLine[i][1]);
+						linkedLine.erase(linkedLine.cbegin() + i);
+					}
+					else if (poly[0] == linkedLine[i][1])
+					{
+						poly.insert(poly.begin(), linkedLine[i][0]);
+						linkedLine.erase(linkedLine.cbegin() + i);
+					}
+					else if (poly.back() == linkedLine[i][0])
+					{
+						poly.emplace_back(linkedLine[i][1]);
+						linkedLine.erase(linkedLine.cbegin() + i);
+					}
+					else if (poly.back() == linkedLine[i][1])
+					{
+						poly.emplace_back(linkedLine[i][0]);
+						linkedLine.erase(linkedLine.cbegin() + i);
+					}
+					else
+						continue;
+					f = true;
+					break;
+				}
+				
+				if (!f)
+					break;
+				if (linkedLine.size() <= 0)
+					break;
+				if (poly[0] == poly.back() && poly.size() >= 3)
+					break;
+			}
+
+			if (poly[0] == poly.back())
+				poly.pop_back();
+			else
+				poly.clear();
+		}
+
+		return poly;
 	}
 
 	static bool isGridOverLine(std::vector<Vec2>& s, Line2& l)

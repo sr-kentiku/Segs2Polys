@@ -44,6 +44,6 @@ test: $(SRC_TEST)
 	$(COMPILER) \
 	-std=c++11 \
 	$(ARCH) \
-	$(OPTIMIZE) \
+	-Og \
 	$(SRC_TEST) \
 	-static

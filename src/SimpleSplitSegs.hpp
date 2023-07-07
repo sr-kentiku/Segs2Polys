@@ -18,7 +18,7 @@ class SimpleSplitSegs
 public:
 	SimpleSplitSegs() {}
 	
-	static std::vector<Line2> splitSegs(std::vector<Line2>& segs)
+	static std::vector<Line2> splitSegs(std::vector<Line2>& segs, bool extF = false, double extDist = 0.0)
 	{
 		std::vector<Line2> o;
 		std::vector<Vec2> intrs;
@@ -32,9 +32,22 @@ public:
 			{
 				if (i == j)
 					continue;
-				if (!segs[i].isCross(segs[j]))
-					continue;
-				c = segs[i].getCross(segs[j]);
+
+				if (extF)
+				{
+					if (!segs[i].isCrossInf(segs[j]))
+						continue;
+					c = segs[i].getCross(segs[j]);
+					if (segs[i].distancePointLineDist(c) > extDist)
+						continue;
+				}
+				else
+				{
+					if (!segs[i].isCross(segs[j]))
+						continue;
+					c = segs[i].getCross(segs[j]);
+				}
+
 				c.id = segs[i].s.id;
 
 				f = true;

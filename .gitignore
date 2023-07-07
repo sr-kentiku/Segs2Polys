@@ -1,1 +1,4 @@
 /src/*.dll
+/src/*.exe
+/src/a.txt
+/.vscode
