@@ -29,6 +29,7 @@
 sequenceDiagram
     Note left of Segs2Polys: 線分の追加、取得、変換
     Segs2Polys ->> Segs: ClearSegs()
+    Segs2Polys ->> Segs: ClearRangeSegs()
     Segs2Polys ->> Segs: AddSeg()
     Segs2Polys ->> Segs: AddSegArc()
     Segs ->> Segs2Polys: GetSegCnt()
@@ -39,6 +40,9 @@ sequenceDiagram
     Segs ->> Polys: CnvSegs2Poly()
 
     Note left of Segs2Polys: ポリゴンの追加、取得、変換
+    Segs2Polys ->> Polys: ClearPolys()
+    Segs2Polys ->> Polys: ClearRangePolys()
+    Segs2Polys ->> Polys: ClearRangePolyVec()
     Segs2Polys ->> Polys: AddPoly()
     Segs2Polys ->> Polys: AddPolyVec()
     Segs2Polys ->> Polys: AddPolyArc()
@@ -57,6 +61,7 @@ sequenceDiagram
     Polys ->> Polys: CalcEarClipHoles()
     Polys ->> Polys: CalcDirectionRotatePoly()
     Polys ->> Polys: CalcDirectionRotatePolys()
+    Polys ->> Polys: CalcTrianglesSplitLines()
 ```
 
 ---
@@ -91,6 +96,44 @@ INT ClearPolys()
 > polysのみクリアします
 >
 > 返り値には必ず0が返ります
+</details>
+
+<details><summary>ClearRangeSegs</summary>
+
+```cpp
+INT WINAPI ClearRangeSegs(LONG s, LONG e)
+```
+> 指定範囲の線分バッファを削除します
+>
+> s, e：範囲
+>
+> エラーの場合-1を返します
+</details>
+
+<details><summary>ClearRangePolys</summary>
+
+```cpp
+INT WINAPI ClearRangePolys(LONG s, LONG e)
+```
+> 指定範囲のポリゴンバッファの図形を削除します
+>
+> s, e：範囲
+>
+> エラーの場合-1を返します
+</details>
+
+<details><summary>ClearRangePolyVec</summary>
+
+```cpp
+INT WINAPI ClearRangePolyVec(LONG pn, LONG s, LONG e)
+```
+> 指定範囲のポリゴンバッファの頂点を削除します
+>
+> pn：ポリゴンインデックス
+>
+> s, e：範囲
+>
+> エラーの場合-1を返します
 </details>
 
 ---
@@ -459,6 +502,20 @@ INT CalcDirectionRotatePolys(INT r)
 > polysを指定の回転方向に変更します
 >
 > r：0=右回り 1=左回り
+>
+> エラーの場合-1を返します
+</details>
+
+<details><summary>CalcTrianglesSplitLines</summary>
+
+```cpp
+INT WINAPI CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn)
+```
+> 三角形データを線分で分割してpolysの末尾に追加します
+>
+> spn, epn：polysの範囲
+>
+> ssn, esn：segsの範囲
 >
 > エラーの場合-1を返します
 </details>
