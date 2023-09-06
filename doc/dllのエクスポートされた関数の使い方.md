@@ -101,7 +101,7 @@ INT ClearPolys()
 <details><summary>ClearRangeSegs</summary>
 
 ```cpp
-INT WINAPI ClearRangeSegs(LONG s, LONG e)
+INT ClearRangeSegs(LONG s, LONG e)
 ```
 > 指定範囲の線分バッファを削除します
 >
@@ -113,7 +113,7 @@ INT WINAPI ClearRangeSegs(LONG s, LONG e)
 <details><summary>ClearRangePolys</summary>
 
 ```cpp
-INT WINAPI ClearRangePolys(LONG s, LONG e)
+INT ClearRangePolys(LONG s, LONG e)
 ```
 > 指定範囲のポリゴンバッファの図形を削除します
 >
@@ -125,7 +125,7 @@ INT WINAPI ClearRangePolys(LONG s, LONG e)
 <details><summary>ClearRangePolyVec</summary>
 
 ```cpp
-INT WINAPI ClearRangePolyVec(LONG pn, LONG s, LONG e)
+INT ClearRangePolyVec(LONG pn, LONG s, LONG e)
 ```
 > 指定範囲のポリゴンバッファの頂点を削除します
 >
@@ -509,7 +509,7 @@ INT CalcDirectionRotatePolys(INT r)
 <details><summary>CalcTrianglesSplitLines</summary>
 
 ```cpp
-INT WINAPI CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn)
+INT CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn)
 ```
 > 三角形データを線分で分割してpolysの末尾に追加します
 >
