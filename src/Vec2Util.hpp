@@ -22,7 +22,7 @@ public:
 
 		for (size_t i = 0; i < ps; i++)
 		{
-			ii = (i + 1) % ps;
+			ii = fmod(i + 1, ps);
 			a += Vec2::cross(polys[i], polys[ii]);
 		}
 		a *= 0.5;

@@ -60,9 +60,11 @@ public:
 	bool isVH()
 	{
 		Vec2 v = vec();
-		if (std::abs(Vec2::cross(v, Vec2::up)) <= Vec2::kEpsilond)
+		if (Vec2::cross(v, Vec2::up) == 0)
+		// if (std::abs(Vec2::cross(v, Vec2::up)) <= Vec2::kEpsilond)
 			return true;
-		if (std::abs(Vec2::cross(v, Vec2::right)) <= Vec2::kEpsilond)
+		if (Vec2::cross(v, Vec2::right) == 0)
+		// if (std::abs(Vec2::cross(v, Vec2::right)) <= Vec2::kEpsilond)
 			return true;
 		return false;
 	}
@@ -71,9 +73,11 @@ public:
 	{
 		Vec2 v1 = a.vec();
 		Vec2 v2 = b.vec();
-		if (std::abs(Vec2::cross(v1, v2)) <= Vec2::kEpsilond)
+		if (Vec2::cross(v1, v2) == 0)
+		// if (std::abs(Vec2::cross(v1, v2)) <= Vec2::kEpsilond)
 			return true;
-		if (std::abs(Vec2::cross(v1, v2.perpendicular())) <= Vec2::kEpsilond)
+		if (Vec2::cross(v1, v2.perpendicular()) == 0)
+		// if (std::abs(Vec2::cross(v1, v2.perpendicular())) <= Vec2::kEpsilond)
 			return true;
 		return false;
 	}
@@ -176,7 +180,7 @@ public:
 	{
 		Vec2 ab = vec();
 		Vec2 cd = l.vec();
-		if (std::abs(Vec2::cross(ab, cd)) < Vec2::kEpsilond)
+		if (std::abs(Vec2::cross(ab, cd)) == 0)
 			return false;
 
 		Vec2 ac = Vec2::CalcSub(l.s, s);
@@ -202,7 +206,7 @@ public:
 
 		double den = Vec2::cross(v43, v21);
 
-		if (std::abs(den) <= Vec2::kEpsilond)
+		if (std::abs(den) == 0)
 			return false;
 
 		Vec2 v13 = Vec2::CalcSub(l1.s, l2.s);
@@ -249,16 +253,36 @@ public:
 
 	// inf line to inf line intersection
 	static bool isCrossInf(const Line2& l1, const Line2& l2) { return l1.isCrossInf(l2); }
-	bool isCrossInf(const Line2& l) const { return std::abs(Vec2::cross(vec(), l.vec())) >= Vec2::kEpsilond; }
+	bool isCrossInf(const Line2& l) const { return std::abs(Vec2::cross(vec(), l.vec())) != 0; }
+
+	// inf line crossing point
+	static Vec2 getCrossInf(Line2& l1, Line2& l2) { return l1.getCrossInf(l2); }
+	static Vec2 getCrossInf(const Line2& l1, Line2& l2) { return l2.getCrossInf(l1); }
+	static Vec2 getCrossInf(Line2& l1, const Line2& l2) { return l1.getCrossInf(l2); }
+	Vec2 getCrossInf(const Line2& l)
+	{
+		Vec2 ab = vec();
+		Vec2 cd = l.vec();
+		double bD = ab.cross(cd);
+		if (bD == 0)
+			return Vec2();
+		
+		Vec2 c = Vec2::CalcSub(l.s, s);
+		double t = c.cross(cd) / bD;
+		return Vec2(
+			s.x + t * ab.x,
+			s.y + t * ab.y
+		);
+	}
 
 	// line crossing point
 	static Vec2 getCross(Line2& l1, Line2& l2) { return l1.getCross(l2); }
 	static Vec2 getCross(const Line2& l1, Line2& l2) { return l2.getCross(l1); }
 	static Vec2 getCross(Line2& l1, const Line2& l2) { return l1.getCross(l2); }
-	Vec2 getCross(const Line2& l) 
+	Vec2 getCross(const Line2& l)
 	{
 		double den = (e.x - s.x) * (l.s.y - l.e.y) - (l.e.x - l.s.x) * (s.y - e.y);
-		if (std::abs(den) < Vec2::kEpsilon)
+		if (std::abs(den) == 0)
 			return Vec2();
 
 		double c1 = Vec2::cross(e, s);

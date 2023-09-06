@@ -1,6 +1,6 @@
 #pragma once
 
-#define TEST				true
+#define TEST				false
 #if TEST
 #define DEBUG_LOG			true
 #define DEBUG_TIMER			true
@@ -37,8 +37,9 @@
 #include "CellInternal.hpp"
 // #include "SweepLineAlgorithm.hpp"
 #include "SimpleSplitSegs.hpp"
-#include "EarClipping.hpp"
+// #include "EarClipping.hpp"
 // #include "Csv2Line2.hpp"
+#include "TriangleUtil.hpp"
 
 #if DEBUG_LOG || DEBUG_TIMER || DEBUG_TIMER_TOTAL
 #include <string>
@@ -191,23 +192,6 @@ public:
 					}
 				}
 
-				// // left
-				// if (j > 1)
-				// {
-				// 	r = cells[i][j].getRayNoHitPair(cells[i][j - 1]);
-				// 	if (r.size() > 0)
-				// 	{
-				// 		for (size_t k = 0; k < r.size(); k += 2)
-				// 		{
-				// 			links.emplace_back((stCellLink){
-				// 				i,    j,
-				// 				i,    j - 1,
-				// 				r[k], r[k + 1]
-				// 			});
-				// 		}
-				// 	}
-				// }
-
 				// up
 				if (i < h - 1)
 				{
@@ -224,23 +208,6 @@ public:
 						}
 					}
 				}
-
-				// // down
-				// if (i > 1)
-				// {
-				// 	r = cells[i][j].getRayNoHitPair(cells[i - 1][j]);
-				// 	if (r.size() > 0)
-				// 	{
-				// 		for (size_t k = 0; k < r.size(); k += 2)
-				// 		{
-				// 			links.emplace_back((stCellLink){
-				// 				i,     j,
-				// 				i - 1, j,
-				// 				r[k],  r[k + 1]
-				// 			});
-				// 		}
-				// 	}
-				// }
 			}
 		return links;
 	}
@@ -249,93 +216,340 @@ public:
 	{
 		std::vector<std::vector<Vec2>> polys;
 		std::vector<Vec2> poly;
-
-		// linked cell
+		
+		std::vector<std::vector<stCellLink*>> linkstack;
+		
+		// stack links
 		{
-			// stack links
-			std::vector<std::vector<std::vector<size_t>>> linkstack;
-			std::vector<std::vector<size_t>> ls;
+			std::vector<stCellLink*> ls;
+			std::vector<stCellLink*> stack;
+			std::vector<stCellLink*> vis;
+			stCellLink* cur;
+			stCellLink* next;
+			bool f;
+
+// #if DEBUG_LOG
+// 			for (size_t i = 0; i < links.size(); i++)
+// 				std::cout << "(("     << links[i].cell11
+// 						<< ", "     << links[i].cell12
+// 						<< ", "     << links[i].cellLink1
+// 						<< "), ("   << links[i].cell21
+// 						<< ", "     << links[i].cell22
+// 						<< ", "     << links[i].cellLink2
+// 						<< ")), " << std::endl;
+// #endif
+
+			for (size_t i = 0; i < links.size(); i++)
 			{
-				bool f;
-				for (size_t i = 0; i < links.size(); i++)
-				{
-					f = true;
-					for (size_t j = 0; j < linkstack.size(); j++)
+				f = true;
+				for (size_t j = 0; j < vis.size(); j++)
+					if (vis[j] == &links[i])
 					{
-						for (size_t k = 0; k < linkstack[j].size(); k++)
-						{
-							if (linkstack[j][k][0] == links[i].cell11 &&
-								linkstack[j][k][1] == links[i].cell12 &&
-								linkstack[j][k][2] == links[i].cellLink1)
+						f = false;
+						break;
+					}
+				if (!f)
+					continue;
+				
+				stack.emplace_back(&links[i]);
+				// vis.clear();
+				ls.clear();
+				while (stack.size() > 0)
+				{
+					cur = stack.back();
+					stack.pop_back();
+					vis.emplace_back(cur);
+					ls.emplace_back(cur);
+
+					for (size_t j = 0; j < links.size(); j++)
+					{
+						if (     (*cur).cell11    == links[j].cell11 &&
+						    	 (*cur).cell12    == links[j].cell12 &&
+							     (*cur).cellLink1 == links[j].cellLink1)
+							next = &links[j];
+						else if ((*cur).cell11    == links[j].cell21 &&
+						    	 (*cur).cell12    == links[j].cell22 &&
+							     (*cur).cellLink1 == links[j].cellLink2)
+							next = &links[j];
+						else if ((*cur).cell21    == links[j].cell11 &&
+						    	 (*cur).cell22    == links[j].cell12 &&
+							     (*cur).cellLink2 == links[j].cellLink1)
+							next = &links[j];
+						else if ((*cur).cell21    == links[j].cell21 &&
+						    	 (*cur).cell22    == links[j].cell22 &&
+							     (*cur).cellLink2 == links[j].cellLink2)
+							next = &links[j];
+						else
+							continue;
+
+						// if (     (*cur).cell21    == links[j].cell11 &&
+						//     	 (*cur).cell22    == links[j].cell12 &&
+						// 	     (*cur).cellLink2 == links[j].cellLink1)
+						// 	next = &links[j];
+						// else if ((*cur).cell21    == links[j].cell21 &&
+						//     	 (*cur).cell22    == links[j].cell22 &&
+						// 	     (*cur).cellLink2 == links[j].cellLink2)
+						// 	next = &links[j];
+						// else
+						// 	continue;
+
+						f = true;
+						for (size_t k = 0; k < vis.size(); k++)
+							if (vis[k] == next)
 							{
-								linkstack[j].emplace_back(std::vector<size_t>({
-									links[i].cell21,
-									links[i].cell22,
-									links[i].cellLink2
-								}));
 								f = false;
 								break;
 							}
-						}
 						if (!f)
-							break;
-					}
+							continue;
 
-					if (f)
-					{
-						ls.clear();
-						ls.emplace_back(std::vector<size_t>({
-							links[i].cell11,
-							links[i].cell12,
-							links[i].cellLink1
-						}));
-						ls.emplace_back(std::vector<size_t>({
-							links[i].cell21,
-							links[i].cell22,
-							links[i].cellLink2
-						}));
-						linkstack.emplace_back(ls);
+						stack.emplace_back(next);
 					}
 				}
+				if (ls.size() <= 0)
+					continue;
+				linkstack.emplace_back(ls);
+// #if DEBUG_LOG
+// 				std::cout << "[";
+// 				for (size_t j = 0; j < ls.size(); j++)
+// 					std::cout << "(("     << ls[j]->cell11
+// 							<< ", "     << ls[j]->cell12
+// 							<< ", "     << ls[j]->cellLink1
+// 							<< "), ("   << ls[j]->cell21
+// 							<< ", "     << ls[j]->cell22
+// 							<< ", "     << ls[j]->cellLink2
+// 							<< ")), ";
+// 				std::cout << "]" << std::endl;
+// #endif
 			}
+		}
 
-			// trail lines
+// #if DEBUG_LOG
+// 		std::cout << std::endl << "linkstack.size():" << linkstack.size() << std::endl;
+// #endif
+
+		// trail lines
+		{
+			std::vector<Line2> lines;
+			CellInternal* shape;
+			std::vector<size_t*> cell2 = std::vector<size_t*>(6);
+			Line2* l2;
+			bool f;
+			for (size_t i = 0; i < linkstack.size(); i++)
 			{
-				std::vector<Line2> lines;
-				Line2* line;
-				CellInternal* ci;
-				bool f;
-				for (size_t i = 0; i < linkstack.size(); i++)
+// #if DEBUG_LOG
+// 				std::cout << "[" << std::endl;
+// #endif
+				lines.clear();
+				for (size_t j = 0; j < linkstack[i].size(); j++)
 				{
-					lines.clear();
-					for (size_t j = 0; j < linkstack[i].size(); j++)
+					cell2[0] = &(*linkstack[i][j]).cell11;
+					cell2[1] = &(*linkstack[i][j]).cell12;
+					cell2[2] = &(*linkstack[i][j]).cellLink1;
+					cell2[3] = &(*linkstack[i][j]).cell21;
+					cell2[4] = &(*linkstack[i][j]).cell22;
+					cell2[5] = &(*linkstack[i][j]).cellLink2;
+					for (size_t k = 0; k < cell2.size(); k += 3)
 					{
-						ci = &cells[linkstack[i][j][0]][linkstack[i][j][1]].shape;
-						(*ci).rays[linkstack[i][j][2]].w = -2;
-						for (size_t k = 0; k < (*ci).sp[linkstack[i][j][2]].size(); k++)
+						shape = &cells[(*cell2[k])][(*cell2[k + 1])].shape;
+						// (*shape).rays[(*cell2[k + 2])].w = 0;
+						for (size_t l = 0; l < (*shape).sp[(*cell2[k + 2])].size(); l++)
 						{
-							line = &(*ci).lines[(*ci).sp[linkstack[i][j][2]][k]];
-							(*line).w = 1;
+							l2 = &(*shape).lines[(*shape).sp[(*cell2[k + 2])][l]];
 							f = true;
-							for (size_t l = 0; l < lines.size(); l++)
-								if ((*line).s == lines[l].s && (*line).e == lines[l].e)
+							for (size_t m = 0; m < lines.size(); m++)
+								if (lines[m] == *l2)
 								{
 									f = false;
 									break;
 								}
-							if (f)
-								lines.emplace_back(*line);
+							if (!f)
+								continue;
+							lines.emplace_back(*l2);
+// #if DEBUG_LOG
+// 							std::cout << "    ";
+// 							(*l2).debug(0, 0, false);
+// 							std::cout << "," << std::endl;
+// #endif
 						}
 					}
-
-					if (lines.size() < 3)
-						continue;
-
-					// trail
-					poly = trailLines(lines);
-					if (poly.size() >= 3)
-						polys.emplace_back(poly);
 				}
+
+// #if DEBUG_LOG
+// 				std::cout << "]" << std::endl;
+// #endif
+				if (lines.size() < 3)
+					continue;
+				
+				// trail
+				poly = trailLines(lines);
+				if (poly.size() < 3)
+					continue;
+				polys.emplace_back(poly);
+
+				for (size_t j = 0; j < linkstack[i].size(); j++)
+				{
+					cells[(*linkstack[i][j]).cell11][(*linkstack[i][j]).cell12].shape.rays[(*linkstack[i][j]).cellLink1].w = -2;
+					cells[(*linkstack[i][j]).cell21][(*linkstack[i][j]).cell22].shape.rays[(*linkstack[i][j]).cellLink2].w = -2;
+				}
+			}
+		}
+
+		// single cell
+		{
+			size_t h = cells.size();
+			size_t w = cells[0].size();
+
+// std::cout << "h\t" << h << "\tw\t" << w << std::endl;
+
+			std::vector<Line2> lines;
+
+			for (size_t i = 0; i < h; i++)
+				for (size_t j = 0; j < w; j++)
+					for (size_t k = 0; k < cells[i][j].shape.rays.size(); k++)
+					{
+						if (cells[i][j].shape.rays[k].w == -2)
+							continue;
+
+						if (cells[i][j].shape.sp[k].size() < 3)
+							continue;
+
+// std::cout << "i\t" << i << "\tj\t" << j << std::endl;
+// std::cout << "cells[i][j].shape.sp[k].size()\t" << cells[i][j].shape.sp[k].size() << std::endl;
+
+// // std::cout << "cells[i][j].shape.sp[k].size()\t" << cells[i][j].shape.sp[k].size() << std::endl;
+// std::cout << "[";
+// for (size_t l = 0; l < cells[i][j].shape.sp[k].size(); l++)
+// 	cells[i][j].shape.lines[cells[i][j].shape.sp[k][l]].debug(0, 0, false);
+// std::cout << "]" << std::endl;
+
+						lines.clear();
+						for (size_t l = 0; l < cells[i][j].shape.sp[k].size(); l++)
+							lines.emplace_back(cells[i][j].shape.lines[cells[i][j].shape.sp[k][l]]);
+						
+						if (lines.size() < 3)
+							continue;
+						
+						// trail
+						poly = trailLines(lines);
+// std::cout << "poly\t" << poly.size() << std::endl;
+						if (poly.size() < 3)
+							continue;
+						polys.emplace_back(poly);
+					}
+		}
+		return polys;
+	}
+
+	// unuseful
+	static std::vector<std::vector<Vec2>> trailCells1(std::vector<std::vector<Cell>>& cells, std::vector<stCellLink>& links)
+	{
+		std::vector<std::vector<Vec2>> polys;
+		std::vector<Vec2> poly;
+
+		std::vector<std::vector<std::vector<size_t>>> linkstack;
+
+		// stack links
+		{
+			std::vector<std::vector<size_t>> ls;
+			bool f;
+			for (size_t i = 0; i < links.size(); i++)
+			{
+				f = true;
+				for (size_t j = 0; j < linkstack.size(); j++)
+				{
+					for (size_t k = 0; k < linkstack[j].size(); k++)
+					{
+						if (linkstack[j][k][0] == links[i].cell11 &&
+							linkstack[j][k][1] == links[i].cell12 &&
+							linkstack[j][k][2] == links[i].cellLink1)
+						{
+							linkstack[j].emplace_back(std::vector<size_t>({
+								links[i].cell21,
+								links[i].cell22,
+								links[i].cellLink2
+							}));
+							f = false;
+							break;
+						}
+					}
+					if (!f)
+						break;
+				}
+
+				if (f)
+				{
+					ls.clear();
+					ls.emplace_back(std::vector<size_t>({
+						links[i].cell11,
+						links[i].cell12,
+						links[i].cellLink1,
+					}));
+					ls.emplace_back(std::vector<size_t>({
+						links[i].cell21,
+						links[i].cell22,
+						links[i].cellLink2
+					}));
+					linkstack.emplace_back(ls);
+				}
+			}
+		}
+
+#if DEBUG_LOG
+std::cout << "[" << std::endl;
+for (size_t i = 0; i < linkstack.size(); i++)
+{
+	std::cout << "    [" << std::endl;
+	for (size_t j = 0; j < linkstack[i].size() - 1; j++)
+	{
+	std::cout << "        (";
+	cells[linkstack[i][j][0]][linkstack[i][j][1]].shape.rays[linkstack[i][j][2]].debug(0, false);
+	std::cout << ", ";
+	cells[linkstack[i][j][0]][linkstack[i][j + 1][1]].shape.rays[linkstack[i][j + 1][2]].debug(0, false);
+	std::cout << "),";
+	std::cout << std::endl;
+	}
+	std::cout << "    ]," << std::endl;
+}
+std::cout << "]" << std::endl;
+#endif
+
+		// trail lines
+		{
+			std::vector<Line2> lines;
+			Line2* line;
+			CellInternal* ci;
+			bool f;
+			for (size_t i = 0; i < linkstack.size(); i++)
+			{
+				lines.clear();
+				for (size_t j = 0; j < linkstack[i].size(); j++)
+				{
+					ci = &cells[linkstack[i][j][0]][linkstack[i][j][1]].shape;
+					(*ci).rays[linkstack[i][j][2]].w = -2;
+					for (size_t k = 0; k < (*ci).sp[linkstack[i][j][2]].size(); k++)
+					{
+						line = &(*ci).lines[(*ci).sp[linkstack[i][j][2]][k]];
+						(*line).w = 1;
+						f = true;
+						for (size_t l = 0; l < lines.size(); l++)
+							if ((*line).s == lines[l].s && (*line).e == lines[l].e)
+							{
+								f = false;
+								break;
+							}
+						if (f)
+							lines.emplace_back(*line);
+					}
+				}
+
+				if (lines.size() < 3)
+					continue;
+
+				// trail
+				poly = trailLines(lines);
+				if (poly.size() >= 3)
+					polys.emplace_back(poly);
 			}
 		}
 
@@ -388,11 +602,12 @@ public:
 			s = 0;
 			for (size_t j = 0; j < polys[i].size(); j++)
 			{
-				j1 = (j + 1) % polys[i].size();
-				j2 = (j + 2) % polys[i].size();
+				j1 = fmod(j + 1, polys[i].size());
+				j2 = fmod(j + 2, polys[i].size());
 				l1 = Line2(polys[i][j], polys[i][j1]);
 				l2 = Line2(polys[i][j1], polys[i][j2]);
-				if (Vec2::cross(l1.vec(), l2.vec()) >= Vec2::kEpsilond)
+				// if (Vec2::cross(l1.vec(), l2.vec()) >= Vec2::kEpsilond)
+				if (std::abs(Vec2::cross(l1.vec(), l2.vec())) >= Vec2::kEpsilond)
 				{
 					s = j1;
 					break;
@@ -403,9 +618,9 @@ public:
 			c0f = false;
 			for (size_t j = 0; j < polys[i].size(); j++)
 			{
-				j1 = (j + s) % polys[i].size();
-				j2 = (j + s + 1) % polys[i].size();
-				j3 = (j + s + 2) % polys[i].size();
+				j1 = fmod(j + s, polys[i].size());
+				j2 = fmod(j + s + 1, polys[i].size());
+				j3 = fmod(j + s + 2, polys[i].size());
 				if (!c0f)
 					l1 = Line2(polys[i][j1], polys[i][j2]);
 				l2 = Line2(polys[i][j2], polys[i][j3]);
@@ -448,101 +663,105 @@ public:
 
 	static std::vector<Line2> extendMarginIntersection(std::vector<Line2>& segs, double dist)
 	{
-		std::vector<Line2> o;
-		std::vector<size_t> interL;
-		std::vector<size_t> interI;
-		std::vector<Vec2> inter;
-		std::vector<double> dis;
-		Vec2 c;
-		double maxdis;
-		Vec2 max;
-		double mindis;
-		Vec2 min;
-		for (size_t i = 0; i < segs.size(); i++)
-		{
-			interL.clear();
-			// interI.clear();
-			inter.clear();
-			dis.clear();
-			for (size_t j = 0; j < segs.size(); j++)
-			{
-				if (i == j)
-					continue;
-				if (segs[i].isCrossInf(segs[j]))
-					interL.emplace_back(j);
-				// else if (segs[i].distancePointLine(segs[j].s) <= dist)
-				// 	interI.emplace_back(j);
-				// else if (segs[i].distancePointLine(segs[j].e) <= dist)
-				// 	interI.emplace_back(j);
-			}
-			for (size_t j = 0; j < interL.size(); j++)
-			{
-				c = segs[i].getCross(segs[interL[j]]);
-				if (segs[i].distancePointLine(c) <= dist)
-					inter.emplace_back(c);
-			}
-			// for (size_t j = 0; j < interI.size(); j++)
-			// {
-			// 	c = segs[i].getCross(segs[interI[j]]);
-			// 	inter.emplace_back(c);
-			// 	// if (segs[i].distancePointLine(segs[interI[j]].s) <= dist)
-			// 	// 	inter.emplace_back(segs[interI[j]].s);
-			// 	// else
-			// 	// 	inter.emplace_back(segs[interI[j]].e);
-			// }
+		std::vector<Line2> w;
+		w = SimpleSplitSegs::extendSegs(segs, dist);
+		return SimpleSplitSegs::splitSegs(w);
 
-			// inter.emplace_back(segs[i].s);
-			// inter.emplace_back(segs[i].e);
+		// std::vector<Line2> o;
+		// std::vector<size_t> interL;
+		// std::vector<size_t> interI;
+		// std::vector<Vec2> inter;
+		// std::vector<double> dis;
+		// Vec2 c;
+		// double maxdis;
+		// Vec2 max;
+		// double mindis;
+		// Vec2 min;
+		// for (size_t i = 0; i < segs.size(); i++)
+		// {
+		// 	interL.clear();
+		// 	// interI.clear();
+		// 	inter.clear();
+		// 	dis.clear();
+		// 	for (size_t j = 0; j < segs.size(); j++)
+		// 	{
+		// 		if (i == j)
+		// 			continue;
+		// 		if (segs[i].isCrossInf(segs[j]))
+		// 			interL.emplace_back(j);
+		// 		// else if (segs[i].distancePointLine(segs[j].s) <= dist)
+		// 		// 	interI.emplace_back(j);
+		// 		// else if (segs[i].distancePointLine(segs[j].e) <= dist)
+		// 		// 	interI.emplace_back(j);
+		// 	}
+		// 	for (size_t j = 0; j < interL.size(); j++)
+		// 	{
+		// 		c = segs[i].getCrossInf(segs[interL[j]]);
+		// 		if (segs[i].distancePointLine(c) <= dist)
+		// 			inter.emplace_back(c);
+		// 	}
+		// 	// for (size_t j = 0; j < interI.size(); j++)
+		// 	// {
+		// 	// 	c = segs[i].getCross(segs[interI[j]]);
+		// 	// 	inter.emplace_back(c);
+		// 	// 	// if (segs[i].distancePointLine(segs[interI[j]].s) <= dist)
+		// 	// 	// 	inter.emplace_back(segs[interI[j]].s);
+		// 	// 	// else
+		// 	// 	// 	inter.emplace_back(segs[interI[j]].e);
+		// 	// }
 
-			// debug
-			segs[i].debug();
-			for (size_t j = 1; j < inter.size(); j++)
-				std::cout << j << "\t" << "(" << inter[j].x << "," << inter[j].y << ")," << std::endl; 
+		// 	// inter.emplace_back(segs[i].s);
+		// 	// inter.emplace_back(segs[i].e);
 
-			c = inter[0];
-			for (size_t j = 1; j < inter.size(); j++)
-				if (c.x < inter[j].x)
-					c = inter[j];
-				else if (c.x == inter[j].x && c.y == inter[j].y)
-					c = inter[j];
+		// 	// debug
+		// 	segs[i].debug();
+		// 	for (size_t j = 1; j < inter.size(); j++)
+		// 		std::cout << j << "\t" << "(" << inter[j].x << "," << inter[j].y << ")," << std::endl; 
 
-			dis = std::vector<double>(inter.size());
-			for (size_t j = 0; j < inter.size(); j++)
-				dis[j] = Vec2::distance(c, inter[j]);
+		// 	c = inter[0];
+		// 	for (size_t j = 1; j < inter.size(); j++)
+		// 		if (c.x < inter[j].x)
+		// 			c = inter[j];
+		// 		else if (c.x == inter[j].x && c.y == inter[j].y)
+		// 			c = inter[j];
 
-			maxdis = dis[0];
-			max = inter[0];
-			mindis = dis[0];
-			min = inter[0];
-			for (size_t j = 1; j < dis.size(); j++)
-			{
-				if (maxdis > dis[j])
-				{
-					maxdis = dis[j];
-					max = inter[j];
-				}
-				if (mindis < dis[j])
-				{
-					mindis = dis[j];
-					min = inter[j];
-				}
-			}
+		// 	dis = std::vector<double>(inter.size());
+		// 	for (size_t j = 0; j < inter.size(); j++)
+		// 		dis[j] = Vec2::distance(c, inter[j]);
 
-			o.emplace_back(Line2(min, max, segs[i].id, false));
+		// 	maxdis = dis[0];
+		// 	max = inter[0];
+		// 	mindis = dis[0];
+		// 	min = inter[0];
+		// 	for (size_t j = 1; j < dis.size(); j++)
+		// 	{
+		// 		if (maxdis > dis[j])
+		// 		{
+		// 			maxdis = dis[j];
+		// 			max = inter[j];
+		// 		}
+		// 		if (mindis < dis[j])
+		// 		{
+		// 			mindis = dis[j];
+		// 			min = inter[j];
+		// 		}
+		// 	}
 
-			//// sort
-			//for (size_t j = 0; j < dis.size(); j++)
-			//	for (size_t k = 0; k < dis.size() - j - 1; k++)
-			//		if (dis[k] > dis[k + 1])
-			//		{
-			//			std::swap(dis[k], dis[k + 1]);
-			//			std::swap(inter[k], inter[k + 1]);
-			//		}
+		// 	o.emplace_back(Line2(min, max, segs[i].id, false));
 
-			//for (size_t j = 0; j < inter.size() - 1; j++)
-			//	o.emplace_back(Line2(inter[j], inter[j + 1], segs[i].id));
-		}
-		return o;
+		// 	//// sort
+		// 	//for (size_t j = 0; j < dis.size(); j++)
+		// 	//	for (size_t k = 0; k < dis.size() - j - 1; k++)
+		// 	//		if (dis[k] > dis[k + 1])
+		// 	//		{
+		// 	//			std::swap(dis[k], dis[k + 1]);
+		// 	//			std::swap(inter[k], inter[k + 1]);
+		// 	//		}
+
+		// 	//for (size_t j = 0; j < inter.size() - 1; j++)
+		// 	//	o.emplace_back(Line2(inter[j], inter[j + 1], segs[i].id));
+		// }
+		// return o;
 	}
 
 	static std::vector<Line2> arc2segs(Vec2 s, Vec2 e, Vec2 c, long id, double r)
@@ -717,7 +936,7 @@ public:
 		*en = i;
 		*s = segs[sn].s;
 		*e = segs[*en - 1].e;
-		*c = Line2::getCross(t1, t2);
+		*c = Line2::getCrossInf(t1, t2);
 		*id = segs[mn].s.id;
 
 		return true;
@@ -772,15 +991,13 @@ public:
 		*en = i;
 		*s = poly[sn];
 		*e = poly[*en];
-		*c = Line2::getCross(t1, t2);
+		*c = Line2::getCrossInf(t1, t2);
 		*id = poly[mn].id;
 
 		return true;
 	}
 
-// debug
-// private:
-public:
+private:
 	static std::vector<Vec2> trailLines(std::vector<Line2>& lines)
 	{
 		std::vector<Vec2> poly;
@@ -788,14 +1005,14 @@ public:
 		std::vector<stLineLink> link;
 		std::vector<std::vector<Vec2>> linkedLine;
 
-#if DEBUG_LOG
-		for (size_t i = 0; i < lines.size(); i++)
-		{
-			lines[i].debug(0, 0, false);
-			std::cout << "," << std::endl;
-		}
-		std::cout << std::endl;
-#endif
+// #if DEBUG_LOG
+// 		for (size_t i = 0; i < lines.size(); i++)
+// 		{
+// 			lines[i].debug(0, 0, false);
+// 			std::cout << "," << std::endl;
+// 		}
+// 		std::cout << std::endl;
+// #endif
 
 		// make link
 		{

@@ -15,6 +15,7 @@ ARCH = -m32
 OPTIMIZE = -Ofast # xp ok
 
 dll: dll_dll
+	dumpbin /exports $(DES_DLL)
 
 dll_o: $(SRC_MAIN)
 	$(COMPILER) \

@@ -15,9 +15,9 @@
 class Cell
 {
 public:
-	Vec2 swh;
-	Vec2 ewh;
-	CellInternal shape;
+	Vec2 			swh;
+	Vec2 			ewh;
+	CellInternal 	shape;
 
 	Cell() :swh(Vec2()), ewh(Vec2()), shape(CellInternal()) {}
 	Cell(Vec2 b, Vec2 wh, std::vector<Line2> lines) : swh(b), ewh(wh + b), shape(
@@ -36,7 +36,6 @@ public:
 	std::vector<size_t> getRayNoHitPair(Cell& cell)
 	{
 		std::vector<size_t> o;
-
 		for (size_t i = 0; i < shape.rays.size(); i++)
 		{
 			for (size_t j = 0; j < cell.shape.rays.size(); j++)

@@ -154,6 +154,16 @@ public:
 	static Vec2 CalcMod(const Vec2& a, const Vec2& b) { return Vec2(fmod(a.x, b.x), fmod(a.y, b.y)); }
 	static Vec2 CalcMod(const Vec2& a, const double& d) { return Vec2(fmod(a.x, d), fmod(a.y, d)); }
 	
+	bool operator<(const Vec2& v) { return x < v.x && y < v.y; }
+	bool operator<(const double& d) { return x < d && y < d; }
+	bool operator<=(const Vec2& v) { return x <= v.x && y <= v.y; }
+	bool operator<=(const double& d) { return x <= d && y <= d; }
+
+	bool operator>(const Vec2& v) { return x > v.x && y > v.y; }
+	bool operator>(const double& d) { return x > d && y > d; }
+	bool operator>=(const Vec2& v) { return x >= v.x && y >= v.y; }
+	bool operator>=(const double& d) { return x >= d && y >= d; }
+
 	bool operator|=(const Vec2& v) { return sqrmagnitude() - v.sqrmagnitude() < kEpsilond; }
 	bool operator==(const Vec2& v) { return std::abs(x - v.x) < kEpsilond && std::abs(y - v.y) < kEpsilond; }
 	bool operator!=(const Vec2& v) { return !(*this == v); }

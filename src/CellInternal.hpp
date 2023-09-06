@@ -21,17 +21,18 @@ private:
 	static constexpr double kcon = 0.1;
 #else
 	// static constexpr double kcon = Vec2::kEpsilon;
-	static constexpr double kcon = Vec2::kEpsilon * 100;
+	// static constexpr double kcon = Vec2::kEpsilon * 100;
 	// static constexpr double kcon = 0.1;
+	// static constexpr double kcon = 0.05;
 	// static constexpr double kcon = 200;
-	// static constexpr double kcon = 100;
+	static constexpr double kcon = 100;
 #endif
 
 public:
 	std::vector<Vec2>						hull;
 	std::vector<Line2>						lines;
 	std::vector<Vec2>						rays;
-	std::vector<std::vector<size_t>>	sp;
+	std::vector<std::vector<size_t>>		sp;
 	
 	CellInternal() : hull(std::vector<Vec2>()), lines(std::vector<Line2>()), rays(std::vector<Vec2>()), sp(std::vector<std::vector<size_t>>()) {}
 	CellInternal(std::vector<Vec2> hull, std::vector<Line2> lines, Vec2 swh, Vec2 ewh) : hull(hull), lines(lines), rays(std::vector<Vec2>()), sp(std::vector<std::vector<size_t>>())
@@ -208,7 +209,17 @@ private:
 		}
 
 		if (raysLineSrc.size() <= 0)
+		{
+
+#if DEBUG_LOG
+	for (size_t i = 0; i < lines.size(); i++)
+	{
+		lines[i].debug(0, 0, false);
+		std::cout << ",-----------------" << std::endl;
+	}
+#endif
 			calcVHCentorOfMass(swh, ewh);
+		}
 
 		// single
 		else if (raysLineSrc.size() == 1)

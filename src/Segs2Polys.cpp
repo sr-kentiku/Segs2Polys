@@ -2,8 +2,6 @@
 
 static std::vector<Line2> gSegs = std::vector<Line2>();
 static std::vector<std::vector<Vec2>> gPolys = std::vector<std::vector<Vec2>>();
-//static std::vector<Line2> gTempWorkerSeg = std::vector<Line2>();
-//static std::vector<Vec2> gTempWorkerPoly = std::vector<Vec2>();
 
 EXPORT INT WINAPI Clear()
 {
@@ -22,6 +20,48 @@ EXPORT INT WINAPI ClearPolys()
 {
 	gPolys.clear();
 	return 0;
+}
+
+EXPORT INT WINAPI ClearRangeSegs(LONG s, LONG e)
+{
+	INT o = 0;
+	try
+	{
+		gSegs.erase(gSegs.begin() + s, gSegs.begin() + e);
+	}
+	catch (...)
+	{
+		o = -1;
+	}
+	return o;
+}
+
+EXPORT INT WINAPI ClearRangePolys(LONG s, LONG e)
+{
+	INT o = 0;
+	try
+	{
+		gPolys.erase(gPolys.begin() + s, gPolys.begin() + e);
+	}
+	catch (...)
+	{
+		o = -1;
+	}
+	return o;
+}
+
+EXPORT INT WINAPI ClearRangePolyVec(LONG pn, LONG s, LONG e)
+{
+	INT o = 0;
+	try
+	{
+		gPolys[pn].erase(gPolys[pn].begin() + s, gPolys[pn].begin() + e);
+	}
+	catch (...)
+	{
+		o = -1;
+	}
+	return o;
 }
 
 //
@@ -291,7 +331,7 @@ EXPORT INT WINAPI CnvPoly2Segs(LONG pn)
 		size_t ii;
 		for (size_t i = 0; i < ps; i++)
 		{
-			ii = (i + 1) % ps;
+			ii = fmod(i + 1, ps);
 			gSegs.emplace_back(Line2(gPolys[pn][i], gPolys[pn][ii]));
 		}
 	}
@@ -370,11 +410,11 @@ EXPORT INT WINAPI CalcMergePolysLines()
 
 EXPORT LONG WINAPI CalcEarClip(LONG pn, LONG safety)
 {
-	INT o = 0;
+	LONG o = 0;
 	try
 	{
 		std::vector<std::vector<Vec2>> ret;
-		if (EarClipping::EarClip(gPolys[pn], ret, (size_t)safety))
+		if (TriangleUtil::EarClip(gPolys[pn], ret, (size_t)safety))
 		{
 			for (size_t i = 0; i < ret.size(); i++)
 				gPolys.emplace_back(ret[i]);
@@ -392,7 +432,7 @@ EXPORT LONG WINAPI CalcEarClip(LONG pn, LONG safety)
 
 EXPORT LONG WINAPI CalcEarClipHoles(LONG pn, LONG hpn, LONG* hp, LONG safety)
 {
-	INT o = 0;
+	LONG o = 0;
 	try
 	{
 		std::vector<std::vector<Vec2>> ret;
@@ -400,7 +440,7 @@ EXPORT LONG WINAPI CalcEarClipHoles(LONG pn, LONG hpn, LONG* hp, LONG safety)
 		for (size_t i = 0; i < hpn; i++)
 			holes[i] = gPolys[(size_t)*(hp + i)];
 
-		if (EarClipping::EarClipHoles(gPolys[pn], holes, ret, (size_t)safety))
+		if (TriangleUtil::EarClipHoles(gPolys[pn], holes, ret, (size_t)safety))
 		{
 			for (size_t i = 0; i < ret.size(); i++)
 				gPolys.emplace_back(ret[i]);
@@ -452,46 +492,67 @@ EXPORT INT WINAPI CalcDirectionRotatePolys(INT r)
 	return o;
 }
 
+EXPORT INT WINAPI CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn)
+{
+	INT o = 0;
+	try
+	{
+		std::vector<std::vector<Vec2>> ret;
+		std::vector<std::vector<Vec2>> polys = std::vector<std::vector<Vec2>>(gPolys.begin() + (size_t)spn, gPolys.begin() + (size_t)epn);
+		std::vector<Line2> segs = std::vector<Line2>(gSegs.begin() + (size_t)ssn, gSegs.begin() + (size_t)esn);
+		if (TriangleUtil::SplitTrisSegs(polys, segs, ret))
+			for (size_t i = 0; i < ret.size(); i++)
+				gPolys.emplace_back(ret[i]);
+		else
+			o = -1;
+	}
+	catch (...)
+	{
+		o = -1;
+	}
+	return o;
+}
+
 //
 // Debug
 //
 
-EXPORT INT WINAPI DebugCellRays()
-{
-	INT o = 0;
-	try
-	{
-		std::vector<std::vector<Cell>> cells = Segs2Polys::createGrid(gSegs);
-		gPolys.emplace_back(std::vector<Vec2>());
-		for (size_t	i = 0; i < cells.size(); i++)
-			for (size_t	j = 0; j < cells[i].size(); j++)
-				for (size_t	k = 0; k < cells[i][j].shape.rays.size(); k++)
-					gPolys.back().emplace_back(cells[i][j].shape.rays[k]);
-	}
-	catch (...)
-	{
-		o = -1;
-	}
-	return o;
-}
+// EXPORT INT WINAPI DebugCellRays()
+// {
+// 	INT o = 0;
+// 	try
+// 	{
+// 		std::vector<std::vector<Cell>> cells = Segs2Polys::createGrid(gSegs);
+// 		gPolys.emplace_back(std::vector<Vec2>());
+// 		for (size_t	i = 0; i < cells.size(); i++)
+// 			for (size_t	j = 0; j < cells[i].size(); j++)
+// 				for (size_t	k = 0; k < cells[i][j].shape.rays.size(); k++)
+// 					gPolys.back().emplace_back(cells[i][j].shape.rays[k]);
+// 	}
+// 	catch (...)
+// 	{
+// 		o = -1;
+// 	}
+// 	return o;
+// }
 
-EXPORT INT WINAPI DebugRayLinks()
-{
-	INT o = 0;
-	try
-	{
-		std::vector<std::vector<Cell>> cells = Segs2Polys::createGrid(gSegs);
-		std::vector<stCellLink> links = Segs2Polys::getLinkRaycast(cells);
-		gPolys.emplace_back(std::vector<Vec2>());
-		for (size_t	i = 0; i < links.size(); i++)
-		{
-			gPolys.back().emplace_back(cells[links[i].cell11][links[i].cell12].shape.rays[links[i].cellLink1]);
-			gPolys.back().emplace_back(cells[links[i].cell21][links[i].cell22].shape.rays[links[i].cellLink2]);
-		}
-	}
-	catch (...)
-	{
-		o = -1;
-	}
-	return o;
-}
+// EXPORT INT WINAPI DebugRayLinks()
+// {
+// 	INT o = 0;
+// 	try
+// 	{
+// 		std::vector<std::vector<Cell>> cells = Segs2Polys::createGrid(gSegs);
+// 		std::vector<stCellLink> links = Segs2Polys::getLinkRaycast(cells);
+// 		gPolys.emplace_back(std::vector<Vec2>());
+// 		for (size_t	i = 0; i < links.size(); i++)
+// 		{
+// 			gPolys.back().emplace_back(cells[links[i].cell11][links[i].cell12].shape.rays[links[i].cellLink1]);
+// 			gPolys.back().emplace_back(cells[links[i].cell21][links[i].cell22].shape.rays[links[i].cellLink2]);
+// 		}
+// 	}
+// 	catch (...)
+// 	{
+// 		o = -1;
+// 	}
+// 	return o;
+// }

@@ -16,22 +16,31 @@ std::vector<Line2> segs = std::vector<Line2>({
 	// Line2(Vec2(4.0, 3.0), Vec2(5.0, 3.0)),
 	// Line2(Vec2(5.0, 1.0), Vec2(5.0, 3.0)),
 
-
-	//Line2(Vec2(1.0, 1.0, 1 ), Vec2(3.0, 1.0, 1 )),
-	//Line2(Vec2(1.0, 1.0, 2 ), Vec2(1.0, 2.0, 2 )),
-	//Line2(Vec2(1.0, 1.0, 3 ), Vec2(3.0, 2.0, 3 )),
-	//Line2(Vec2(3.0, 1.0, 4 ), Vec2(3.0, 2.0, 4 )),
-	//Line2(Vec2(3.0, 1.0, 5 ), Vec2(5.0, 1.0, 5 )),
-	//Line2(Vec2(5.0, 1.0, 6 ), Vec2(5.0, 3.0, 6 )),
-	//Line2(Vec2(5.0, 3.0, 7 ), Vec2(3.0, 2.0, 7 )),
-	//Line2(Vec2(5.0, 3.0, 8 ), Vec2(4.0, 4.0, 8 )),
-	//Line2(Vec2(4.0, 4.0, 9 ), Vec2(3.0, 4.0, 9 )),
-	//Line2(Vec2(3.0, 4.0, 10), Vec2(3.0, 2.0, 10)),
-	//Line2(Vec2(3.0, 4.0, 11), Vec2(1.0, 4.0, 11)),
-	//Line2(Vec2(1.0, 4.0, 12), Vec2(3.0, 2.0, 12)),
-	//Line2(Vec2(1.0, 4.0, 13), Vec2(1.0, 2.0, 13)),
-	//Line2(Vec2(1.0, 2.0, 14), Vec2(3.0, 2.0, 14)),
-	//Line2(Vec2(3.0, 1.0, 15), Vec2(5.0, 3.0, 15)),
+	// Line2(Vec2(1.0, 1.0), Vec2(5.0, 1.0)),
+	// Line2(Vec2(5.0, 1.0), Vec2(5.0, 3.0)),
+	// Line2(Vec2(5.0, 3.0), Vec2(4.0, 3.0)),
+	// Line2(Vec2(4.0, 3.0), Vec2(4.0, 2.0)),
+	// Line2(Vec2(4.0, 2.0), Vec2(3.0, 2.0)),
+	// Line2(Vec2(2.0, 2.0), Vec2(2.0, 3.0)),
+	// Line2(Vec2(2.0, 3.0), Vec2(1.0, 3.0)),
+	// Line2(Vec2(1.0, 3.0), Vec2(1.0, 1.0)),
+	// Line2(Vec2(3.0, 1.0), Vec2(3.0, 2.0)),
+	
+	Line2(Vec2(1.0, 1.0, 1 ), Vec2(3.0, 1.0, 1 )),
+	Line2(Vec2(1.0, 1.0, 2 ), Vec2(1.0, 2.0, 2 )),
+	Line2(Vec2(1.0, 1.0, 3 ), Vec2(3.0, 2.0, 3 )),
+	Line2(Vec2(3.0, 1.0, 4 ), Vec2(3.0, 2.0, 4 )),
+	Line2(Vec2(3.0, 1.0, 5 ), Vec2(5.0, 1.0, 5 )),
+	Line2(Vec2(5.0, 1.0, 6 ), Vec2(5.0, 3.0, 6 )),
+	Line2(Vec2(5.0, 3.0, 7 ), Vec2(3.0, 2.0, 7 )),
+	Line2(Vec2(5.0, 3.0, 8 ), Vec2(4.0, 4.0, 8 )),
+	Line2(Vec2(4.0, 4.0, 9 ), Vec2(3.0, 4.0, 9 )),
+	Line2(Vec2(3.0, 4.0, 10), Vec2(3.0, 2.0, 10)),
+	Line2(Vec2(3.0, 4.0, 11), Vec2(1.0, 4.0, 11)),
+	Line2(Vec2(1.0, 4.0, 12), Vec2(3.0, 2.0, 12)),
+	Line2(Vec2(1.0, 4.0, 13), Vec2(1.0, 2.0, 13)),
+	Line2(Vec2(1.0, 2.0, 14), Vec2(3.0, 2.0, 14)),
+	Line2(Vec2(3.0, 1.0, 15), Vec2(5.0, 3.0, 15)),
 
 	//Line2(Vec2(1.0, 1.0, 1) + Vec2(10), Vec2(3.0, 1.0, 1) + Vec2(10)),
 	//Line2(Vec2(1.0, 1.0, 2) + Vec2(10), Vec2(1.0, 2.0, 2) + Vec2(10)),
@@ -61,36 +70,36 @@ std::vector<Line2> segs = std::vector<Line2>({
 	//Line2(Vec2(3.0, 1.0, 1) + Vec2(0, 10), Vec2(3.0, 4.0, 1) + Vec2(0, 10)),
 
 
-	//Line2(Vec2(1.0, 1.0), Vec2(2.0, 1.0)),
-	//Line2(Vec2(2.0, 1.0), Vec2(5.0, 1.0)),
-	//Line2(Vec2(5.0, 1.0), Vec2(5.0, 4.0)),
-	//Line2(Vec2(5.0, 4.0), Vec2(5.0, 5.0)),
-	//Line2(Vec2(5.0, 5.0), Vec2(4.0, 5.0)),
-	//Line2(Vec2(4.0, 5.0), Vec2(1.0, 5.0)),
-	//Line2(Vec2(1.0, 5.0), Vec2(1.0, 2.0)),
-	//Line2(Vec2(1.0, 2.0), Vec2(1.0, 1.0)),
-	//Line2(Vec2(2.0, 1.0), Vec2(5.0, 4.0)),
-	//Line2(Vec2(1.0, 2.0), Vec2(4.0, 5.0)),
+	// Line2(Vec2(1.0, 1.0), Vec2(2.0, 1.0)),
+	// Line2(Vec2(2.0, 1.0), Vec2(5.0, 1.0)),
+	// Line2(Vec2(5.0, 1.0), Vec2(5.0, 4.0)),
+	// Line2(Vec2(5.0, 4.0), Vec2(5.0, 5.0)),
+	// Line2(Vec2(5.0, 5.0), Vec2(4.0, 5.0)),
+	// Line2(Vec2(4.0, 5.0), Vec2(1.0, 5.0)),
+	// Line2(Vec2(1.0, 5.0), Vec2(1.0, 2.0)),
+	// Line2(Vec2(1.0, 2.0), Vec2(1.0, 1.0)),
+	// Line2(Vec2(2.0, 1.0), Vec2(5.0, 4.0)),
+	// Line2(Vec2(1.0, 2.0), Vec2(4.0, 5.0)),
 
 
-	//Line2(Vec2(1.0, 1.0), Vec2(2.0, 1.0)),
-	//Line2(Vec2(2.0, 1.0), Vec2(2.0, 1.0)),
-	//Line2(Vec2(2.0, 1.0), Vec2(3.0, 1.0)),
-	//Line2(Vec2(3.0, 1.0), Vec2(4.0, 1.0)),
-	//Line2(Vec2(4.0, 1.0), Vec2(5.0, 1.0)),
-	//Line2(Vec2(5.0, 1.0), Vec2(5.0, 5.0)),
-	//Line2(Vec2(5.0, 5.0), Vec2(1.0, 5.0)),
-	//Line2(Vec2(1.0, 5.0), Vec2(1.0, 4.0)),
-	//Line2(Vec2(1.0, 4.0), Vec2(1.0, 3.0)),
-	//Line2(Vec2(1.0, 3.0), Vec2(1.0, 2.0)),
-	//Line2(Vec2(1.0, 2.0), Vec2(1.0, 1.0)),
-	//Line2(Vec2(1.0, 1.0), Vec2(5.0, 5.0)),
-	//Line2(Vec2(2.0, 1.0), Vec2(5.0, 5.0)),
-	//Line2(Vec2(3.0, 1.0), Vec2(5.0, 5.0)),
-	//Line2(Vec2(4.0, 1.0), Vec2(5.0, 5.0)),
-	//Line2(Vec2(1.0, 4.0), Vec2(5.0, 5.0)),
-	//Line2(Vec2(1.0, 3.0), Vec2(5.0, 5.0)),
-	//Line2(Vec2(1.0, 2.0), Vec2(5.0, 5.0)),
+	// Line2(Vec2(1.0, 1.0), Vec2(2.0, 1.0)),
+	// Line2(Vec2(2.0, 1.0), Vec2(2.0, 1.0)),
+	// Line2(Vec2(2.0, 1.0), Vec2(3.0, 1.0)),
+	// Line2(Vec2(3.0, 1.0), Vec2(4.0, 1.0)),
+	// Line2(Vec2(4.0, 1.0), Vec2(5.0, 1.0)),
+	// Line2(Vec2(5.0, 1.0), Vec2(5.0, 5.0)),
+	// Line2(Vec2(5.0, 5.0), Vec2(1.0, 5.0)),
+	// Line2(Vec2(1.0, 5.0), Vec2(1.0, 4.0)),
+	// Line2(Vec2(1.0, 4.0), Vec2(1.0, 3.0)),
+	// Line2(Vec2(1.0, 3.0), Vec2(1.0, 2.0)),
+	// Line2(Vec2(1.0, 2.0), Vec2(1.0, 1.0)),
+	// Line2(Vec2(1.0, 1.0), Vec2(5.0, 5.0)),
+	// Line2(Vec2(2.0, 1.0), Vec2(5.0, 5.0)),
+	// Line2(Vec2(3.0, 1.0), Vec2(5.0, 5.0)),
+	// Line2(Vec2(4.0, 1.0), Vec2(5.0, 5.0)),
+	// Line2(Vec2(1.0, 4.0), Vec2(5.0, 5.0)),
+	// Line2(Vec2(1.0, 3.0), Vec2(5.0, 5.0)),
+	// Line2(Vec2(1.0, 2.0), Vec2(5.0, 5.0)),
 
 
 	//Line2(Vec2(0.0,		0.0),		Vec2(6000.0,	0.0)),
@@ -181,57 +190,74 @@ std::vector<Line2> segs = std::vector<Line2>({
 	// Line2(Vec2(50885, 10000, 0), Vec2(44515, 10000, 0)),
 
 	// c2
-	Line2(Vec2(44515, 20000, -1), Vec2(52900, 20000, 0)),
-	Line2(Vec2(50600, 20000, -1), Vec2(50600, 22900, 0)),
-	Line2(Vec2(58555, 27896, -1), Vec2(60269, 36104, 0)),
-	Line2(Vec2(56960, 34446, -1), Vec2(59799, 33853, 0)),
-	Line2(Vec2(57424, 22499, 0), Vec2(62200, 21500, -1)),
-	Line2(Vec2(59392, 31905, -1), Vec2(69180, 29860, 0)),
-	Line2(Vec2(63656, 35688, -1), Vec2(68158, 34747, -1)),
-	Line2(Vec2(62720, 31210, 0), Vec2(63656, 35688, -1)),
-	Line2(Vec2(62044, 37266, -1), Vec2(62453, 39223, -1)),
-	Line2(Vec2(60576, 37573, 0), Vec2(62044, 37266, -1)),
-	Line2(Vec2(60860, 31598, -1), Vec2(61796, 36076, -1)),
-	Line2(Vec2(61796, 36076, -1), Vec2(63656, 35688, 0)),
-	Line2(Vec2(61336, 33874, -1), Vec2(63196, 33485, 0)),
-	Line2(Vec2(65711, 35258, -1), Vec2(66369, 38405, 0)),
-	Line2(Vec2(56115, 10570, -1), Vec2(56115, 17100, -1)),
-	Line2(Vec2(56115, 17100, -1), Vec2(62200, 17100, 0)),
-	Line2(Vec2(44515, 13000, -1), Vec2(50315, 13000, -1)),
-	Line2(Vec2(50315, 10000, 0), Vec2(50315, 13000, -1)),
-	Line2(Vec2(50315, 13000, -1), Vec2(56115, 13000, 0)),
-	Line2(Vec2(52900, 10570, -1), Vec2(52900, 13000, 0)),
-	Line2(Vec2(44515, 16200, -1), Vec2(47515, 16200, -1)),
-	Line2(Vec2(47515, 16200, -1), Vec2(47515, 20000, 0)),
-	Line2(Vec2(47515, 13000, 0), Vec2(47515, 16200, -1)),
-	Line2(Vec2(59300, 17100, -1), Vec2(59300, 18500, -1)),
-	Line2(Vec2(59300, 18500, -1), Vec2(62200, 18500, 0)),
-	Line2(Vec2(44515, 15200, -1), Vec2(47515, 15200, 0)),
-	Line2(Vec2(44515, 14000, -1), Vec2(47515, 14000, 0)),
-	Line2(Vec2(45975, 14000, -1), Vec2(45975, 15200, 0)),
-	Line2(Vec2(44515, 10000, 0), Vec2(44515, 22900, 0)),
-	Line2(Vec2(44515, 22900, 0), Vec2(52900, 22900, 0)),
-	Line2(Vec2(52900, 20000, 0), Vec2(52900, 22900, 0)),
-	Line2(Vec2(52900, 20000, 0), Vec2(56900, 20000, 0)),
-	Line2(Vec2(56900, 20000, 0), Vec2(58555, 27896, 0)),
-	Line2(Vec2(55716, 28489, 0), Vec2(58555, 27896, 0)),
-	Line2(Vec2(55716, 28489, 0), Vec2(57430, 36697, 0)),
-	Line2(Vec2(57430, 36697, 0), Vec2(60269, 36104, 0)),
-	Line2(Vec2(60269, 36104, 0), Vec2(60985, 39530, 0)),
-	Line2(Vec2(60985, 39530, 0), Vec2(68816, 37894, 0)),
-	Line2(Vec2(68158, 34747, 0), Vec2(68816, 37894, 0)),
-	Line2(Vec2(68158, 34747, 0), Vec2(70116, 34338, 0)),
-	Line2(Vec2(67215, 20453, 0), Vec2(70116, 34338, 0)),
-	Line2(Vec2(62200, 21500, 0), Vec2(67215, 20453, 0)),
-	Line2(Vec2(62200, 10000, 0), Vec2(62200, 21500, 0)),
-	Line2(Vec2(56115, 10000, 0), Vec2(62200, 10000, 0)),
-	Line2(Vec2(56115, 10000, 0), Vec2(56115, 10570, 0)),
-	Line2(Vec2(50885, 10570, 0), Vec2(56115, 10570, 0)),
-	Line2(Vec2(50885, 10000, 0), Vec2(50885, 10570, 0)),
-	Line2(Vec2(44515, 10000, 0), Vec2(50885, 10000, 0)),
+	// Line2(Vec2(44515, 20000, -1), Vec2(52900, 20000, 0)),
+	// Line2(Vec2(50600, 20000, -1), Vec2(50600, 22900, 0)),
+	// Line2(Vec2(58555, 27896, -1), Vec2(60269, 36104, 0)),
+	// Line2(Vec2(56960, 34446, -1), Vec2(59799, 33853, 0)),
+	// Line2(Vec2(57424, 22499, 0), Vec2(62200, 21500, -1)),
+	// Line2(Vec2(59392, 31905, -1), Vec2(69180, 29860, 0)),
+	// Line2(Vec2(63656, 35688, -1), Vec2(68158, 34747, -1)),
+	// Line2(Vec2(62720, 31210, 0), Vec2(63656, 35688, -1)),
+	// Line2(Vec2(62044, 37266, -1), Vec2(62453, 39223, -1)),
+	// Line2(Vec2(60576, 37573, 0), Vec2(62044, 37266, -1)),
+	// Line2(Vec2(60860, 31598, -1), Vec2(61796, 36076, -1)),
+	// Line2(Vec2(61796, 36076, -1), Vec2(63656, 35688, 0)),
+	// Line2(Vec2(61336, 33874, -1), Vec2(63196, 33485, 0)),
+	// Line2(Vec2(65711, 35258, -1), Vec2(66369, 38405, 0)),
+	// Line2(Vec2(56115, 10570, -1), Vec2(56115, 17100, -1)),
+	// Line2(Vec2(56115, 17100, -1), Vec2(62200, 17100, 0)),
+	// Line2(Vec2(44515, 13000, -1), Vec2(50315, 13000, -1)),
+	// Line2(Vec2(50315, 10000, 0), Vec2(50315, 13000, -1)),
+	// Line2(Vec2(50315, 13000, -1), Vec2(56115, 13000, 0)),
+	// Line2(Vec2(52900, 10570, -1), Vec2(52900, 13000, 0)),
+	// Line2(Vec2(44515, 16200, -1), Vec2(47515, 16200, -1)),
+	// Line2(Vec2(47515, 16200, -1), Vec2(47515, 20000, 0)),
+	// Line2(Vec2(47515, 13000, 0), Vec2(47515, 16200, -1)),
+	// Line2(Vec2(59300, 17100, -1), Vec2(59300, 18500, -1)),
+	// Line2(Vec2(59300, 18500, -1), Vec2(62200, 18500, 0)),
+	// Line2(Vec2(44515, 15200, -1), Vec2(47515, 15200, 0)),
+	// Line2(Vec2(44515, 14000, -1), Vec2(47515, 14000, 0)),
+	// Line2(Vec2(45975, 14000, -1), Vec2(45975, 15200, 0)),
+	// Line2(Vec2(44515, 10000, 0), Vec2(44515, 22900, 0)),
+	// Line2(Vec2(44515, 22900, 0), Vec2(52900, 22900, 0)),
+	// Line2(Vec2(52900, 20000, 0), Vec2(52900, 22900, 0)),
+	// Line2(Vec2(52900, 20000, 0), Vec2(56900, 20000, 0)),
+	// Line2(Vec2(56900, 20000, 0), Vec2(58555, 27896, 0)),
+	// Line2(Vec2(55716, 28489, 0), Vec2(58555, 27896, 0)),
+	// Line2(Vec2(55716, 28489, 0), Vec2(57430, 36697, 0)),
+	// Line2(Vec2(57430, 36697, 0), Vec2(60269, 36104, 0)),
+	// Line2(Vec2(60269, 36104, 0), Vec2(60985, 39530, 0)),
+	// Line2(Vec2(60985, 39530, 0), Vec2(68816, 37894, 0)),
+	// Line2(Vec2(68158, 34747, 0), Vec2(68816, 37894, 0)),
+	// Line2(Vec2(68158, 34747, 0), Vec2(70116, 34338, 0)),
+	// Line2(Vec2(67215, 20453, 0), Vec2(70116, 34338, 0)),
+	// Line2(Vec2(62200, 21500, 0), Vec2(67215, 20453, 0)),
+	// Line2(Vec2(62200, 10000, 0), Vec2(62200, 21500, 0)),
+	// Line2(Vec2(56115, 10000, 0), Vec2(62200, 10000, 0)),
+	// Line2(Vec2(56115, 10000, 0), Vec2(56115, 10570, 0)),
+	// Line2(Vec2(50885, 10570, 0), Vec2(56115, 10570, 0)),
+	// Line2(Vec2(50885, 10000, 0), Vec2(50885, 10570, 0)),
+	// Line2(Vec2(44515, 10000, 0), Vec2(50885, 10000, 0)),
 
+	// T test no slash
+	// Line2(Vec2(6, 1), Vec2(5, 1)),
+	// Line2(Vec2(5, 1), Vec2(5, 4)),
+	// Line2(Vec2(5, 4), Vec2(1, 4)),
+	// Line2(Vec2(1, 4), Vec2(1, 5)),
+	// Line2(Vec2(1, 5), Vec2(9, 5)),
+	// Line2(Vec2(9, 5), Vec2(9, 4)),
+	// Line2(Vec2(9, 4), Vec2(6, 4)),
+	// Line2(Vec2(6, 4), Vec2(6, 1)),
 
-
+	// t test no slash
+	// Line2(Vec2(1, 1), Vec2(4, 1)),
+	// Line2(Vec2(4, 1), Vec2(4, 4)),
+	// Line2(Vec2(4, 4), Vec2(5, 4)),
+	// Line2(Vec2(5, 4), Vec2(5, 1)),
+	// Line2(Vec2(5, 1), Vec2(7, 1)),
+	// Line2(Vec2(7, 1), Vec2(7, 5)),
+	// Line2(Vec2(7, 5), Vec2(1, 5)),
+	// Line2(Vec2(1, 5), Vec2(1, 1)),
 
 });
 
@@ -246,8 +272,12 @@ void test()
 	t1 = clock();
 #endif
 
+	// segs = Segs2Polys::extendMarginIntersection(segs, 0.2);
+	// segs = Segs2Polys::extendMarginIntersection(segs, 1.0);
 
-	segs = SimpleSplitSegs::splitSegs(segs, true, 0.5);
+	// segs = SimpleSplitSegs::extendSegs(segs, 1.0);
+	segs = SimpleSplitSegs::splitSegs(segs);
+
 	// segs = SimpleSplitSegs::splitSegs(segs);
 	// segs = Segs2Polys::extendMarginIntersection(segs, 1.0);
 
@@ -356,15 +386,25 @@ void test()
 
 	std::cout << "links-parse" << std::endl;
 	std::cout << "[" << std::endl;
-	for (stCellLink& r1 : links)
+	for (size_t i = 0; i < links.size(); i++)
 	{
 		std::cout << "    (";
-		cells[r1.cell11][r1.cell12].shape.rays[r1.cellLink1].debug(0, false);
+		cells[links[i].cell11][links[i].cell12].shape.rays[links[i].cellLink1].debug(0, false);
 		std::cout << ", ";
-		cells[r1.cell21][r1.cell22].shape.rays[r1.cellLink2].debug(0, false);
+		cells[links[i].cell21][links[i].cell22].shape.rays[links[i].cellLink2].debug(0, false);
 		std::cout << "),";
 		std::cout << std::endl;
 	}
+
+	// for (stCellLink& r1 : links)
+	// {
+	// 	std::cout << "    (";
+	// 	cells[r1.cell11][r1.cell12].shape.rays[r1.cellLink1].debug(0, false);
+	// 	std::cout << ", ";
+	// 	cells[r1.cell21][r1.cell22].shape.rays[r1.cellLink2].debug(0, false);
+	// 	std::cout << "),";
+	// 	std::cout << std::endl;
+	// }
 	std::cout << "]" << std::endl << std::endl;
 
 #endif
@@ -375,6 +415,7 @@ void test()
 
 
 	std::vector<std::vector<Vec2>> polys = Segs2Polys::trailCells(cells, links);
+	// std::vector<std::vector<Vec2>> polys = Segs2Polys::trailCells1(cells, links);
 
 
 #if DEBUG_TIMER
@@ -452,6 +493,142 @@ void test1()
 
 int main(int argc, char* argv[])
 {
+	// {
+	// 	std::vector<Vec2> tri = std::vector<Vec2>({
+	// 		Vec2(2, 1),
+	// 		Vec2(5, 1),
+	// 		Vec2(3, 4),
+	// 	});
+	// 	Line2 seg = Line2(Vec2(2, 3), Vec2(4, 0));
+	// 	std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
+
+	// 	std::cout << true << "\t" << TriangleUtil::SplitTriSeg(tri, seg, r) << std::endl;
+	// 	std::cout << "[" << std::endl;
+	// 	for (size_t i = 0; i < r.size(); i++)
+	// 	{
+	// 		for (size_t j = 0; j < r[i].size(); j++)
+	// 		{
+	// 			size_t jj = fmod(j + 1, r[i].size());
+	// 			std::cout << "    (";
+	// 			r[i][j].debug(0, false);
+	// 			std::cout << ", ";
+	// 			r[i][jj].debug(0, false);
+	// 			std::cout << ")," << std::endl;
+	// 		}
+	// 		std::cout << std::endl;
+	// 	}
+	// 	std::cout << "]" << std::endl;
+	// }
+
+	// return 0;
+
+	{
+		std::vector<Vec2> v = std::vector<Vec2>({
+			Vec2(1,1),
+			Vec2(6,1),
+			Vec2(6,4),
+			Vec2(5,4),
+			Vec2(5,2),
+			Vec2(3,2),
+			Vec2(3,4),
+			Vec2(1,4),
+
+			// Vec2(1,4),
+			// Vec2(1,1),
+			// Vec2(3,2),
+
+			// Vec2(1,4),
+			// Vec2(3.5,3.5),
+			// Vec2(3,2),
+
+			// Vec2(5,2),
+			// Vec2(3,2),
+			// Vec2(1,1),
+		});
+		// Line2 seg = Line2(Vec2(0, 3), Vec2(7, 2));
+		Line2 seg = Line2(Vec2(5,5), Vec2(0,0));
+		std::vector<Line2> segs = std::vector<Line2>({
+			// Line2(Vec2(3,6), Vec2(1,-1)),
+			// Line2(Vec2(3,6), Vec2(7,0)),
+
+			Line2(Vec2(5,5), Vec2(0,0)),
+			Line2(Vec2(5,5), Vec2(7,0)),
+
+			// Line2(Vec2(5,5), Vec2(0,0)),
+			// Line2(Vec2(4,4.5), Vec2(0,3)),
+		});
+		std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
+		std::vector<std::vector<Vec2>> rr = std::vector<std::vector<Vec2>>();
+		clock_t t;
+
+		t = clock();
+		std::cout << true << "\t" << TriangleUtil::EarClip(v, r) << "\ttime:" << clock() - t << std::endl;
+
+		std::cout << "[" << std::endl;
+		for (size_t i = 0; i < r.size(); i++)
+		{
+			for (size_t j = 0; j < r[i].size(); j++)
+			{
+				size_t jj = fmod(j + 1, r[i].size());
+				std::cout << "    (";
+				r[i][j].debug(0, false);
+				std::cout << ", ";
+				r[i][jj].debug(0, false);
+				std::cout << ")," << std::endl;
+			}
+			std::cout << std::endl;
+		}
+		std::cout << "]" << std::endl << std::endl;
+		
+		t = clock();
+		std::cout << true << "\t" << TriangleUtil::SplitTrisSeg(r, seg, rr) << "\ttime:" << clock() - t << std::endl;
+		std::cout << "rr:" << rr.size() << std::endl;
+		std::cout << "[" << std::endl;
+		for (size_t i = 0; i < rr.size(); i++)
+		{
+			for (size_t j = 0; j < rr[i].size(); j++)
+			{
+				size_t jj = fmod(j + 1, rr[i].size());
+				std::cout << "    (";
+				rr[i][j].debug(0, false);
+				std::cout << ", ";
+				rr[i][jj].debug(0, false);
+				std::cout << ")," << std::endl;
+			}
+			std::cout << std::endl;
+		}
+		seg.debug(0, 0, false);
+		std::cout << ", " << std::endl;
+		std::cout << "]" << std::endl << std::endl;
+		
+		t = clock();
+		std::cout << true << "\t" << TriangleUtil::SplitTrisSegs(r, segs, rr) << "\ttime:" << clock() - t << std::endl;
+		std::cout << "rr:" << rr.size() << std::endl;
+		std::cout << "[" << std::endl;
+		for (size_t i = 0; i < rr.size(); i++)
+		{
+			for (size_t j = 0; j < rr[i].size(); j++)
+			{
+				size_t jj = fmod(j + 1, rr[i].size());
+				std::cout << "    (";
+				rr[i][j].debug(0, false);
+				std::cout << ", ";
+				rr[i][jj].debug(0, false);
+				std::cout << ")," << std::endl;
+			}
+			std::cout << std::endl;
+		}
+		for (size_t i = 0; i < segs.size(); i++)
+		{
+			segs[i].debug(0, 0, false);
+			std::cout << ", " << std::endl;
+		}
+		std::cout << "]" << std::endl << std::endl;
+	}
+
+	return 0;
+
+
 	// {
 	// 	std::vector<Line2> s = std::vector<Line2>({
 	// 		Line2(Vec2(4, 4), Vec2(2, 4)),
@@ -603,7 +780,7 @@ int main(int argc, char* argv[])
 
 		std::vector<std::vector<Vec2>> ret;
 
-		EarClipping::EarClipHoles(hull, holes, ret, 5000);
+		TriangleUtil::EarClipHoles(hull, holes, ret, 5000);
 		for (size_t i = 0; i < ret.size(); i++)
 		{
 			for (size_t j = 0; j < ret[i].size(); j++)
@@ -673,7 +850,7 @@ int main(int argc, char* argv[])
 
 		std::vector<std::vector<Vec2>> ret;
 
-		std::cout << EarClipping::EarClip(vs, ret, 1000) << std::endl;
+		std::cout << TriangleUtil::EarClip(vs, ret, 1000) << std::endl;
 		for (size_t i = 0; i < ret.size(); i++)
 		{
 			for (size_t j = 0; j < ret.size(); j++)
@@ -695,7 +872,7 @@ int main(int argc, char* argv[])
 		for (size_t i = 0; i < vs.size(); i++)
 			vs[i].debug();
 
-		std::cout << "true:" << true << "\t" << EarClipping::EarClip(vs, ret) << std::endl;
+		std::cout << "true:" << true << "\t" << TriangleUtil::EarClip(vs, ret) << std::endl;
 		for (size_t i = 0; i < ret.size(); i++)
 		{
 			for (size_t j = 0; j < ret[i].size(); j++)
@@ -817,7 +994,7 @@ int main(int argc, char* argv[])
 		Line2 l1 = Line2(Vec2(1, 3), Vec2(3, 3));
 		Line2 l2 = Line2(Vec2(2, 1), Vec2(3, 2));
 		std::cout << Line2::isCrossInf(l1, l2) << std::endl;
-		Vec2 c = Line2::getCross(l1, l2);
+		Vec2 c = Line2::getCrossInf(l1, l2);
 		c.debug();
 		std::cout << l1.distancePointLine(c) << std::endl;
 
