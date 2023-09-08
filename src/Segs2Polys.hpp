@@ -1,6 +1,6 @@
 #pragma once
 
-#define TEST				false
+#define TEST				true
 #if TEST
 #define DEBUG_LOG			true
 #define DEBUG_TIMER			true

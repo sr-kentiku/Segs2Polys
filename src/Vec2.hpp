@@ -89,7 +89,7 @@ public:
 	static double dot(const Vec2& lhs, const Vec2& rhs) { return lhs.x * rhs.x + lhs.y * rhs.y; }
 	double dot(const Vec2& rhs) const { return x * rhs.x + y * rhs.y; }
 
-	static double cross(const Vec2& lhs, const Vec2& rhs) { return lhs.x * rhs.y - rhs.x * lhs.y; }
+	static double cross(const Vec2& lhs, const Vec2& rhs) { return lhs.x * rhs.y - lhs.y * rhs.x; }
 	double cross(const Vec2& rhs) const { return x * rhs.y - rhs.x * y; }
 
 	static double cross3(const Vec2& bhs, const Vec2& lhs, const Vec2& rhs) { return cross(CalcSub(lhs, bhs), CalcSub(rhs, bhs)); }

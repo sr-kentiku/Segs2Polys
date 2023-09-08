@@ -27,7 +27,7 @@ EXPORT INT WINAPI ClearRangeSegs(LONG s, LONG e)
 	INT o = 0;
 	try
 	{
-		gSegs.erase(gSegs.begin() + s, gSegs.begin() + e);
+		gSegs.erase(gSegs.begin() + (size_t)s, gSegs.begin() + (size_t)e);
 	}
 	catch (...)
 	{
@@ -41,7 +41,7 @@ EXPORT INT WINAPI ClearRangePolys(LONG s, LONG e)
 	INT o = 0;
 	try
 	{
-		gPolys.erase(gPolys.begin() + s, gPolys.begin() + e);
+		gPolys.erase(gPolys.begin() + (size_t)s, gPolys.begin() + (size_t)e);
 	}
 	catch (...)
 	{
@@ -55,7 +55,7 @@ EXPORT INT WINAPI ClearRangePolyVec(LONG pn, LONG s, LONG e)
 	INT o = 0;
 	try
 	{
-		gPolys[pn].erase(gPolys[pn].begin() + s, gPolys[pn].begin() + e);
+		gPolys[pn].erase(gPolys[(size_t)pn].begin() + (size_t)s, gPolys[(size_t)pn].begin() + (size_t)e);
 	}
 	catch (...)
 	{

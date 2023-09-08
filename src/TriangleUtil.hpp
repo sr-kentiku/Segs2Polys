@@ -82,30 +82,27 @@ public:
         if (inter == 0)
         {
             result.emplace_back(tri);
-            return false;
+            return true;
         }
         
         if (TriOnPoint(tri, seg.s))
         {
-            bool o;
             bool f;
             trailer.insert(trailer.begin() + interIdx[0] + 1, { seg.s, trailer[interIdx[0]] });
-            o = EarClip(trailer, result);
-            return o;
+            EarClip(trailer, result);
+            return true;
         }
         if (TriOnPoint(tri, seg.e))
         {
-            bool o;
             bool f;
             trailer.insert(trailer.begin() + interIdx[0] + 1, { seg.e, trailer[interIdx[0]] });
-            o = EarClip(trailer, result);
-            return o;
+            EarClip(trailer, result);
+            return true;
         }
 
         {
             std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
             std::vector<std::vector<Vec2>> t = std::vector<std::vector<Vec2>>();
-            bool f = true;
 
             trailVec(trailer, interIdx, r);
             for (size_t i = 0; i < r.size(); i++)
@@ -114,46 +111,11 @@ public:
                     result.emplace_back(r[i]);
                 else
                 {
-                    f &= EarClip(r[i], t);
-                    for (size_t j = 0; j < t.size(); j++)
-                        result.emplace_back(t[j]);
+                    if (EarClip(r[i], t))
+                        for (size_t j = 0; j < t.size(); j++)
+                            result.emplace_back(t[j]);
                 }
             }
-            return f;
-        }
-
-        return false;
-
-        if (inter == 3)
-        {
-            size_t c1 = interIdx[0];
-            size_t c2 = -1;
-            size_t t1 = -1;
-            size_t t2 = -1;
-
-            for (size_t i = 1; i < interIdx.size(); i++)
-                if (trailer[c1] != trailer[interIdx[i]])
-                {
-                    c2 = interIdx[i];
-                    break;
-                }
-
-            if (c2 < 0)
-                return false;
-
-            t1 = fmod(c1 + 1, trailer.size());
-            t2 = fmod(c2 + 1, trailer.size());
-            result.emplace_back(std::vector<Vec2>({
-                trailer[c1],
-                trailer[t1],
-                trailer[c2],
-            }));
-            result.emplace_back(std::vector<Vec2>({
-                trailer[c2],
-                trailer[t2],
-                trailer[c1],
-            }));
-            
             return true;
         }
 
