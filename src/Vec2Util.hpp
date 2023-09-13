@@ -26,7 +26,6 @@ public:
 			ii = fmod(i + 1, ps);
 			a += Vec2::cross(polys[i], polys[ii]);
 		}
-		a *= 0.5;
 		if (r == 0 && a > 0)
 			std::reverse(polys.begin(), polys.end());
 		else if (r == 1 && a < 0)

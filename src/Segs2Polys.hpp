@@ -1,7 +1,6 @@
 #pragma once
 
-#define TEST				true
-#if TEST
+#ifdef _DEBUG
 #define DEBUG_LOG			true
 #define DEBUG_TIMER			true
 #define DEBUG_TIMER_TOTAL	true
@@ -11,15 +10,15 @@
 #define DEBUG_TIMER_TOTAL	false
 #endif
 
-#if !TEST
-#define EXPORT extern "C" __declspec( dllexport )
-#include <windows.h>
-#else
+#ifdef _DEBUG
 #define EXPORT
 #define WINAPI
 #define INT		int
 #define LONG	long
 #define DOUBLE	double
+#else
+#define EXPORT extern "C" __declspec( dllexport )
+#include <windows.h>
 #endif
 
 #include <stdint.h>

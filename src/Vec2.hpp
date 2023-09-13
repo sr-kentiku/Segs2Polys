@@ -94,6 +94,15 @@ public:
 
 	static double cross3(const Vec2& bhs, const Vec2& lhs, const Vec2& rhs) { return cross(CalcSub(lhs, bhs), CalcSub(rhs, bhs)); }
 
+	static Vec2 Lerp(Vec2& a, Vec2& b, double t) { return a + (b - a) * t; }
+	static Vec2 InverseLerp(Vec2& a, Vec2& b, Vec2& v)
+	{
+		if (a != b)
+			return (v - a) / (b - a);
+		else
+			return zero;
+	}
+
 	static Vec2 perpendicular(const Vec2& a) { return Vec2(-a.y, a.x); }
 	Vec2 perpendicular() { return Set(Vec2(-y, x)); }
 

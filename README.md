@@ -35,5 +35,5 @@ make dll
 
 テスト用のexeをコンパイル
 ```bash
-make test
+make debug
 ```

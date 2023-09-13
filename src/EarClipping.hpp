@@ -23,7 +23,7 @@ public:
 
 	static bool EarClip(std::vector<Vec2>& poly, std::vector<std::vector<Vec2>>& ret, size_t safety = SIZE_MAX)
 	{
-		Vec2Util::directionRotatePoly(poly, 1);
+		Vec2Util::directionRotatePoly(poly, 0);
 		ret = ClipTriangle(poly, safety);
 		// return poly.size() - 2 == ret.size();
 		return ret.size() > 0;
@@ -31,159 +31,69 @@ public:
 
 	static bool EarClipHoles(std::vector<Vec2> hull, std::vector<std::vector<Vec2>> holes, std::vector<std::vector<Vec2>>& ret, size_t safety = SIZE_MAX)
 	{
+		if (holes.size() <= 0)
+			return EarClip(hull, ret, safety);
 		for (size_t i = 0; i < holes.size(); i++)
 			if (!Vec2Util::isPolyInside(hull, holes[i]))
 				holes.erase(holes.begin() + i);
-		Vec2Util::directionRotatePoly(hull, 1);
+		Vec2Util::directionRotatePoly(hull, 0);
 		for (size_t i = 0; i < holes.size(); i++)
-			Vec2Util::directionRotatePoly(holes[i], 0);
+			Vec2Util::directionRotatePoly(holes[i], 1);
 		if (!addConnectLine(hull, holes))
 			return false;
+// for (size_t i = 0; i < hull.size(); i++)
+// {
+// std::cout << "(";
+// hull[i].debug(0, false);
+// std::cout << ", ";
+// hull[fmod(i + 1, hull.size())].debug(0, false);
+// std::cout << ")," << std::endl;
+// }
 		ret = ClipTriangle(hull, safety);
 		// return hull.size() - 2 == ret.size();
 		return ret.size() > 0;
 	}
 
-	// // normalize the direction of rotation before using.
-	// static std::vector<std::vector<Vec2>> ClipTriangle1(std::vector<Vec2>& poly, size_t safety = SIZE_MAX)
-	// {
-	// 	std::vector<std::vector<Vec2>> o;
-
-	// 	std::vector<long> nL;
-
-	// 	size_t nI;
-	// 	size_t n;
-	// 	size_t nN;
-
-	// 	bool f;
-
-	// 	size_t i;
-	// 	size_t j;
-
-	// 	size_t s;
-
-	// 	j = 0;
-	// 	for (i = 0; i < poly.size(); i++)
-	// 		if (Vec2::cross3(poly[fmod(i - 1, poly.size())], poly[i], poly[fmod(i + 1, poly.size())]) < 0)
-	// 		{
-	// 			j = i;
-	// 			break;
-	// 		}
-
-	// 	s = poly.size();
-	// 	nL = std::vector<long>(s);
-	// 	for (i = 0; i < s; i++)
-	// 		nL[i] = (long)fmod(i + j, s);
-
-	// GO_FIRST:
-	// 	if (safety-- <= 0)
-	// 		return std::vector<std::vector<Vec2>>();
-
-	// 	nL.erase(
-	// 		std::remove_if(
-	// 			std::begin(nL),
-	// 			std::end(nL),
-	// 			[](long  v)
-	// 			{
-	// 				return v < 0;
-	// 			}
-	// 		),
-	// 		std::end(nL)
-	// 	);
-		
-	// 	if (nL.size() >= 3)
-	// 	{
-	// 		s = nL.size();
-	// 		for (i = 0; i < nL.size(); i++)
-	// 		{
-	// 			nI = nL[Mathf::repeat(i - 1, s)];
-	// 			n = nL[Mathf::repeat(i, s)];
-	// 			nN = nL[Mathf::repeat(i + 1, s)];
-				
-	// 			if (Vec2::cross3(poly[n], poly[nI], poly[nN]) >= 0)
-	// 				continue;
-				
-	// 			f = true;
-	// 			for (j = 0; j < poly.size(); j++)
-	// 			{
-	// 				if (nI == j || n == j || nN == j)
-	// 					continue;
-	// 				if (!isTrianglePointInside(poly[nI], poly[n], poly[nN], poly[j]))
-	// 					continue;
-	// 				f = false;
-	// 				break;
-	// 			}
-
-	// 			if (f)
-	// 			{
-	// 				o.emplace_back(std::vector<Vec2>({
-	// 					poly[nI],
-	// 					poly[n],
-	// 					poly[nN]
-	// 				}));
-	// 				nL[i] = -1;
-	// 				goto GO_FIRST;
-	// 			}
-	// 		}
-	// 	}
-	// 	return o;
-	// }
-
 	// normalize the direction of rotation before using.
 	static std::vector<std::vector<Vec2>> ClipTriangle(std::vector<Vec2> poly, size_t safety = SIZE_MAX)
 	{
 		std::vector<std::vector<Vec2>> o = std::vector<std::vector<Vec2>>();
-		size_t n;
 		bool f;
-		Vec2 a;
-		Vec2 b;
-		Vec2 c;
+		Vec2* a;
+		Vec2* b;
+		Vec2* c;
 		size_t ai;
 		size_t bi;
 		size_t ci;
 
-		n = poly.size();
-
-		if (n < 2)
+		if (poly.size() < 2)
 			return o;
 
-		while (n > 3)
+		while (poly.size() > 3)
 		{
 			if (safety-- <= 0)
 				break;
 
-std::cout << "n:" << n << "\to.size():" << o.size() << std::endl;
+// std::cout << "safety:" << safety << std::endl;
 
-			for (size_t i = 0; i < n; i++)
+			for (size_t i = 0; i < poly.size(); i++)
 			{
-std::cout << "i:" << i;
 				ai = i;
-				bi = fmod(i + 1, n);
-				ci = fmod(i + 2, n);
-				a = poly[ai];
-				b = poly[bi];
-				c = poly[ci];
-std::cout << "\tai:" << ai << "\tbi:" << bi << "\tci:" << ci << "\tarea2:" << Vec2::cross(a - b, c - b) << std::endl;
-a.debug(0, false);
-std::cout << "\t";
-b.debug(0, false);
-std::cout << "\t";
-c.debug(0, false);
-std::cout << std::endl;
+				bi = fmod(i + 1, poly.size());
+				ci = fmod(i + 2, poly.size());
+				a = &poly[ai];
+				b = &poly[bi];
+				c = &poly[ci];
 
-				if (Vec2::cross(a - b, c - b) >= 0)
-				{
-std::cout << "cross skip" << std::endl;
+				if (Vec2::cross((*a) - (*b), (*c) - (*b)) < 0)
 					continue;
-				}
 				
 				f = true;
-				for (size_t j = 0; j < n; j++)
+				for (size_t j = 0; j < poly.size(); j++)
 				{
-std::cout << "j:" << j << std::endl;
 					if (j == ai || j == bi || j == ci)
 						continue;
-					if (!isPointInTriangle(a, b, c, poly[j]))
+					if (!isPointInTriangle(*a, *b, *c, poly[j]))
 						continue;
 					f = false;
 					break;
@@ -192,12 +102,10 @@ std::cout << "j:" << j << std::endl;
 				if (!f)
 					continue;
 
-std::cout << "add" << std::endl;
 				o.emplace_back(std::vector<Vec2>({
-					a, b, c
+					*a, *b, *c
 				}));
 				poly.erase(poly.begin() + bi);
-				n--;
 				break;
 			}
 		}
@@ -212,11 +120,14 @@ std::cout << "add" << std::endl;
 	}
 
 private:
-	static bool isPointInTriangle(Vec2& a, Vec2& b, Vec2& c, Vec2& p)
+	static bool isPointInTriangle(Vec2& a, Vec2& b, Vec2& c, Vec2& p, const bool isInclude = false )
 	{
-		double c1 = Vec2::cross(a - b, b - p);
-		double c2 = Vec2::cross(b - c, c - p);
-		double c3 = Vec2::cross(c - a, a - p);
+		double c1;
+		double c2;
+		double c3;
+		c1 = Vec2::cross(a - b, b - p);
+		c2 = Vec2::cross(b - c, c - p);
+		c3 = Vec2::cross(c - a, a - p);
 		return (c1 > 0 && c2 > 0 && c3 > 0) || (c1 < 0 && c2 < 0 && c3 < 0);
 	}
 

@@ -41,10 +41,11 @@ dll_dll: dll_o
 # ----------------------------------------------------------------
 
 # xp ok
-test: $(SRC_TEST)
+debug: $(SRC_TEST)
 	$(COMPILER) \
 	-std=c++11 \
 	$(ARCH) \
 	-Og \
+	-D_DEBUG \
 	$(SRC_TEST) \
 	-static

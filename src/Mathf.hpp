@@ -97,4 +97,13 @@ public:
 		return y * (1.5 - 0.5 * x * y * y);
 	}
 	static double sqrt2d(const double& x) { return 1.0 / invsqrt2d(x); }
+
+	static double Lerp(double a, double b, double t) { return a + (b - a) * t; }
+	static double InverseLerp(double a, double b, double v)
+	{
+		if (a != b)
+			return (v - a) / (b - a);
+		else
+			return 0;
+	}
 };
