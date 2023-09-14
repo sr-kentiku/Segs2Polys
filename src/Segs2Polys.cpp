@@ -445,23 +445,19 @@ EXPORT LONG WINAPI CalcEarClipHoles(LONG pn, LONG hpn, LONG* hp, LONG safety)
 	std::vector<std::vector<Vec2>> holes;
 	try
 	{
-		holes = std::vector<std::vector<Vec2>>((size_t)hpn);
-		for (size_t i = 0; i < (size_t)hpn; i++)
-			holes[i] = gPolys[((size_t)hp + i)];
+		holes = std::vector<std::vector<Vec2>>(
+			gPolys.begin() + (size_t)(*hp),
+			gPolys.begin() + (size_t)(*hp) + (size_t)hpn
+		);
 
-		// if (TriangleUtil::EarClipHoles(gPolys[(size_t)pn], holes, ret, (size_t)safety))
-		// {
-		// 	for (size_t i = 0; i < ret.size(); i++)
-		// 		gPolys.emplace_back(ret[i]);
-		// 	o = (LONG)ret.size();
-		// }
-		// else
-		// 	o = -1;
-
-		TriangleUtil::EarClipHoles(gPolys[(size_t)pn], holes, ret, (size_t)safety);
-		for (size_t i = 0; i < ret.size(); i++)
-			gPolys.emplace_back(ret[i]);
-		o = (LONG)ret.size();
+		if (TriangleUtil::EarClipHoles(gPolys[(size_t)pn], holes, ret, (size_t)safety))
+		{
+			for (size_t i = 0; i < ret.size(); i++)
+				gPolys.emplace_back(ret[i]);
+			o = (LONG)ret.size();
+		}
+		else
+			o = -1;
 	}
 	catch (...)
 	{
@@ -514,8 +510,14 @@ EXPORT INT WINAPI CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn
 	std::vector<Line2> segs;
 	try
 	{
-		polys = std::vector<std::vector<Vec2>>(gPolys.begin() + (size_t)spn, gPolys.begin() + (size_t)epn);
-		segs = std::vector<Line2>(gSegs.begin() + (size_t)ssn, gSegs.begin() + (size_t)esn);
+		polys = std::vector<std::vector<Vec2>>(
+			gPolys.begin() + (size_t)spn,
+			gPolys.begin() + (size_t)epn
+		);
+		segs = std::vector<Line2>(
+			gSegs.begin() + (size_t)ssn,
+			gSegs.begin() + (size_t)esn
+		);
 		if (TriangleUtil::SplitTrisSegs(polys, segs, ret))
 			for (size_t i = 0; i < ret.size(); i++)
 				gPolys.emplace_back(ret[i]);
@@ -525,6 +527,22 @@ EXPORT INT WINAPI CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn
 	catch (...)
 	{
 		o = -1;
+	}
+	return o;
+}
+
+EXPORT DOUBLE WINAPI CalcAreaPoly(LONG pn)
+{
+	DOUBLE o = 0;
+	size_t ii;
+	try
+	{
+		o = Vec2Util::AreaTwoPoly(gPolys[(size_t)pn]);
+		o *= 0.5;
+	}
+	catch (...)
+	{
+		o = 0;
 	}
 	return o;
 }

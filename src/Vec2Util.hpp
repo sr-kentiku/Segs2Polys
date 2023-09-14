@@ -13,23 +13,31 @@ class Vec2Util
 public:
 	Vec2Util() {}
 
-	// right = 0
-	// left  = 1
-	static void directionRotatePoly(std::vector<Vec2>& polys, int r = 0)
+	static double AreaTwoPoly(std::vector<Vec2>& poly)
 	{
 		double a = 0;
-		size_t ps = polys.size();
-		size_t ii;
+		for (size_t i = 0; i < poly.size(); i++)
+			a += Vec2::cross(poly[i], poly[fmod(i + 1, poly.size())]);
+		return a;
+	}
 
-		for (size_t i = 0; i < ps; i++)
-		{
-			ii = fmod(i + 1, ps);
-			a += Vec2::cross(polys[i], polys[ii]);
-		}
+	static double AreaMulTwoPoly(std::vector<std::vector<Vec2>>& polys)
+	{
+		double a = 0;
+		for (size_t i = 0; i < polys.size(); i++)
+			a += AreaTwoPoly(polys[i]);
+		return a;
+	}
+
+	// right = 0
+	// left  = 1
+	static void directionRotatePoly(std::vector<Vec2>& poly, int r = 0)
+	{
+		double a = AreaTwoPoly(poly);
 		if (r == 0 && a > 0)
-			std::reverse(polys.begin(), polys.end());
+			std::reverse(poly.begin(), poly.end());
 		else if (r == 1 && a < 0)
-			std::reverse(polys.begin(), polys.end());
+			std::reverse(poly.begin(), poly.end());
 	}
 
 	static bool isPolyPointInside(std::vector<Vec2>& hull, Vec2& p)

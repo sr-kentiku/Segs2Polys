@@ -519,3 +519,17 @@ INT CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn)
 >
 > エラーの場合-1を返します
 </details>
+
+<details><summary>CalcAreaPoly</summary>
+
+```cpp
+DOUBLE CalcAreaPoly(LONG pn)
+```
+> ポリゴンの面積を返します
+>
+> 絶対値が返ってくるわけではない
+>
+> pn：ポリゴンインデックス
+>
+> エラーの場合0を返します
+</details>

@@ -14,6 +14,7 @@
 
 #if DEBUG_LOG
 #include <iostream>
+#include <fstream>
 #endif
 
 class EarClipping
@@ -21,44 +22,36 @@ class EarClipping
 public:
 	EarClipping() {}
 
-	static bool EarClip(std::vector<Vec2>& poly, std::vector<std::vector<Vec2>>& ret, size_t safety = SIZE_MAX)
+	static bool EarClip(std::vector<Vec2>& poly, std::vector<std::vector<Vec2>>& ret, size_t safety = 1)
 	{
-		Vec2Util::directionRotatePoly(poly, 0);
+		Vec2Util::directionRotatePoly(poly, 1);
 		ret = ClipTriangle(poly, safety);
-		// return poly.size() - 2 == ret.size();
-		return ret.size() > 0;
+		// return ret.size() > 0;
+		return std::abs(std::abs(Vec2Util::AreaTwoPoly(poly) * 0.5) - std::abs(Vec2Util::AreaMulTwoPoly(ret) * 0.5)) < Vec2::kEpsilon;
 	}
 
-	static bool EarClipHoles(std::vector<Vec2> hull, std::vector<std::vector<Vec2>> holes, std::vector<std::vector<Vec2>>& ret, size_t safety = SIZE_MAX)
+	static bool EarClipHoles(std::vector<Vec2> hull, std::vector<std::vector<Vec2>> holes, std::vector<std::vector<Vec2>>& ret, size_t safety = 1)
 	{
 		if (holes.size() <= 0)
 			return EarClip(hull, ret, safety);
 		for (size_t i = 0; i < holes.size(); i++)
 			if (!Vec2Util::isPolyInside(hull, holes[i]))
 				holes.erase(holes.begin() + i);
-		Vec2Util::directionRotatePoly(hull, 0);
+		Vec2Util::directionRotatePoly(hull, 1);
 		for (size_t i = 0; i < holes.size(); i++)
-			Vec2Util::directionRotatePoly(holes[i], 1);
+			Vec2Util::directionRotatePoly(holes[i], 0);
 		if (!addConnectLine(hull, holes))
 			return false;
-// for (size_t i = 0; i < hull.size(); i++)
-// {
-// std::cout << "(";
-// hull[i].debug(0, false);
-// std::cout << ", ";
-// hull[fmod(i + 1, hull.size())].debug(0, false);
-// std::cout << ")," << std::endl;
-// }
-		ret = ClipTriangle(hull, safety);
-		// return hull.size() - 2 == ret.size();
-		return ret.size() > 0;
+		return EarClip(hull, ret, safety);
 	}
 
 	// normalize the direction of rotation before using.
-	static std::vector<std::vector<Vec2>> ClipTriangle(std::vector<Vec2> poly, size_t safety = SIZE_MAX)
+	static std::vector<std::vector<Vec2>> ClipTriangle(std::vector<Vec2> poly, size_t safety = 1)
 	{
 		std::vector<std::vector<Vec2>> o = std::vector<std::vector<Vec2>>();
+		size_t safety_n = safety;
 		bool f;
+		size_t s;
 		Vec2* a;
 		Vec2* b;
 		Vec2* c;
@@ -69,23 +62,34 @@ public:
 		if (poly.size() < 2)
 			return o;
 
+		s = 0;
+		for (size_t i = 0; i < poly.size(); i++)
+		{
+			a = &poly[i];
+			b = &poly[fmod(i + 1, poly.size())];
+			c = &poly[fmod(i + 2, poly.size())];
+			if (Vec2::cross((*a) - (*b), (*c) - (*b)) >= 0)
+			{
+				s = i;
+				break;
+			}
+		}
+
 		while (poly.size() > 3)
 		{
-			if (safety-- <= 0)
-				break;
-
-// std::cout << "safety:" << safety << std::endl;
+			if (safety_n-- <= 0)
+				return o;
 
 			for (size_t i = 0; i < poly.size(); i++)
 			{
-				ai = i;
-				bi = fmod(i + 1, poly.size());
-				ci = fmod(i + 2, poly.size());
+				ai = fmod(i + s    , poly.size());
+				bi = fmod(i + s + 1, poly.size());
+				ci = fmod(i + s + 2, poly.size());
 				a = &poly[ai];
 				b = &poly[bi];
 				c = &poly[ci];
 
-				if (Vec2::cross((*a) - (*b), (*c) - (*b)) < 0)
+				if (Vec2::cross((*a) - (*b), (*c) - (*b)) >= 0)
 					continue;
 				
 				f = true;
@@ -102,19 +106,22 @@ public:
 				if (!f)
 					continue;
 
+				safety_n = safety;
 				o.emplace_back(std::vector<Vec2>({
 					*a, *b, *c
 				}));
+
 				poly.erase(poly.begin() + bi);
 				break;
 			}
 		}
 
-		o.emplace_back(std::vector<Vec2>({
-			poly[0],
-			poly[1],
-			poly[2]
-		}));
+		if (poly.size() <= 3)
+			o.emplace_back(std::vector<Vec2>({
+				poly[0],
+				poly[1],
+				poly[2]
+			}));
 
 		return o;
 	}
@@ -226,4 +233,15 @@ private:
 		}
 		return true;
 	}
+
+// #if DEBUG_LOG
+	// static void DebugFOut(std::string s)
+	// {
+	// 	std::ofstream f("./_DebugOutput.txt", std::ios::app);
+	// 	if (!f.is_open())
+	// 		return;
+	// 	f << s;
+	// 	f.close();
+	// }
+// #endif
 };
