@@ -494,81 +494,159 @@ void test1()
 int main(int argc, char* argv[])
 {
 	{
-		std::vector<Vec2> poly = std::vector<Vec2>({
-		Vec2(44100.000000, 21900.000000),
-		Vec2(44100.000000, 23400.000000),
-		Vec2(52802.000000, 23400.000000),
-		Vec2(56695.000000, 63690.000000),
-		Vec2(56147.000000, 63743.000000),
-		Vec2(56329.000000, 65634.000000),
-		Vec2(56877.000000, 65581.000000),
-		Vec2(57505.000000, 72101.000000),
-		Vec2(59446.000000, 71913.000000),
-		Vec2(59297.000000, 70371.000000),
-		Vec2(59144.000000, 68779.000000),
-		Vec2(58689.000000, 64051.000000),
-		Vec2(58535.000000, 62458.000000),
-		Vec2(58094.000000, 57879.000000),
-		Vec2(57941.000000, 56287.000000),
-		Vec2(57500.000000, 51708.000000),
-		Vec2(57342.000000, 50065.000000),
-		Vec2(56901.000000, 45486.000000),
-		Vec2(56743.000000, 43844.000000),
-		Vec2(56283.000000, 39066.000000),
-		Vec2(56125.000000, 37424.000000),
-		Vec2(55919.000000, 35284.000000),
-		Vec2(57809.000000, 35101.000000),
-		Vec2(57215.000000, 28930.000000),
-		Vec2(54827.000000, 29160.000000),
-		Vec2(54314.000000, 23400.000000),
-		Vec2(61200.000000, 23400.000000),
-		Vec2(61200.000000, 23600.000000),
-		Vec2(66550.000000, 23600.000000),
-		Vec2(66550.000000, 21425.000000),
-		Vec2(53100.000000, 21425.000000),
-		Vec2(53100.000000, 21900.000000),
-		Vec2(49770.000000, 21900.000000),
-		Vec2(49770.000000, 21000.000000),
-		Vec2(47100.000000, 21000.000000),
-		Vec2(47100.000000, 21900.000000),
+		std::vector<std::vector<Vec2>> tris = std::vector<std::vector<Vec2>>({
+			std::vector<Vec2>({
+				Vec2(10000, 22000),
+				Vec2(10000, 10000),
+				Vec2(22000, 10000),
+			}),
+			std::vector<Vec2>({
+				Vec2(10000, 22000),
+				Vec2(22000, 10000),
+				Vec2(22000, 22000),
+			}),
 		});
 
-		std::vector<std::vector<Vec2>> hole = std::vector<std::vector<Vec2>>({
-			// std::vector<Vec2>({
-			// 	Vec2(16000,32000 ),
-			// 	Vec2(16000,16000 ),
-			// 	Vec2(36000,16000 ),
-			// 	Vec2(36000,32050 ),
-			// }),
-			// std::vector<Vec2>({
-			// 	Vec2(44000,32000 ),
-			// 	Vec2(44000,16000 ),
-			// 	Vec2(64000,16000 ),
-			// 	Vec2(64000,32000 ),
-			// }),
-		});
+		// Line2 line = Line2(Vec2(10000, 16000), Vec2(22000, 16000));
+		Line2 line = Line2(Vec2(12000, 16000), Vec2(20000, 16000));
+
+		for (size_t i = 0; i < tris.size(); i++)
+			gPolys.emplace_back(tris[i]);
+		gSegs.emplace_back(line);
 
 		std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
-		// std::cout << TriangleUtil::EarClip(poly, r, 5000) << std::endl;
-		std::cout << TriangleUtil::EarClipHoles(poly, hole, r, 2) << std::endl;
-		std::cout << "[" << std::endl;
+
+		CalcTrianglesSplitLines(0, tris.size(), 0, 1);
+
+		r = std::vector<std::vector<Vec2>>(
+			gPolys.begin() + (size_t)tris.size(),
+			gPolys.end()
+		);
+
+		// TriangleUtil::SplitTrisSeg(tris, line, r);
 		for (size_t i = 0; i < r.size(); i++)
 		{
 			for (size_t j = 0; j < r[i].size(); j++)
 			{
-				size_t jj = fmod(j + 1, r[i].size());
-				std::cout << "    (";
+				std::cout << "(";
 				r[i][j].debug(0, false);
 				std::cout << ", ";
-				r[i][jj].debug(0, false);
-				std::cout << ")," << std::endl;
+				r[i][fmod(j + 1, r[i].size())].debug(0, false);
+				std::cout << "),\n";
 			}
 			std::cout << std::endl;
 		}
-		std::cout << "]" << std::endl;
 	}
 
 	return 0;
+
+	// {
+	// 	std::vector<Vec2> poly = std::vector<Vec2>({
+	// 		Vec2(1, 1),
+	// 		Vec2(7, 1),
+	// 		Vec2(7, 5),
+	// 		Vec2(1, 5),
+	// 	});
+
+	// 	Line2 line = Line2(Vec2(0, 3), Vec2(8, 3));
+	// 	std::vector<std::vector<Vec2>> tris = std::vector<std::vector<Vec2>>();
+	// 	std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
+
+	// 	TriangleUtil::EarClip(poly, tris);
+	// 	TriangleUtil::SplitTrisSeg(tris, line, r);
+	// 	for (size_t i = 0; i < r.size(); i++)
+	// 	{
+	// 		for (size_t j = 0; j < r[i].size(); j++)
+	// 		{
+	// 			std::cout << "(";
+	// 			r[i][j].debug(0, false);
+	// 			std::cout << ", ";
+	// 			r[i][fmod(j + 1, r[i].size())].debug(0, false);
+	// 			std::cout << "),\n";
+	// 		}
+	// 		std::cout << std::endl;
+	// 	}
+
+	// }
+
+	// return 0;
+
+	// {
+	// 	std::vector<Vec2> poly = std::vector<Vec2>({
+	// 	Vec2(44100.000000, 21900.000000),
+	// 	Vec2(44100.000000, 23400.000000),
+	// 	Vec2(52802.000000, 23400.000000),
+	// 	Vec2(56695.000000, 63690.000000),
+	// 	Vec2(56147.000000, 63743.000000),
+	// 	Vec2(56329.000000, 65634.000000),
+	// 	Vec2(56877.000000, 65581.000000),
+	// 	Vec2(57505.000000, 72101.000000),
+	// 	Vec2(59446.000000, 71913.000000),
+	// 	Vec2(59297.000000, 70371.000000),
+	// 	Vec2(59144.000000, 68779.000000),
+	// 	Vec2(58689.000000, 64051.000000),
+	// 	Vec2(58535.000000, 62458.000000),
+	// 	Vec2(58094.000000, 57879.000000),
+	// 	Vec2(57941.000000, 56287.000000),
+	// 	Vec2(57500.000000, 51708.000000),
+	// 	Vec2(57342.000000, 50065.000000),
+	// 	Vec2(56901.000000, 45486.000000),
+	// 	Vec2(56743.000000, 43844.000000),
+	// 	Vec2(56283.000000, 39066.000000),
+	// 	Vec2(56125.000000, 37424.000000),
+	// 	Vec2(55919.000000, 35284.000000),
+	// 	Vec2(57809.000000, 35101.000000),
+	// 	Vec2(57215.000000, 28930.000000),
+	// 	Vec2(54827.000000, 29160.000000),
+	// 	Vec2(54314.000000, 23400.000000),
+	// 	Vec2(61200.000000, 23400.000000),
+	// 	Vec2(61200.000000, 23600.000000),
+	// 	Vec2(66550.000000, 23600.000000),
+	// 	Vec2(66550.000000, 21425.000000),
+	// 	Vec2(53100.000000, 21425.000000),
+	// 	Vec2(53100.000000, 21900.000000),
+	// 	Vec2(49770.000000, 21900.000000),
+	// 	Vec2(49770.000000, 21000.000000),
+	// 	Vec2(47100.000000, 21000.000000),
+	// 	Vec2(47100.000000, 21900.000000),
+	// 	});
+
+	// 	std::vector<std::vector<Vec2>> hole = std::vector<std::vector<Vec2>>({
+	// 		// std::vector<Vec2>({
+	// 		// 	Vec2(16000,32000 ),
+	// 		// 	Vec2(16000,16000 ),
+	// 		// 	Vec2(36000,16000 ),
+	// 		// 	Vec2(36000,32050 ),
+	// 		// }),
+	// 		// std::vector<Vec2>({
+	// 		// 	Vec2(44000,32000 ),
+	// 		// 	Vec2(44000,16000 ),
+	// 		// 	Vec2(64000,16000 ),
+	// 		// 	Vec2(64000,32000 ),
+	// 		// }),
+	// 	});
+
+	// 	std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
+	// 	// std::cout << TriangleUtil::EarClip(poly, r, 5000) << std::endl;
+	// 	std::cout << TriangleUtil::EarClipHoles(poly, hole, r, 2) << std::endl;
+	// 	std::cout << "[" << std::endl;
+	// 	for (size_t i = 0; i < r.size(); i++)
+	// 	{
+	// 		for (size_t j = 0; j < r[i].size(); j++)
+	// 		{
+	// 			size_t jj = fmod(j + 1, r[i].size());
+	// 			std::cout << "    (";
+	// 			r[i][j].debug(0, false);
+	// 			std::cout << ", ";
+	// 			r[i][jj].debug(0, false);
+	// 			std::cout << ")," << std::endl;
+	// 		}
+	// 		std::cout << std::endl;
+	// 	}
+	// 	std::cout << "]" << std::endl;
+	// }
+
+	// return 0;
 
 	// {
 	// 	std::vector<Vec2> tri = std::vector<Vec2>({

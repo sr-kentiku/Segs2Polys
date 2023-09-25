@@ -85,14 +85,14 @@ public:
             return true;
         }
         
-        if (TriOnPoint(tri, seg.s))
+        if (isPointInTriangle(tri[0], tri[1], tri[2], seg.s))
         {
             bool f;
             trailer.insert(trailer.begin() + interIdx[0] + 1, { seg.s, trailer[interIdx[0]] });
             EarClip(trailer, result);
             return true;
         }
-        if (TriOnPoint(tri, seg.e))
+        if (isPointInTriangle(tri[0], tri[1], tri[2], seg.e))
         {
             bool f;
             trailer.insert(trailer.begin() + interIdx[0] + 1, { seg.e, trailer[interIdx[0]] });
@@ -122,25 +122,39 @@ public:
         return false;
     }
 
-    static bool TriOnPoint(std::vector<Vec2>& tri, Vec2& p, bool incBorder = false)
-    {
-        bool b1;
-        bool b2;
-        bool b3;
-        if (incBorder)
-        {
-            b1 = Vec2::cross3(p, tri[0], tri[1]) <= 0;
-            b2 = Vec2::cross3(p, tri[1], tri[2]) <= 0;
-            b3 = Vec2::cross3(p, tri[2], tri[0]) <= 0;
-        }
-        else
-        {
-            b1 = Vec2::cross3(p, tri[0], tri[1]) < 0;
-            b2 = Vec2::cross3(p, tri[1], tri[2]) < 0;
-            b3 = Vec2::cross3(p, tri[2], tri[0]) < 0;
-        }
-        return b1 == b2 && b2 == b3;
-    }
+	// static bool isPointInTriangle(Vec2& a, Vec2& b, Vec2& c, Vec2& p, const bool isInclude = false )
+	// {
+	// 	double c1;
+	// 	double c2;
+	// 	double c3;
+	// 	c1 = Vec2::cross(a - b, b - p);
+	// 	c2 = Vec2::cross(b - c, c - p);
+	// 	c3 = Vec2::cross(c - a, a - p);
+    //     if (!isInclude)
+	// 	    return (c1 > 0 && c2 > 0 && c3 > 0) || (c1 < 0 && c2 < 0 && c3 < 0);
+	// 	else
+    //         return (c1 >= 0 && c2 >= 0 && c3 >= 0) || (c1 <= 0 && c2 <= 0 && c3 <= 0);
+	// }
+
+    // static bool TriOnPoint(std::vector<Vec2>& tri, Vec2& p, bool incBorder = false)
+    // {
+    //     bool b1;
+    //     bool b2;
+    //     bool b3;
+    //     if (incBorder)
+    //     {
+    //         b1 = Vec2::cross3(p, tri[0], tri[1]) <= 0;
+    //         b2 = Vec2::cross3(p, tri[1], tri[2]) <= 0;
+    //         b3 = Vec2::cross3(p, tri[2], tri[0]) <= 0;
+    //     }
+    //     else
+    //     {
+    //         b1 = Vec2::cross3(p, tri[0], tri[1]) < 0;
+    //         b2 = Vec2::cross3(p, tri[1], tri[2]) < 0;
+    //         b3 = Vec2::cross3(p, tri[2], tri[0]) < 0;
+    //     }
+    //     return b1 == b2 && b2 == b3;
+    // }
 
 private:
     static void trailVec(std::vector<Vec2>& trailer, std::vector<size_t>& interIdx, std::vector<std::vector<Vec2>>& result)

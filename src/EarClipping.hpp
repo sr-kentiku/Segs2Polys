@@ -126,7 +126,6 @@ public:
 		return o;
 	}
 
-private:
 	static bool isPointInTriangle(Vec2& a, Vec2& b, Vec2& c, Vec2& p, const bool isInclude = false )
 	{
 		double c1;
@@ -135,9 +134,13 @@ private:
 		c1 = Vec2::cross(a - b, b - p);
 		c2 = Vec2::cross(b - c, c - p);
 		c3 = Vec2::cross(c - a, a - p);
-		return (c1 > 0 && c2 > 0 && c3 > 0) || (c1 < 0 && c2 < 0 && c3 < 0);
+        if (!isInclude)
+		    return (c1 > 0 && c2 > 0 && c3 > 0) || (c1 < 0 && c2 < 0 && c3 < 0);
+		else
+            return (c1 >= 0 && c2 >= 0 && c3 >= 0) || (c1 <= 0 && c2 <= 0 && c3 <= 0);
 	}
 
+private:
 	// normalize the direction of rotation before using.
 	static bool addConnectLine(std::vector<Vec2>& hull, std::vector<std::vector<Vec2>>& holes)
 	{
