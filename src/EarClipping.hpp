@@ -106,6 +106,9 @@ public:
 				if (!f)
 					continue;
 
+				if (triArea(*a, *b, *c) < Vec2::kEpsilond)
+					continue;
+
 				safety_n = safety;
 				o.emplace_back(std::vector<Vec2>({
 					*a, *b, *c
@@ -117,14 +120,17 @@ public:
 		}
 
 		if (poly.size() <= 3)
-			o.emplace_back(std::vector<Vec2>({
-				poly[0],
-				poly[1],
-				poly[2]
-			}));
+			if (triArea(poly[0], poly[1], poly[2]) >= Vec2::kEpsilond)
+				o.emplace_back(std::vector<Vec2>({
+					poly[0],
+					poly[1],
+					poly[2]
+				}));
 
 		return o;
 	}
+
+	static double triArea(Vec2& p1, Vec2& p2, Vec2& p3) { return std::abs(Vec2::cross(p2 - p1, p3 - p1)) * 0.5; }
 
 	static bool isPointInTriangle(Vec2& a, Vec2& b, Vec2& c, Vec2& p, const bool isInclude = false )
 	{

@@ -90,7 +90,7 @@ public:
 	double dot(const Vec2& rhs) const { return x * rhs.x + y * rhs.y; }
 
 	static double cross(const Vec2& lhs, const Vec2& rhs) { return lhs.x * rhs.y - lhs.y * rhs.x; }
-	double cross(const Vec2& rhs) const { return x * rhs.y - rhs.x * y; }
+	double cross(const Vec2& rhs) const { return rhs.y * x - rhs.x * y; }
 
 	static double cross3(const Vec2& bhs, const Vec2& lhs, const Vec2& rhs) { return cross(CalcSub(lhs, bhs), CalcSub(rhs, bhs)); }
 
@@ -187,18 +187,23 @@ public:
 		return hash;
 	}
 
+#if DEBUG_LOG
 	std::string ToString() const
 	{
 		std::string o = "";
-		o += std::to_string(id);
-		o += ",";
+		// o += std::to_string(id);
+		// o += ",";
+		// o += std::to_string(x);
+		// o += ",";
+		// o += std::to_string(y);
+		o += "(";
 		o += std::to_string(x);
-		o += ",";
+		o += ", ";
 		o += std::to_string(y);
+		o += ")";
 		return o;
 	}
 
-#if DEBUG_LOG
 	// 0=none
 	// 1=id
 	// 2=w

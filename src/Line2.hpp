@@ -100,6 +100,16 @@ public:
 		);
 	}
 
+	static bool isPointTLine(Line2& l, Vec2& p) { return l.isPointTLine(p); }
+	bool isPointTLine(Vec2& p)
+	{
+		Vec2 es = e - s;
+		Vec2 ps = p - s;
+		Vec2 se = s - e;
+		Vec2 pe = p - e;
+		return Vec2::dot(es, ps) >= 0 && Vec2::dot(se, pe) >= 0;
+	}
+
 	Line2 resized(const double& len) { Set(resize(len)); return *this; }
 	Line2 resize(const double& len)
 	{
@@ -361,16 +371,21 @@ public:
 
 	std::size_t HashCode() const { return s.HashCode() ^ (e.HashCode() << 1); }
 
+#if DEBUG_LOG
 	std::string ToString() const
 	{
 		std::string o = "";
+		// o += s.ToString();
+		// o += ",";
+		// o += e.ToString();
+		o += "(";
 		o += s.ToString();
-		o += ",";
+		o += ", ";
 		o += e.ToString();
+		o += ")";
 		return o;
 	}
 
-#if DEBUG_LOG
 	// 0=none
 	// 1=id
 	// 2=w
