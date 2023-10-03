@@ -505,9 +505,9 @@ EXPORT INT WINAPI CalcDirectionRotatePolys(INT r)
 EXPORT INT WINAPI CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn)
 {
 	INT o = 0;
-	std::vector<std::vector<Vec2>> ret;
 	std::vector<std::vector<Vec2>> polys;
 	std::vector<Line2> segs;
+	std::vector<std::vector<Vec2>> ret;
 	try
 	{
 		polys = std::vector<std::vector<Vec2>>(
@@ -543,6 +543,60 @@ EXPORT DOUBLE WINAPI CalcAreaPoly(LONG pn)
 	catch (...)
 	{
 		o = 0;
+	}
+	return o;
+}
+
+EXPORT INT WINAPI CalcParseTrisSegs(LONG spn, LONG epn, LONG ssn, LONG esn)
+{
+	INT o = 0;
+	std::vector<std::vector<Vec2>> polys;
+	std::vector<Line2> segs;
+	std::vector<std::vector<std::vector<Vec2>>> ret;
+	try
+	{
+		polys = std::vector<std::vector<Vec2>>(
+			gPolys.begin() + (size_t)spn,
+			gPolys.begin() + (size_t)epn
+		);
+		segs = std::vector<Line2>(
+			gSegs.begin() + (size_t)ssn,
+			gSegs.begin() + (size_t)esn
+		);
+		ret = SplitTrisSegs::CalcParseTrisSegs(polys, segs);
+		for (size_t i = 0; i < ret.size(); i++)
+			for (size_t j = 0; j < ret[i].size(); j++)
+			{
+				for (size_t k = 0; k < ret[i][j].size(); k++)
+					ret[i][j][k].id = i;
+				gPolys.emplace_back(ret[i][j]);
+			}
+	}
+	catch (...)
+	{
+		o = -1;
+	}
+	return o;
+}
+
+EXPORT INT WINAPI CalcTri2Poly(LONG spn, LONG epn)
+{
+	INT o = 0;
+	std::vector<std::vector<Vec2>> polys;
+	std::vector<std::vector<Vec2>> ret;
+	try
+	{
+		polys = std::vector<std::vector<Vec2>>(
+			gPolys.begin() + (size_t)spn,
+			gPolys.begin() + (size_t)epn
+		);
+		ret = TriangleUtil::Tri2Poly(polys);
+		for (size_t i = 0; i < ret.size(); i++)
+			gPolys.emplace_back(ret[i]);
+	}
+	catch (...)
+	{
+		o = -1;
 	}
 	return o;
 }

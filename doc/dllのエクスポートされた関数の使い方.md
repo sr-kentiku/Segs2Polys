@@ -62,6 +62,8 @@ sequenceDiagram
     Polys ->> Polys: CalcDirectionRotatePoly()
     Polys ->> Polys: CalcDirectionRotatePolys()
     Polys ->> Polys: CalcTrianglesSplitLines()
+    Polys ->> Polys: CalcParseTrisSegs()
+    Polys ->> Polys: CalcTri2Poly()
 ```
 
 ---
@@ -532,4 +534,32 @@ DOUBLE CalcAreaPoly(LONG pn)
 > pn：ポリゴンインデックス
 >
 > エラーの場合0を返します
+</details>
+
+<details><summary>CalcParseTrisSegs</summary>
+
+```cpp
+INT CalcParseTrisSegs(LONG spn, LONG epn, LONG ssn, LONG esn)
+```
+> 三角形と線分から線分で区切られた範囲の図形をpolysの末尾に追加します
+>
+> spn, epn：polysの範囲
+>
+> ssn, esn：segsの範囲
+>
+> idにポリゴンのidxが入っている
+>
+> エラーの場合-1を返します
+</details>
+
+<details><summary>CalcTri2Poly</summary>
+
+```cpp
+INT CalcTri2Poly(LONG spn, LONG epn)
+```
+> 三角形同士をマージしてポリゴンに変換してpolysの末尾に追加します
+>
+> spn, epn：polysの範囲
+>
+> エラーの場合-1を返します
 </details>

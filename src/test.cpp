@@ -508,24 +508,19 @@ int main(int argc, char* argv[])
 			// Vec2(2, 5),
 			// Vec2(1, 5),
 
+			// Vec2(1, 1),
+			// Vec2(6, 1),
+			// Vec2(6, 5),
+			// Vec2(1, 5),
+
 			Vec2(1, 1),
 			Vec2(6, 1),
 			Vec2(6, 5),
+			Vec2(4, 5),
+			Vec2(3, 2),
+			Vec2(3, 5),
 			Vec2(1, 5),
 		});
-
-		std::vector<std::vector<Vec2>> tris = std::vector<std::vector<Vec2>>();
-
-		TriangleUtil::EarClip(hull, tris);
-
-		for (size_t i = 0; i < tris.size(); i++)
-		{
-			for (size_t j = 0; j < tris[i].size(); j++)
-				std::cout << "\t" << std::setprecision(6) << tris[i][j].ToString() << "," << std::endl;
-			std::cout << std::endl;
-		}
-		
-		std::cout << "-------------------------------------" << std::endl;
 
 		std::vector<Line2> segs = std::vector<Line2>({
 			// Line2(Vec2(1, 3), Vec2(5, 3)),
@@ -537,117 +532,314 @@ int main(int argc, char* argv[])
 			Line2(Vec2(5, 1), Vec2(5, 5)),
 			Line2(Vec2(4, 3), Vec2(4, 4)),
 			Line2(Vec2(5, 4), Vec2(4, 4)),
+			Line2(Vec2(6, 4), Vec2(1, 2)),
+			Line2(Vec2(3, 1), Vec2(1, 4)),
+			Line2(Vec2(4, 1), Vec2(2, 5)),
+			Line2(Vec2(1, 2.5), Vec2(6, 2.5)),
 		});
 
-		std::vector<std::vector<Vec2>> ret = std::vector<std::vector<Vec2>>();
+		std::vector<std::vector<Vec2>> tris;
+		std::vector<std::vector<std::vector<Vec2>>> ret;
+		std::vector<std::vector<Vec2>> poly;
+		std::vector<std::vector<std::vector<Vec2>>> polys = std::vector<std::vector<std::vector<Vec2>>>();
+		
+clock_t t0;
+clock_t t1;
+t0 = clock();
+t1 = clock();
 
-		TriangleUtil::SplitTrisSegs(tris, segs, ret);
+		TriangleUtil::EarClip(hull, tris);
+
+		TriangleUtil::SplitTrisSegs(tris, segs, tris);
+
+		ret = SplitTrisSegs::CalcParseTrisSegs(tris, segs);
+
+std::cout << "time\t" << clock() - t1 << "ms" << std::endl;
 
 		for (size_t i = 0; i < ret.size(); i++)
 		{
+			std::cout << "# ------------------------------" << std::endl;
 			for (size_t j = 0; j < ret[i].size(); j++)
-				std::cout << "\t" << std::setprecision(6) << ret[i][j].ToString() << "," << std::endl;
-			std::cout << std::endl;
+			{
+				std::cout << "# " << i << ", " << j << std::endl; 
+				for (size_t k = 0; k < ret[i][j].size(); k++)
+					std::cout << "\t" << ret[i][j][k].ToString() << "," << std::endl;
+			}
 		}
 
-		// std::vector<std::vector<std::vector<Vec2>>> splits = std::vector<std::vector<std::vector<Vec2>>>();
+std::cout << "# -----------------------------------------------------------------" << std::endl;
 
-		// std::vector<std::vector<Vec2>> sp1 = std::vector<std::vector<Vec2>>();
-		// std::vector<std::vector<Vec2>> sp2 = std::vector<std::vector<Vec2>>();
+t1 = clock();
 
-		// // std::vector<std::vector<Vec2>> spTris = std::vector<std::vector<Vec2>>();
+		for (size_t i = 0; i < ret.size(); i++)
+		{
+			poly = TriangleUtil::Tri2Poly(ret[i]);
+			polys.emplace_back(poly);
+		}
 
-		// Vec2 w1 = Vec2();
-		// Vec2 w2 = Vec2();
-		// Vec2 w3 = Vec2();
-		// Vec2 w4 = Vec2();
-		// double d1;
-		// double d2;
-		// double d3;
+std::cout << "time\t" << clock() - t1 << "ms" << std::endl;
 
-		
-		// TriangleUtil::SplitTrisSegs(tris, segs, tris);
+		for (size_t i = 0; i < polys.size(); i++)
+		{
+			std::cout << "# ------------------------------" << std::endl;
+			for (size_t j = 0; j < polys[i].size(); j++)
+				for (size_t k = 0; k < polys[i][j].size(); k++)
+					std::cout << polys[i][j][k].ToString() << std::endl;
+		}
 
-		// for (size_t i = 0; i < segs.size(); i++)
-		// {
-		// 	sp1.clear();
-		// 	sp2.clear();
-		// 	for (size_t j = 0; j < tris.size(); j++)
-		// 	{
-		// 		// center of mass
-		// 		w1 = Vec2::zero;
-		// 		for (size_t k = 0; j < tris[j].size(); k++)
-		// 			w1 += tris[j][k];
-		// 		w1 /= 3;
-
-		// 		w2 = w1 - segs[i].s;
-		// 		w3 = segs[i].vec();
-		
-		// 		if (Vec2::cross(w2, w3) < 0)
-		// 			splits.em
-		// 			d1 = -1;
-		// 		else
-		// 			d1 = 1;
-
-
-		// 	}
-		// }
-
-
-		// for (size_t i = 0; i < rets.size(); i++)
-		// 	for (size_t j = 0; j < rets[i].size(); j++)
-		// 		rets[i][j].w = 0;
-
-		// for (size_t i = 0; i < segs.size(); i++)
-		// {
-		// 	for (size_t j = 0; j < rets.size(); j++)
-		// 	{
-		// 		// center of mass
-		// 		w1 = Vec2::zero;
-		// 		for (size_t k = 0; k < rets[j].size(); k++)
-		// 			w1 += rets[j][k];
-		// 		w1 /= 3;
-
-
-		// 		for (size_t k = 0; k < rets[j].size(); k++)
-		// 		{
-
-		// 		}
-		// 	}
-		// }
-
-		// for (size_t i = 0; i < rets.size(); i++)
-		// {
-		// 	// center of mass
-		// 	w1 = Vec2::zero;
-		// 	for (size_t j = 0; j < rets[i].size(); j++)
-		// 		w1 += rets[i][j];
-		// 	w1 /= 3;
-
-		// 	// cross
-		// 	d1 = 0;
-		// 	for (size_t j = 0; j < segs.size(); j++)
-		// 	{
-		// 		w2 = w1 - segs[j].s;
-		// 		w3 = segs[j].vec();
-		// 		d1 = Vec2::cross(w2, w3);
-		// 		if (d1 < 0)
-		// 			segs[j].w = -1;
-		// 		else
-		// 			segs[j].w = 1;
-		// 	}
-			
-		// 	for (size_t j = 0; j < rets[i].size(); j++)
-		// 	{
-		// 		std::cout << "\t";
-		// 		rets[i][j].debug(2, false);
-		// 		std::cout << "," << std::endl;
-		// 	}
-		// 	std::cout << std::endl;
-		// }
+std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 	}
 
 	return 0;
+
+// 	{
+// 		std::vector<Vec2> hull = std::vector<Vec2>({
+// 			// Vec2(1, 1),
+// 			// Vec2(5, 1),
+// 			// Vec2(5, 5),
+// 			// Vec2(4, 5),
+// 			// Vec2(4, 4),
+// 			// Vec2(2, 4),
+// 			// Vec2(2, 5),
+// 			// Vec2(1, 5),
+
+// 			Vec2(1, 1),
+// 			Vec2(6, 1),
+// 			Vec2(6, 5),
+// 			Vec2(1, 5),
+// 		});
+
+// 		std::vector<std::vector<Vec2>> tris = std::vector<std::vector<Vec2>>();
+
+// 		std::vector<Line2> segs = std::vector<Line2>({
+// 			// Line2(Vec2(1, 3), Vec2(5, 3)),
+// 			// Line2(Vec2(4, 1), Vec2(4, 4)),
+// 			// Line2(Vec2(3, 2), Vec2(3, 3)),
+// 			// Line2(Vec2(4, 2), Vec2(3, 2)),
+
+// 			Line2(Vec2(1, 3), Vec2(6, 3)),
+// 			Line2(Vec2(5, 1), Vec2(5, 5)),
+// 			Line2(Vec2(4, 3), Vec2(4, 4)),
+// 			Line2(Vec2(5, 4), Vec2(4, 4)),
+// 		});
+
+// 		std::vector<std::vector<Vec2>> ret = std::vector<std::vector<Vec2>>();
+
+// 		std::vector<Vec2> cof = std::vector<Vec2>();
+
+// 		Vec2 c;
+
+// 		size_t kk;
+// 		size_t ll;
+
+// 		Line2 l1;
+// 		Line2 l2;
+
+// 		bool f;
+
+// 		std::vector<std::pair<size_t, size_t>> link = std::vector<std::pair<size_t, size_t>>();
+
+// 		clock_t t1;
+
+// t1 = clock();
+
+// 		TriangleUtil::EarClip(hull, tris);
+
+// std::cout << "TriangleUtil::EarClip         " << clock() - t1 << "ms" << std::endl;
+
+// 		for (size_t i = 0; i < tris.size(); i++)
+// 		{
+// 			for (size_t j = 0; j < tris[i].size(); j++)
+// 				std::cout << "\t" << std::setprecision(6) << tris[i][j].ToString() << "," << std::endl;
+// 			std::cout << std::endl;
+// 		}
+		
+// 		std::cout << "-------------------------------------" << std::endl;
+
+// t1 = clock();
+
+// 		TriangleUtil::SplitTrisSegs(tris, segs, ret);
+
+// std::cout << "TriangleUtil::SplitTrisSegs   " << clock() - t1 << "ms" << std::endl;
+
+// 		for (size_t i = 0; i < ret.size(); i++)
+// 		{
+// 			std::cout << "# " << i << std::endl;
+// 			for (size_t j = 0; j < ret[i].size(); j++)
+// 				std::cout << "\t" << std::setprecision(6) << ret[i][j].ToString() << "," << std::endl;
+// 			std::cout << std::endl;
+// 		}
+
+// 		std::cout << "-------------------------------------" << std::endl;
+
+// t1 = clock();
+
+// 		for (size_t i = 0; i < ret.size(); i++)
+// 		{
+// 			c = Vec2::zero;
+// 			for (size_t j = 0; j < ret[i].size(); j++)
+// 				c += ret[i][j];
+// 			c /= ret[i].size();
+// 			cof.emplace_back(c);
+// 		}
+
+// 		for (size_t i = 0; i < ret.size(); i++)
+// 		{
+// 			for (size_t j = 0; j < ret.size(); j++)
+// 			{
+// 				if (i == j)
+// 					continue;
+
+// 				f = false;
+// 				for (size_t k = 0; k < link.size(); k++)
+// 					if ((i == link[k].first && j == link[k].second) ||
+// 					    (i == link[k].second && j == link[k].first))
+// 					{
+// 						f = true;
+// 						break;
+// 					}
+// 				if (f)
+// 					continue;
+
+// 				f = false;
+// 				for (size_t k = 0; k < ret[i].size(); k++)
+// 				{
+// 					kk = fmod(k + 1, ret[i].size());
+// 					l1 = Line2(ret[i][k], ret[i][kk]);
+// 					for (size_t l = 0; l < ret[j].size(); l++)
+// 					{
+// 						ll = fmod(l + 1, ret[j].size());
+// 						l2 = Line2(ret[j][l], ret[j][ll]);
+// 						if (l1 == l2)
+// 						{
+// 							f = true;
+// 							break;
+// 						}
+// 					}
+// 					if (f)
+// 						break;
+// 				}
+// 				if (!f)
+// 					continue;
+
+// 				l1 = Line2(cof[i], cof[j]);
+
+// 				f = false;
+// 				for (size_t k = 0; k < segs.size(); k++)
+// 				{
+// 					if (l1.isCross(segs[k]))
+// 					{
+// 						f = true;
+// 						break;
+// 					}
+// 				}
+
+// 				if (!f)
+// 					link.emplace_back(i, j);
+// 			}
+// 		}
+
+// std::cout << "calc1                         " << clock() - t1 << "ms" << std::endl;
+		
+// 		for (size_t i = 0; i < link.size(); i++)
+// 		{
+// 			std::cout << "# " << link[i].first << ", " << link[i].second << std::endl;
+// 			std::cout << "\t[" << std::endl;
+// 			std::cout << "\t\t" << cof[link[i].first].ToString() << "," << std::endl; 
+// 			std::cout << "\t\t" << cof[link[i].second].ToString() << "," << std::endl; 
+// 			std::cout << "\t]," << std::endl;
+// 		}
+
+
+// 		std::cout << "-------------------------------------" << std::endl;
+
+
+
+// 		std::cout << "-------------------------------------" << std::endl;
+
+// 		std::cout << "[" << std::endl;
+// 		for (size_t i = 0; i < link.size(); i++)
+// 			std::cout << "\t[" << link[i].first << ", " << link[i].second << "]," << std::endl;
+// 		std::cout << "]" << std::endl;
+
+// 		std::cout << "-------------------------------------" << std::endl;
+
+// t1 = clock();
+
+// 		std::vector<size_t> r = std::vector<size_t>();
+// 		std::vector<std::vector<size_t>> rs = std::vector<std::vector<size_t>>();
+// 		std::vector<std::vector<size_t>> adj;
+// 		std::vector<bool> visited;
+// 		std::stack<size_t> stack = std::stack<size_t>();
+// 		size_t cur;
+
+// 		adj.resize(ret.size());
+// 		for (size_t i = 0; i < link.size(); i++)
+// 		{
+// 			adj[link[i].first].emplace_back(link[i].second);
+// 			adj[link[i].second].emplace_back(link[i].first);
+// 		}
+// 		visited = std::vector<bool>(link.size(), false);
+
+// 		while (true)
+// 		{
+// 			r.clear();
+
+// 			cur = -1;
+// 			for (size_t i = 0; i < visited.size(); i++)
+// 				if (!visited[i])
+// 				{
+// 					cur = i;
+// 					break;
+// 				}
+// 			if (cur == -1)
+// 				break;
+
+// 			stack.push(cur);
+// 			while (!stack.empty())
+// 			{
+// 				cur = stack.top();
+// 				stack.pop();
+
+// 				if (visited[cur])
+// 					continue;
+				
+// 				r.emplace_back(cur);
+// 				visited[cur] = true;
+
+// 				for (size_t i = 0; i < adj[cur].size(); i++)
+// 				{
+// 					if (visited[adj[cur][i]])
+// 						continue;
+// 					stack.push(adj[cur][i]);
+// 				}
+// 			}
+// 			rs.emplace_back(r);
+// 		}
+
+// std::cout << "calc2                         " << clock() - t1 << "ms" << std::endl;
+
+// 		for (size_t i = 0; i < rs.size(); i++)
+// 		{
+// 			for (size_t j = 0; j < rs[i].size(); j++)
+// 				std::cout << rs[i][j] << ", ";
+// 			std::cout << std::endl;
+// 		}
+
+// 		for (size_t i = 0; i < rs.size(); i++)
+// 		{
+// 			std::cout << "# --------------------------------------" << std::endl;
+// 			for (size_t j = 0; j < rs[i].size(); j++)
+// 			{
+// 				std::cout << "# " << rs[i][j] << std::endl;
+// 				for (size_t k = 0; k < ret[rs[i][j]].size(); k++)
+// 					std::cout << "\t" << ret[rs[i][j]][k].ToString() << "," << std::endl;
+// 			}
+// 		}
+
+// 	}
+
+// 	return 0;
 
 	// {
 	// 	std::vector<std::vector<Vec2>> tris = std::vector<std::vector<Vec2>>({

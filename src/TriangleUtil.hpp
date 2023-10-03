@@ -122,6 +122,105 @@ public:
         return false;
     }
 
+    static std::vector<std::vector<Vec2>> Tri2Poly(std::vector<std::vector<Vec2>>& tris)
+    {
+        std::vector<std::vector<Vec2>> o = std::vector<std::vector<Vec2>>();
+
+        std::vector<Line2> segs = std::vector<Line2>();
+        std::vector<Line2> segw = std::vector<Line2>();
+
+        std::vector<Line2> w = std::vector<Line2>();
+		std::vector<bool> visited;
+        std::vector<Vec2> poly = std::vector<Vec2>();
+
+        bool f;
+        size_t cur;
+        size_t ii;
+
+        for (size_t i = 0; i < tris.size(); i++)
+            for (size_t j = 0; j < tris[i].size(); j++)
+                segw.emplace_back(Line2(tris[i][j],
+                                        tris[i][fmod(j + 1, tris[i].size())]));
+
+        for (size_t i = 0; i < segw.size(); i++)
+        {
+            f = false;
+            for (size_t j = 0; j < segw.size(); j++)
+            {
+                if (i == j)
+                    continue;
+                if (segw[i] == segw[j])
+                {
+                    f = true;
+                    break;
+                }
+            }
+            if (!f)
+            {
+                segw[i].w = segs.size();
+                segs.emplace_back(segw[i]);
+            }
+        }
+
+        visited = std::vector<bool>(segs.size(), false);
+        while (true)
+        {
+			cur = -1;
+			for (size_t i = 0; i < visited.size(); i++)
+				if (!visited[i])
+				{
+					cur = i;
+					break;
+				}
+			if (cur == -1)
+				break;
+            
+            w.clear();
+            w.emplace_back(segs[cur]);
+            visited[cur] = true;
+            while (true)
+            {
+                f = false;
+                for (size_t i = 0; i < visited.size(); i++)
+                {
+                    if (visited[i])
+                        continue;
+
+                    if (w.back() |= segs[i])
+                    {
+                        f = true;
+                        visited[i] = true;
+                        w.emplace_back(segs[i]);
+                    }
+                }
+                if (!f)
+                    break;
+                if (w.front() |= w.back())
+                    break;
+            }
+
+            poly.clear();
+            for (size_t i = 0; i < w.size(); i++)
+            {
+                ii = fmod(i + 1, w.size());
+                if (w[i].s == w[ii].s)
+                    poly.emplace_back(w[i].s);
+                else if (w[i].s == w[ii].e)
+                    poly.emplace_back(w[i].s);
+                else if (w[i].e == w[ii].s)
+                    poly.emplace_back(w[i].e);
+                else if (w[i].e == w[ii].e)
+                    poly.emplace_back(w[i].e);
+            }
+            if (poly.size() < 3)
+                continue;
+
+            o.emplace_back(poly);
+        }
+
+        return o;
+    }
+
 	// static bool isPointInTriangle(Vec2& a, Vec2& b, Vec2& c, Vec2& p, const bool isInclude = false )
 	// {
 	// 	double c1;

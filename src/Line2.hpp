@@ -368,6 +368,8 @@ public:
 
 	bool operator==(const Line2& l) { return s == l.s && e == l.e; }
 	bool operator!=(const Line2& l) { return !(*this == l); }
+	
+	bool operator|=(const Line2& l) { return s == l.s || s == l.e || e == l.s || e == l.e; }
 
 	std::size_t HashCode() const { return s.HashCode() ^ (e.HashCode() << 1); }
 

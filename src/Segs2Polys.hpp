@@ -39,6 +39,7 @@
 // #include "EarClipping.hpp"
 // #include "Csv2Line2.hpp"
 #include "TriangleUtil.hpp"
+#include "SplitTrisSegs.hpp"
 
 #if DEBUG_LOG || DEBUG_TIMER || DEBUG_TIMER_TOTAL
 #include <string>
