@@ -8,6 +8,9 @@ COMPILER = g++
 
 ARCH = -m32
 
+# OPTIMIZE_DBG = -Og
+OPTIMIZE_DBG = -Ofast
+
 # OPTIMIZE = -O0
 # OPTIMIZE = -O1
 # OPTIMIZE = -O2
@@ -29,6 +32,7 @@ dll_dll: dll_o
 	$(ARCH) \
 	-Wl,--kill-at \
 	-std=c++11 \
+	-fopenmp \
 	-static \
 	-shared \
 	-fvisibility=hidden \
@@ -44,8 +48,9 @@ dll_dll: dll_o
 debug: $(SRC_TEST)
 	$(COMPILER) \
 	-std=c++11 \
+	-fopenmp \
 	$(ARCH) \
-	-Og \
+	$(OPTIMIZE_DBG) \
 	-D_DEBUG \
 	$(SRC_TEST) \
 	-static

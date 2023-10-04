@@ -499,98 +499,178 @@ int main(int argc, char* argv[])
 {
 	{
 		std::vector<Vec2> hull = std::vector<Vec2>({
-			// Vec2(1, 1),
-			// Vec2(5, 1),
-			// Vec2(5, 5),
-			// Vec2(4, 5),
-			// Vec2(4, 4),
-			// Vec2(2, 4),
-			// Vec2(2, 5),
-			// Vec2(1, 5),
-
-			// Vec2(1, 1),
-			// Vec2(6, 1),
-			// Vec2(6, 5),
-			// Vec2(1, 5),
-
-			Vec2(1, 1),
-			Vec2(6, 1),
-			Vec2(6, 5),
-			Vec2(4, 5),
-			Vec2(3, 2),
-			Vec2(3, 5),
-			Vec2(1, 5),
+			Vec2(10000,10000),
+			Vec2(16000,10000),
+			Vec2(34000,10000),
+			Vec2(34000,16000),
+			Vec2(28000,21500),
+			Vec2(16000,21500),
+			Vec2(10000,21500),
+			Vec2(10000,16000),
 		});
 
 		std::vector<Line2> segs = std::vector<Line2>({
-			// Line2(Vec2(1, 3), Vec2(5, 3)),
-			// Line2(Vec2(4, 1), Vec2(4, 4)),
-			// Line2(Vec2(3, 2), Vec2(3, 3)),
-			// Line2(Vec2(4, 2), Vec2(3, 2)),
-
-			Line2(Vec2(1, 3), Vec2(6, 3)),
-			Line2(Vec2(5, 1), Vec2(5, 5)),
-			Line2(Vec2(4, 3), Vec2(4, 4)),
-			Line2(Vec2(5, 4), Vec2(4, 4)),
-			Line2(Vec2(6, 4), Vec2(1, 2)),
-			Line2(Vec2(3, 1), Vec2(1, 4)),
-			Line2(Vec2(4, 1), Vec2(2, 5)),
-			Line2(Vec2(1, 2.5), Vec2(6, 2.5)),
+			Line2(Vec2(16000,10000), Vec2(16000,16000)),
+			Line2(Vec2(16000,16000), Vec2(16000,21500)),
+			Line2(Vec2(10000,16000), Vec2(16000,16000)),
 		});
 
-		std::vector<std::vector<Vec2>> tris;
-		std::vector<std::vector<std::vector<Vec2>>> ret;
-		std::vector<std::vector<Vec2>> poly;
-		std::vector<std::vector<std::vector<Vec2>>> polys = std::vector<std::vector<std::vector<Vec2>>>();
 		
-clock_t t0;
-clock_t t1;
-t0 = clock();
-t1 = clock();
 
-		TriangleUtil::EarClip(hull, tris);
 
-		TriangleUtil::SplitTrisSegs(tris, segs, tris);
-
-		ret = SplitTrisSegs::CalcParseTrisSegs(tris, segs);
-
-std::cout << "time\t" << clock() - t1 << "ms" << std::endl;
-
-		for (size_t i = 0; i < ret.size(); i++)
-		{
-			std::cout << "# ------------------------------" << std::endl;
-			for (size_t j = 0; j < ret[i].size(); j++)
-			{
-				std::cout << "# " << i << ", " << j << std::endl; 
-				for (size_t k = 0; k < ret[i][j].size(); k++)
-					std::cout << "\t" << ret[i][j][k].ToString() << "," << std::endl;
-			}
-		}
-
-std::cout << "# -----------------------------------------------------------------" << std::endl;
-
-t1 = clock();
-
-		for (size_t i = 0; i < ret.size(); i++)
-		{
-			poly = TriangleUtil::Tri2Poly(ret[i]);
-			polys.emplace_back(poly);
-		}
-
-std::cout << "time\t" << clock() - t1 << "ms" << std::endl;
-
-		for (size_t i = 0; i < polys.size(); i++)
-		{
-			std::cout << "# ------------------------------" << std::endl;
-			for (size_t j = 0; j < polys[i].size(); j++)
-				for (size_t k = 0; k < polys[i][j].size(); k++)
-					std::cout << polys[i][j][k].ToString() << std::endl;
-		}
-
-std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 	}
 
 	return 0;
+
+	// {
+		// std::vector<Vec2> hull = std::vector<Vec2>({
+		// 	// Vec2(10000,10000),
+		// 	// Vec2(16000,10000),
+		// 	// Vec2(34000,10000),
+		// 	// Vec2(34000,16000),
+		// 	// Vec2(28000,21500),
+		// 	// Vec2(16000,21500),
+		// 	// Vec2(10000,21500),
+		// 	// Vec2(10000,16000),
+
+		// });
+
+		// std::vector<Line2> segs = std::vector<Line2>({
+		// 	// Line2(Vec2(16000,10000), Vec2(16000,16000)),
+		// 	// Line2(Vec2(16000,16000), Vec2(16000,21500)),
+		// 	// Line2(Vec2(10000,16000), Vec2(16000,16000)),
+
+		// });
+
+	// 	size_t ep;
+
+	// 	clock_t t0;
+	// 	t0 = clock();
+
+	// 	Clear();
+
+	// 	for (size_t i = 0; i < segs.size(); i++)
+	// 		AddSeg(segs[i].s.x, segs[i].s.y, 0, segs[i].e.x, segs[i].e.y, 0);
+	// 	std::cout << "segCnt\t" << GetSegCnt() << std::endl;
+
+	// 	AddPoly();
+	// 	for (size_t i = 0; i < hull.size(); i++)
+	// 		AddPolyVec(0, hull[i].x, hull[i].y, 0);
+	// 	std::cout << "hullCnt\t" << GetPolyCnt() << std::endl;
+
+	// 	CalcEarClip(0, 1);
+	// 	ep = GetPolyCnt();
+	// 	std::cout << "earCnt\t" << ep << std::endl;
+
+	// 	for (size_t i = 1; i < GetPolyCnt(); i++)
+	// 	{
+	// 		std::cout << "# " << i - 1 << std::endl; 
+	// 		for (size_t j = 0; j < GetPolyVecCnt(i); j++)
+	// 			std::cout << "\t" << gPolys[i][j].ToString() << "," << std::endl;
+	// 		std::cout << std::endl;
+	// 	}
+
+	// 	CalcTrianglesSplitLines(1, ep, 0, segs.size());
+	// 	std::cout << "triCnt\t" << GetPolyCnt() << std::endl;
+
+	// 	for (size_t i = ep; i < GetPolyCnt(); i++)
+	// 	{
+	// 		std::cout << "# " << i - 6 << std::endl; 
+	// 		for (size_t j = 0; j < GetPolyVecCnt(i); j++)
+	// 			std::cout << "\t" << gPolys[i][j].ToString() << "," << std::endl;
+	// 		std::cout << std::endl;
+	// 	}
+
+	// 	CalcParseTrisSegs(ep, GetPolyCnt(), 0, segs.size());
+
+
+	// 	std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
+	// }
+
+	// return 0;
+
+// 	{
+// 		std::vector<Vec2> hull = std::vector<Vec2>({
+// 			// Vec2(10000,10000),
+// 			// Vec2(16000,10000),
+// 			// Vec2(34000,10000),
+// 			// Vec2(34000,16000),
+// 			// Vec2(28000,21500),
+// 			// Vec2(16000,21500),
+// 			// Vec2(10000,21500),
+// 			// Vec2(10000,16000),
+// 		});
+
+// 		std::vector<Line2> segs = std::vector<Line2>({
+// 			// Line2(Vec2(16000,10000), Vec2(16000,16000)),
+// 			// Line2(Vec2(16000,16000), Vec2(16000,21500)),
+// 			// Line2(Vec2(10000,16000), Vec2(16000,16000)),
+
+// 		});
+
+// 		std::vector<std::vector<Vec2>> tris;
+// 		std::vector<std::vector<std::vector<Vec2>>> ret;
+// 		std::vector<std::vector<Vec2>> poly;
+// 		std::vector<std::vector<std::vector<Vec2>>> polys = std::vector<std::vector<std::vector<Vec2>>>();
+		
+// clock_t t0;
+// clock_t t1;
+// t0 = clock();
+// t1 = clock();
+
+// 		TriangleUtil::EarClip(hull, tris);
+// std::cout << "tris\t" << tris.size() << std::endl;
+// 		TriangleUtil::SplitTrisSegs(tris, segs, tris);
+// std::cout << "tris\t" << tris.size() << std::endl;
+// 		ret = SplitTrisSegs::CalcParseTrisSegs(tris, segs);
+// std::cout << "ret \t" << ret.size() << std::endl;
+
+// std::cout << "time\t" << clock() - t1 << "ms" << std::endl;
+
+// 		for (size_t i = 0; i < tris.size(); i++)
+// 		{
+// 			std::cout << "# " << i << std::endl; 
+// 			for (size_t j = 0; j < tris[i].size(); j++)
+// 				std::cout << "\t" << tris[i][j].ToString() << "," << std::endl;
+// 		}
+
+// std::cout << "# -----------------------------------------------------------------" << std::endl;
+	
+// 		for (size_t i = 0; i < ret.size(); i++)
+// 		{
+// 			std::cout << "# ------------------------------" << std::endl;
+// 			for (size_t j = 0; j < ret[i].size(); j++)
+// 			{
+// 				std::cout << "# " << i << ", " << j << std::endl; 
+// 				for (size_t k = 0; k < ret[i][j].size(); k++)
+// 					std::cout << "\t" << ret[i][j][k].ToString() << "," << std::endl;
+// 			}
+// 		}
+
+// std::cout << "# -----------------------------------------------------------------" << std::endl;
+
+// t1 = clock();
+
+// 		for (size_t i = 0; i < ret.size(); i++)
+// 		{
+// 			poly = TriangleUtil::Tri2Poly(ret[i]);
+// 			polys.emplace_back(poly);
+// 		}
+
+// std::cout << "time\t" << clock() - t1 << "ms" << std::endl;
+
+// 		for (size_t i = 0; i < polys.size(); i++)
+// 		{
+// 			std::cout << "# ------------------------------" << std::endl;
+// 			for (size_t j = 0; j < polys[i].size(); j++)
+// 				for (size_t k = 0; k < polys[i][j].size(); k++)
+// 					std::cout << polys[i][j][k].ToString() << std::endl;
+// 		}
+
+// std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
+// 	}
+
+// 	return 0;
 
 // 	{
 // 		std::vector<Vec2> hull = std::vector<Vec2>({
