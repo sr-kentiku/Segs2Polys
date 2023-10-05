@@ -9,7 +9,8 @@ COMPILER = g++
 ARCH = -m32
 
 # OPTIMIZE_DBG = -Og
-OPTIMIZE_DBG = -Ofast
+# OPTIMIZE_DBG = -Ofast
+# WARNINGALL_DBG = -Wall
 
 # OPTIMIZE = -O0
 # OPTIMIZE = -O1
@@ -49,6 +50,7 @@ debug: $(SRC_TEST)
 	$(COMPILER) \
 	-std=c++11 \
 	-fopenmp \
+	$(WARNINGALL_DBG) \
 	$(ARCH) \
 	$(OPTIMIZE_DBG) \
 	-D_DEBUG \

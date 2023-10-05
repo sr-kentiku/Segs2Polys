@@ -48,7 +48,7 @@ public:
 	// normalize the direction of rotation before using.
 	static std::vector<std::vector<Vec2>> ClipTriangle(std::vector<Vec2> poly, size_t safety = 1)
 	{
-		std::vector<std::vector<Vec2>> o = std::vector<std::vector<Vec2>>();
+		std::vector<std::vector<Vec2>> o;
 		size_t safety_n = safety;
 		bool f;
 		size_t s;
@@ -162,10 +162,6 @@ private:
 		Line2 l1;
 		Line2 l2;
 
-		size_t i;
-		size_t j;
-		size_t k;
-		size_t m;
 		size_t mm;
 		size_t s;
 

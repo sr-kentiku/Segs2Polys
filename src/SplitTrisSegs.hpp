@@ -9,11 +9,6 @@
 #include "Line2.hpp"
 #include "TriangleUtil.hpp"
 
-#ifdef _DEBUG
-#include <iostream>
-#include <iomanip>
-#endif
-
 class SplitTrisSegs
 {
 public:
@@ -21,19 +16,14 @@ public:
 
     static std::vector<std::vector<std::vector<Vec2>>> CalcParseTrisSegs(std::vector<std::vector<Vec2>>& tris, std::vector<Line2>& segs)
     {
-        std::vector<std::vector<std::vector<Vec2>>> o = std::vector<std::vector<std::vector<Vec2>>>();
+        std::vector<std::vector<std::vector<Vec2>>> o;;
 
-        std::vector<std::vector<Vec2>> tri = std::vector<std::vector<Vec2>>();
+        std::vector<std::vector<Vec2>> tri;;
         std::vector<std::pair<size_t, size_t>> links;
         std::vector<std::vector<size_t>> triIdxs;
 
-clock_t t0;
-t0 = clock();
         links = MakeLinks(tris, segs);
-std::cout << clock() - t0 << "," << std::endl;
-t0 = clock();
         triIdxs = TrailLinks(links, tris.size());
-std::cout << clock() - t0 << "," << std::endl;
 
         for (size_t i = 0; i < triIdxs.size(); i++)
         {
@@ -51,12 +41,12 @@ std::cout << clock() - t0 << "," << std::endl;
 private:
     static std::vector<std::vector<size_t>> TrailLinks(std::vector<std::pair<size_t, size_t>>& links, size_t triSize)
     {
-		std::vector<std::vector<size_t>> o = std::vector<std::vector<size_t>>();
+		std::vector<std::vector<size_t>> o;
 		
-        std::vector<size_t> r = std::vector<size_t>();
+        std::vector<size_t> r;
         std::vector<std::vector<size_t>> adj;
 		std::vector<bool> visited;
-		std::stack<size_t> stack = std::stack<size_t>();
+		std::stack<size_t> stack;
 		size_t cur;
 
 		adj.resize(triSize);
@@ -109,9 +99,9 @@ private:
 
     static std::vector<std::pair<size_t, size_t>> MakeLinks(std::vector<std::vector<Vec2>>& tris, std::vector<Line2>& segs)
     {
-        std::vector<std::pair<size_t, size_t>> o = std::vector<std::pair<size_t, size_t>>();
+        std::vector<std::pair<size_t, size_t>> o;
 
-        std::vector<Vec2> com = std::vector<Vec2>();
+        std::vector<Vec2> com;
 
         size_t kk;
         size_t ll;
@@ -122,10 +112,6 @@ private:
         Vec2 c;
         bool f;
 		
-clock_t t0;
-clock_t t1;
-t0 = clock();
-
         for (size_t i = 0; i < tris.size(); i++)
 		{
 			c = Vec2::zero;
@@ -134,15 +120,10 @@ t0 = clock();
 			c /= tris[i].size();
 			com.emplace_back(c);
 		}
-		
-std::cout << "\t" << clock() - t0 << std::endl;
-t0 = clock();
 
 		#pragma omp parallel for
 		for (size_t i = 0; i < tris.size(); i++)
 		{
-// t1 = clock();
-
 			#pragma omp parallel for private(kk, l1, l2, f)
 			for (size_t j = 0; j < tris.size(); j++)
 			{
@@ -169,7 +150,7 @@ t0 = clock();
 					continue;
 
 				f = false;
-				#pragma omp parallel for
+				#pragma omp parallel for private(kk)
 				for (size_t k = 0; k < tris[i].size(); k++)
 				{
 					if (f)
@@ -221,9 +202,7 @@ t0 = clock();
 					}
 				}
 			}
-// std::cout << "\t\t" << clock() - t1 << "\t" << i << "\t" << omp_get_thread_num() << std::endl;
 		}
-std::cout << "\t" << clock() - t0 << std::endl;
 
         return o;
     }

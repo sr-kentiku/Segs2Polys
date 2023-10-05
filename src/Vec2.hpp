@@ -4,13 +4,16 @@
 #include <cmath>
 #include <limits>
 #include <string>
+#include <functional>
 
 // my
 #include "Mathf.hpp"
 
 #if DEBUG_LOG
 #include <iostream>
+// #include <bitset>
 #endif
+
 
 class Vec2
 {
@@ -29,16 +32,16 @@ public:
 	static const Vec2 positiveInfinityVector;
 	static const Vec2 negativeInfinityVector;
 
-	long    id;
-	long    w;     //work
+	long    id 	= -1;
+	long    w	= -1;     //work
 
-	double  x;
-	double  y;
+	double  x  	= 0;
+	double  y	= 0;
 
-	Vec2() : id(-1), w(-1), x(0), y(0) {}
-	Vec2(double xy) : id(-1), w(-1), x(xy), y(xy) {}
-	Vec2(double x, double y) : id(-1), w(-1), x(x), y(y) {}
-	Vec2(double x, double y, long id) : id(id), w(-1), x(x), y(y) {}
+	Vec2() {}
+	Vec2(double xy) : x(xy), y(xy) {}
+	Vec2(double x, double y) : x(x), y(y) {}
+	Vec2(double x, double y, long id) : id(id), x(x), y(y) {}
 	Vec2(double x, double y, long id, long w) : id(id), w(w), x(x), y(y) {}
 
 	Vec2 Set(const Vec2& v) { x = v.x; y = v.y; return *this; }
@@ -60,6 +63,7 @@ public:
 	}
 
 	static double distance(const Vec2& a, const Vec2& b, const int isqr = 0) { return magnitude(CalcSub(b, a), isqr); }
+	static std::function<double(Vec2, Vec2)> distance() { return [](Vec2 a, Vec2 b) { return Vec2::distance(b, a); }; }
 
 	double magnitude(const int isqr = 0) const { double d = sqrmagnitude(); return Mathf::sqrtd(d, isqr); }
 	static double magnitude(const Vec2& v, const int isqr = 0) { double d = sqrmagnitude(v); return Mathf::sqrtd(d, isqr); }
@@ -167,22 +171,44 @@ public:
 	bool operator<(const double& d) { return x < d && y < d; }
 	bool operator<=(const Vec2& v) { return x <= v.x && y <= v.y; }
 	bool operator<=(const double& d) { return x <= d && y <= d; }
+	static bool less(const Vec2& a, const Vec2& b) { return Vec2::lessx(a, b) && Vec2::lessy(a, b); }
+	static bool lessx(const Vec2& a, const Vec2& b) { return a.x < b.x; }
+	static bool lessy(const Vec2& a, const Vec2& b) { return a.y < b.y; }
 
 	bool operator>(const Vec2& v) { return x > v.x && y > v.y; }
 	bool operator>(const double& d) { return x > d && y > d; }
 	bool operator>=(const Vec2& v) { return x >= v.x && y >= v.y; }
 	bool operator>=(const double& d) { return x >= d && y >= d; }
+	static bool greater(const Vec2& a, const Vec2& b) { return Vec2::greaterx(a, b) && Vec2::greatery(a, b); }
+	static bool greaterx(const Vec2& a, const Vec2& b) { return a.x > b.x; }
+	static bool greatery(const Vec2& a, const Vec2& b) { return a.y > b.y; }
 
 	bool operator|=(const Vec2& v) { return sqrmagnitude() - v.sqrmagnitude() < kEpsilond; }
 	bool operator==(const Vec2& v) { return std::abs(x - v.x) < kEpsilond && std::abs(y - v.y) < kEpsilond; }
+	bool operator==(const Vec2& v) const { return std::abs(x - v.x) < kEpsilond && std::abs(y - v.y) < kEpsilond; }
 	bool operator!=(const Vec2& v) { return !(*this == v); }
+	static bool equal(const Vec2& a, const Vec2& b) { return a == b; }
+	static bool equalx(const Vec2& a, const Vec2& b) { return std::abs(a.x - b.x) < kEpsilond; }
+	static bool equaly(const Vec2& a, const Vec2& b) { return std::abs(a.y - b.y) < kEpsilond; }
 
-	std::size_t HashCode() const {
-		std::size_t hash = 0;
+	size_t HashCode() const
+	{
+		size_t hash = 0;
 		std::hash<double> hasher;
 
-		hash ^= hasher(x) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-		hash ^= hasher(y) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+// std::cout << ToString() << std::endl;
+// std::cout << "(" << hasher(x) << ", " << hasher(y) << ")" << std::endl;
+// std::cout << "(" << std::bitset<sizeof(size_t) * 8>(hasher(x)) << ", " << std::bitset<sizeof(size_t) * 8>(hasher(y)) << ")" << std::endl;
+// std::cout << (hasher(x) ^ (hasher(y) << 1)) << std::endl;
+// std::cout << std::bitset<sizeof(size_t) * 8>(hasher(x) ^ (hasher(y) << 1)) << std::endl << std::endl;
+
+		hash = hasher(x) ^ (hasher(y) << 1);
+
+		// Mathf::HashCombine(hash, x);
+		// Mathf::HashCombine(hash, y);
+
+		// hash ^= hasher(x) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+		// hash ^= hasher(y) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
 
 		return hash;
 	}
@@ -231,6 +257,18 @@ public:
     }
 #endif
 };
+
+namespace std
+{
+    template <>
+    struct hash<Vec2>
+	{
+        size_t operator()(const Vec2& v) const noexcept
+		{
+			return v.HashCode();
+		}
+	};
+}
 
 const Vec2 Vec2::zero = Vec2(0.0, 0.0);
 const Vec2 Vec2::five = Vec2(0.5, 0.5);

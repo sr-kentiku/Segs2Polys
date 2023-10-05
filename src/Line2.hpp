@@ -16,20 +16,20 @@
 class Line2
 {
 public:
-	long id;
-	long w;
-	long w1;
+	long id	= -1;
+	long w	= -1;
+	long w1	= -1;
 
-	Vec2 s;
-	Vec2 e;
+	Vec2 s	= Vec2();
+	Vec2 e	= Vec2();
 
-	Line2() : id(-1), w(-1), s(Vec2()), e(Vec2()) { sort(); }
-	Line2(Vec2 s, Vec2 e) : id(-1), w(-1), w1(-1), s(s), e(e) { sort(); }
-	Line2(Vec2 s, Vec2 e, bool isort) : id(-1), w(-1), w1(-1), s(s), e(e) { if (isort) sort(); }
-	Line2(Vec2 s, Vec2 e, long id) : id(id), w(-1), w1(-1), s(s), e(e) { sort(); }
-	Line2(Vec2 s, Vec2 e, long id, bool isort) : id(id), w(-1), w1(-1), s(s), e(e) { if (isort) sort(); }
-	Line2(Vec2 s, Vec2 e, long id, long w) : id(id), w(w), w1(-1), s(s), e(e) { sort(); }
-	Line2(Vec2 s, Vec2 e, long id, long w, bool isort) : id(id), w(w), w1(-1), s(s), e(e) { if (isort) sort(); }
+	Line2() {}
+	Line2(Vec2 s, Vec2 e) : s(s), e(e) { sort(); }
+	Line2(Vec2 s, Vec2 e, bool isort) : s(s), e(e) { if (isort) sort(); }
+	Line2(Vec2 s, Vec2 e, long id) : id(id), s(s), e(e) { sort(); }
+	Line2(Vec2 s, Vec2 e, long id, bool isort) : id(id), s(s), e(e) { if (isort) sort(); }
+	Line2(Vec2 s, Vec2 e, long id, long w) : id(id), w(w), s(s), e(e) { sort(); }
+	Line2(Vec2 s, Vec2 e, long id, long w, bool isort) : id(id), w(w), s(s), e(e) { if (isort) sort(); }
 	Line2(Vec2 s, Vec2 e, long id, long w, long w1) : id(id), w(w), w1(w1), s(s), e(e) { sort(); }
 	Line2(Vec2 s, Vec2 e, long id, long w, long w1, bool isort) : id(id), w(w), w1(w1), s(s), e(e) { if (isort) sort(); }
 
@@ -366,12 +366,26 @@ public:
 	Line2 operator+=(const Vec2& v) { s += v; e += v; return *this; }
 	Line2 operator+=(const double& d) { s += d; e += d; return *this; }
 
+	// sorted
+	static bool less(const Line2& a, const Line2& b) { return Line2::lessx(a, b) && Line2::lessy(a, b); }
+	static bool lessx(const Line2& a, const Line2& b) { return Vec2::lessx(a.s, b.s); }
+	static bool lessy(const Line2& a, const Line2& b) { return Vec2::lessy(a.s, b.s); }
+
+	// sorted
+	static bool greater(const Line2& a, const Line2& b) { return Line2::greaterx(a, b) && Line2::greatery(a, b); }
+	static bool greaterx(const Line2& a, const Line2& b) { return Vec2::greaterx(a.s, b.s); }
+	static bool greatery(const Line2& a, const Line2& b) { return Vec2::greatery(a.s, b.s); }
+
+	bool operator|=(const Line2& l) { return s == l.s || s == l.e || e == l.s || e == l.e; }
 	bool operator==(const Line2& l) { return s == l.s && e == l.e; }
 	bool operator!=(const Line2& l) { return !(*this == l); }
-	
-	bool operator|=(const Line2& l) { return s == l.s || s == l.e || e == l.s || e == l.e; }
 
-	std::size_t HashCode() const { return s.HashCode() ^ (e.HashCode() << 1); }
+	// sorted
+	static bool equal(const Line2& a, const Line2& b) { return Vec2::equal(a.s, b.s) && Vec2::equal(a.e, b.e); }
+	static bool equalx(const Line2& a, const Line2& b) { return Vec2::equalx(a.s, b.s) && Vec2::equalx(a.e, b.e); }
+	static bool equaly(const Line2& a, const Line2& b) { return Vec2::equaly(a.s, b.s) && Vec2::equaly(a.e, b.e); }
+
+	size_t HashCode() const { return s.HashCode() ^ (e.HashCode() << 1); }
 
 #if DEBUG_LOG
 	std::string ToString() const
@@ -419,3 +433,15 @@ public:
 	}
 #endif
 };
+
+namespace std
+{
+    template <>
+    struct hash<Line2>
+	{
+        size_t operator()(const Line2& l) const noexcept
+		{
+            return l.HashCode();
+        }
+    };
+}

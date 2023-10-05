@@ -33,7 +33,7 @@ public:
     static bool SplitTrisSeg(std::vector<std::vector<Vec2>> tris, Line2& seg, std::vector<std::vector<Vec2>>& result)
     {
         bool o = true;
-        std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
+        std::vector<std::vector<Vec2>> r;
 
         result.clear();
 		for (size_t i = 0; i < tris.size(); i++)
@@ -47,8 +47,8 @@ public:
 
     static bool SplitTriSeg(std::vector<Vec2>& tri, Line2& seg, std::vector<std::vector<Vec2>>& result)
     {
-        std::vector<Vec2> trailer = std::vector<Vec2>();
-        std::vector<size_t> interIdx = std::vector<size_t>();
+        std::vector<Vec2> trailer;
+        std::vector<size_t> interIdx;
         int_fast32_t inter = 0;
 
         result.clear();
@@ -87,22 +87,20 @@ public:
         
         if (isPointInTriangle(tri[0], tri[1], tri[2], seg.s))
         {
-            bool f;
             trailer.insert(trailer.begin() + interIdx[0] + 1, { seg.s, trailer[interIdx[0]] });
             EarClip(trailer, result);
             return true;
         }
         if (isPointInTriangle(tri[0], tri[1], tri[2], seg.e))
         {
-            bool f;
             trailer.insert(trailer.begin() + interIdx[0] + 1, { seg.e, trailer[interIdx[0]] });
             EarClip(trailer, result);
             return true;
         }
 
         {
-            std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
-            std::vector<std::vector<Vec2>> t = std::vector<std::vector<Vec2>>();
+            std::vector<std::vector<Vec2>> r;
+            std::vector<std::vector<Vec2>> t;
 
             trailVec(trailer, interIdx, r);
             for (size_t i = 0; i < r.size(); i++)
@@ -124,14 +122,14 @@ public:
 
     static std::vector<std::vector<Vec2>> Tri2Poly(std::vector<std::vector<Vec2>>& tris)
     {
-        std::vector<std::vector<Vec2>> o = std::vector<std::vector<Vec2>>();
+        std::vector<std::vector<Vec2>> o;
 
-        std::vector<Line2> segs = std::vector<Line2>();
-        std::vector<Line2> segw = std::vector<Line2>();
+        std::vector<Line2> segs;
+        std::vector<Line2> segw;
 
-        std::vector<Line2> w = std::vector<Line2>();
+        std::vector<Line2> w;
 		std::vector<bool> visited;
-        std::vector<Vec2> poly = std::vector<Vec2>();
+        std::vector<Vec2> poly;
 
         bool f;
         size_t cur;
@@ -258,7 +256,7 @@ public:
 private:
     static void trailVec(std::vector<Vec2>& trailer, std::vector<size_t>& interIdx, std::vector<std::vector<Vec2>>& result)
     {
-        std::vector<Vec2> w = std::vector<Vec2>();
+        std::vector<Vec2> w;
         size_t jj;
 
         result.clear();

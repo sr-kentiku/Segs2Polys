@@ -106,4 +106,27 @@ public:
 		else
 			return 0;
 	}
+
+    template <typename T>
+	static void HashCombine(size_t& hash, const T& v)
+	{
+		size_t k = std::hash<T>{}(v);
+		HashCombineImpl(hash, k);
+	}
+
+	static void HashCombineImpl(size_t& hash, size_t& k)
+	{
+		static_assert(sizeof(size_t) == 4 || sizeof(size_t) == 8);
+		
+		constexpr uint32_t m = (sizeof(size_t) == 4) ? 0xcc9e2d51 : 0xc6a4a7935bd1e995;
+		constexpr int r = (sizeof(size_t) == 4) ? 15 : 47;
+		constexpr uint32_t n = (sizeof(size_t) == 4) ? 0x85ebca6b : 0xe6546b64;
+		
+		k 	 *= m;
+		k    ^= k >> r;
+		k    *= m;
+		hash ^= k;
+		hash *= m;
+		hash += n;
+	}
 };

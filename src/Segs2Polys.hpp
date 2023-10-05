@@ -909,7 +909,6 @@ std::cout << "]" << std::endl;
 		if (std::abs(arcdiff - r) > rmargin)
 			return false;
 
-		bool f = true;
 		size_t i = sn + 2;
 		while (i < segs.size())
 		{
@@ -964,7 +963,6 @@ std::cout << "]" << std::endl;
 		if (std::abs(arcdiff - r) > rmargin)
 			return false;
 
-		bool f = true;
 		size_t i = sn + 2;
 		while (i < poly.size() - 1)
 		{

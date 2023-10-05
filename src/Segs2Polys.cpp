@@ -534,7 +534,6 @@ EXPORT INT WINAPI CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn
 EXPORT DOUBLE WINAPI CalcAreaPoly(LONG pn)
 {
 	DOUBLE o = 0;
-	size_t ii;
 	try
 	{
 		o = Vec2Util::AreaTwoPoly(gPolys[(size_t)pn]);

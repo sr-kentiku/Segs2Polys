@@ -3,6 +3,15 @@
 
 #ifdef _DEBUG
 #include <iomanip>
+#include <exception>
+#include <stdexcept>
+
+#include <functional>
+#include <unordered_map>
+
+#include "AStar.hpp"
+
+#include <stack>
 #endif
 
 #ifdef _DEBUG
@@ -499,28 +508,281 @@ int main(int argc, char* argv[])
 {
 	{
 		std::vector<Vec2> hull = std::vector<Vec2>({
-			Vec2(10000,10000),
-			Vec2(16000,10000),
-			Vec2(34000,10000),
-			Vec2(34000,16000),
-			Vec2(28000,21500),
-			Vec2(16000,21500),
-			Vec2(10000,21500),
-			Vec2(10000,16000),
+			Vec2(10000,10000, 1),
+			Vec2(16000,10000, 2),
+			Vec2(34000,10000, 3),
+			Vec2(34000,16000, 4),
+			Vec2(28000,21500, 5),
+			Vec2(16000,21500, 6),
+			Vec2(10000,21500, 7),
+			Vec2(10000,16000, 8),
 		});
 
 		std::vector<Line2> segs = std::vector<Line2>({
-			Line2(Vec2(16000,10000), Vec2(16000,16000)),
-			Line2(Vec2(16000,16000), Vec2(16000,21500)),
-			Line2(Vec2(10000,16000), Vec2(16000,16000)),
+			Line2(Vec2(16000,10000, 2), Vec2(16000,16000, 9)),
+			Line2(Vec2(16000,16000, 9), Vec2(16000,21500, 6)),
+			Line2(Vec2(10000,16000, 8), Vec2(16000,16000, 9)),
 		});
 
-		
+		std::unordered_map<Vec2, std::vector<Vec2>> adj;
 
+		std::vector<Vec2> vlines;
+		Vec2 vs;
+		Vec2 ve;
 
+		std::unordered_map<Vec2, std::vector<Vec2>>::iterator it1;
+		std::vector<Vec2> rangevec;
+		std::vector<Vec2> brangevec;
+
+		size_t ii;
+
+clock_t t0;
+t0 = clock();
+
+		for (size_t i = 0; i < hull.size(); i++)
+		{
+			ii = fmod(i + 1, hull.size());
+			adj[hull[i]].emplace_back(hull[ii]);
+			adj[hull[ii]].emplace_back(hull[i]);
+		}
+
+		for (size_t i = 0; i < segs.size(); i++)
+		{
+			adj[segs[i].s].emplace_back(segs[i].e);
+			adj[segs[i].e].emplace_back(segs[i].s);
+		}
+
+		for (size_t i = 0; i < hull.size(); i++)
+			vlines.emplace_back(hull[i]);
+		for (size_t i = 0; i < segs.size(); i++)
+		{
+			vlines.emplace_back(segs[i].s);
+			vlines.emplace_back(segs[i].e);
+		}
+
+		std::sort(vlines.begin(), vlines.end(), Vec2::lessx);
+
+		vlines.erase(
+			std::unique(vlines.begin(), vlines.end(), Vec2::equalx),
+			vlines.end());
+
+for (size_t i = 0; i < vlines.size(); i++)
+	std::cout << i << "\t" << vlines[i].x << std::endl;
+std::cout << std::endl;
+
+		for (size_t i = 1; i < vlines.size(); i++)
+		{
+			vs = vlines[i - 1];
+			ve = vlines[i];
+			rangevec.clear();
+
+std::cout << vs.x << " - " << ve.x << std::endl;
+
+			for (it1 = adj.begin(); it1 != adj.end(); it1++)
+			{
+				if (vs.x <= it1->first.x && it1->first.x <= ve.x)
+					rangevec.emplace_back(it1->first);
+			}
+
+for (size_t i = 0; i < rangevec.size(); i++)
+{
+	std::cout << rangevec[i].ToString() << std::endl;
+}
+std::cout << std::endl;
+
+			for (size_t i = 0; i < rangevec.size(); i++)
+			{
+				std::cout << rangevec[i].ToString() << std::endl;
+			}
+
+		}
+
+std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 	}
 
 	return 0;
+
+// 	{
+// 		std::vector<Vec2> hull = std::vector<Vec2>({
+// 			// Vec2(10000,10000, 1),
+// 			// Vec2(16000,10000, 2),
+// 			// Vec2(34000,10000, 3),
+// 			// Vec2(34000,16000, 4),
+// 			// Vec2(28000,21500, 5),
+// 			// Vec2(16000,21500, 6),
+// 			// Vec2(10000,21500, 7),
+// 			// Vec2(10000,16000, 8),
+
+// 		});
+
+// 		std::vector<Line2> segs = std::vector<Line2>({
+// 			// Line2(Vec2(16000,10000, 2), Vec2(16000,16000, 9)),
+// 			// Line2(Vec2(16000,16000, 9), Vec2(16000,21500, 6)),
+// 			// Line2(Vec2(10000,16000, 8), Vec2(16000,16000, 9)),
+
+// 		});
+
+// 		std::unordered_map<Vec2, std::vector<Vec2>> adj;
+
+// 		size_t ii;
+
+// 		for (size_t i = 0; i < hull.size(); i++)
+// 		{
+// 			ii = fmod(i + 1, hull.size());
+// 			adj[hull[i]].emplace_back(hull[ii]);
+// 			adj[hull[ii]].emplace_back(hull[i]);
+// 		}
+
+// 		for (size_t i = 0; i < segs.size(); i++)
+// 		{
+// 			adj[segs[i].s].emplace_back(segs[i].e);
+// 			adj[segs[i].e].emplace_back(segs[i].s);
+// 		}
+
+// 		std::vector<Vec2> ret;
+
+// 		std::unordered_map<Vec2, std::vector<Vec2>>::iterator it1;
+// 		std::unordered_map<Vec2, std::vector<Vec2>>::iterator it2;
+
+// 		Vec2 v;
+
+// 		Vec2 source;
+// 		Vec2 target;
+
+// clock_t t0;
+// clock_t t1;
+// t0 = clock();
+// 		// ret = AStar::CalcAstar<Vec2>(adj, Vec2::distance(), hull[0], hull[1]);
+// 		// ret = AStar::CalcAstar<Vec2>(adj, Vec2::distance(), hull[0], hull[4]);
+
+// // 		it = adj.begin();
+// // 		source = it->first;
+// // 		target = it->second.back();
+// // 		it->second.pop_back();
+
+// // 		ret = AStar::CalcAstar<Vec2>(adj, Vec2::distance(), source, target);
+// // std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
+
+// // 		std::cout << "\t[" << std::endl;
+// // 		for (size_t i = 0; i < ret.size() - 1; i++)
+// // 			std::cout << "\t\t" << ret[i].ToString()
+// // 					  << ", " << ret[fmod(i + 1, ret.size())].ToString()
+// // 					  << ", " << std::endl;
+// // 		std::cout << "\t]," << std::endl;
+
+// // 		for (size_t i = 0; i < ret.size(); i++)
+// // 			adj.erase(ret[i]);
+
+// 		while (!adj.empty())
+// 		{
+// // for (it1 = adj.begin(); it1 != adj.end(); ++it1)
+// // {
+// // 	std::cout << it1->first.ToString() << "\t" << it1->first.id << std::endl;
+// // 	for (size_t i = 0; i < it1->second.size(); i++)
+// // 	{
+// // 		std::cout << "\t" << it1->second[i].ToString() << "\t" << it1->second[i].id << std::endl;
+// // 	}
+// // }
+
+// 			it1 = adj.end();
+// 			for (it2 = adj.begin(); it2 != adj.end(); it2++)
+// 			{
+// 				if (it2->second.size() <= 1)
+// 					continue;
+// 				it1 = it2;
+// 				break;
+// 			}
+
+// 			if (it1 == adj.end())
+// 			{
+// 				std::cout << "# none first" << std::endl;
+// 				break;
+// 			}
+
+// 			source = it1->first;
+// 			target = it1->second.back();
+// 			it1->second.pop_back();
+
+
+
+
+// // std::cout << "source\t" << source.ToString() << std::endl;
+// // std::cout << "target\t" << target.ToString() << std::endl;
+
+// t1 = clock();
+// 			ret = AStar::CalcAstar<Vec2>(adj, Vec2::distance(), source, target);
+// if (!ret.empty())
+// 	std::cout << "# time\t" << clock() - t1 << "ms" << std::endl;
+
+
+
+
+// 			// if (ret.empty())
+// 			// 	break;
+
+
+
+
+// if (!ret.empty())
+// {
+// 	// std::cout << "# " << ret.size() << std::endl;
+// 	std::cout << "\t[" << std::endl;
+// 	for (size_t i = 0; i < ret.size(); i++)
+// 	{
+// 		std::cout << "\t\t" << ret[i].ToString();
+// 		std::cout << ", " << ret[fmod(i + 1, ret.size())].ToString();
+// 		std::cout << ", " << std::endl;
+// 	}
+// 	std::cout << "\t]," << std::endl;
+// }
+
+
+
+
+
+// 			it1 = adj.find(source);
+// 			for (size_t i = 0; i < ret.size(); i++)
+// 			{
+// 				it1->second.erase(
+// 					std::remove(it1->second.begin(), 
+// 								it1->second.end(), 
+// 								ret[i]), 
+// 					it1->second.end()
+// 				);
+// 			}
+
+// 			// it2 = adj.begin();
+// 			// while (it2 != adj.end())
+// 			// {
+// 			// 	if (it2->second.size() <= 1)
+// 			// 	{
+// 			// 		adj.erase(it2);
+// 			// 		it2 = adj.begin();
+// 			// 		continue;
+// 			// 	}
+// 			// 	it2++;
+// 			// }
+
+
+
+
+// // for (it1 = adj.begin(); it1 != adj.end(); ++it1)
+// // {
+// // 	std::cout << it1->first.ToString() << "\t" << it1->first.id << std::endl;
+// // 	for (size_t i = 0; i < it1->second.size(); i++)
+// // 	{
+// // 		std::cout << "\t" << it1->second[i].ToString() << "\t" << it1->second[i].id << std::endl;
+// // 	}
+// // }
+
+
+// // std::cout << "# ------------------------------------------------" << std::endl;
+// 		}
+// std::cout << "# time\t" << clock() - t0 << "ms" << std::endl;
+
+// 	}
+
+// 	return 0;
 
 	// {
 		// std::vector<Vec2> hull = std::vector<Vec2>({
