@@ -13,9 +13,9 @@
 #ifdef _DEBUG
 #define EXPORT
 #define WINAPI
-#define INT		int
-#define LONG	long
-#define DOUBLE	double
+// #define INT		int
+// #define LONG    long
+// #define DOUBLE	double
 #else
 #define EXPORT extern "C" __declspec( dllexport )
 #include <windows.h>

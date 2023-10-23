@@ -8,9 +8,11 @@ COMPILER = g++
 
 ARCH = -m32
 
-# OPTIMIZE_DBG = -Og
+OPTIMIZE_DBG = -Og
 # OPTIMIZE_DBG = -Ofast
 # WARNINGALL_DBG = -Wall
+# WARNING_EXTRA_DBG = -Wextra
+UNUSED_VAR_DBG= -Wunused-variable
 
 # OPTIMIZE = -O0
 # OPTIMIZE = -O1
@@ -51,8 +53,13 @@ debug: $(SRC_TEST)
 	-std=c++11 \
 	-fopenmp \
 	$(WARNINGALL_DBG) \
+	$(WARNING_EXTRA_DBG) \
+	$(UNUSED_VAR_DBG) \
 	$(ARCH) \
 	$(OPTIMIZE_DBG) \
 	-D_DEBUG \
 	$(SRC_TEST) \
+	-lfreeglut \
+	-lopengl32 \
+	-lglu32 \
 	-static

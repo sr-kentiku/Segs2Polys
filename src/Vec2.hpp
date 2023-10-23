@@ -14,7 +14,6 @@
 // #include <bitset>
 #endif
 
-
 class Vec2
 {
 public:
@@ -63,7 +62,7 @@ public:
 	}
 
 	static double distance(const Vec2& a, const Vec2& b, const int isqr = 0) { return magnitude(CalcSub(b, a), isqr); }
-	static std::function<double(Vec2, Vec2)> distance() { return [](Vec2 a, Vec2 b) { return Vec2::distance(b, a); }; }
+	static std::function<double(Vec2, Vec2)> distance() { return [](Vec2 a, Vec2 b) { return distance(b, a); }; }
 
 	double magnitude(const int isqr = 0) const { double d = sqrmagnitude(); return Mathf::sqrtd(d, isqr); }
 	static double magnitude(const Vec2& v, const int isqr = 0) { double d = sqrmagnitude(v); return Mathf::sqrtd(d, isqr); }
@@ -131,6 +130,12 @@ public:
 		}
 	}
 
+	Vec2 xy() { return Vec2(x, y); }
+	Vec2 yx() { return Vec2(y, x); }
+
+	static Vec2 min(Vec2& a, Vec2& b) { return Vec2(std::min(a.x, b.x), std::min(a.y, b.y)); }
+	static Vec2 max(Vec2& a, Vec2& b) { return Vec2(std::max(a.x, b.x), std::max(a.y, b.y)); }
+
 	Vec2 operator+(const Vec2& v) { return Vec2(x + v.x, y + v.y); }
 	Vec2 operator+(const double& d) { return Vec2(x + d, y + d); }
 	Vec2 operator+=(const Vec2& v) { x += v.x; y += v.y; return *this; }
@@ -171,7 +176,7 @@ public:
 	bool operator<(const double& d) { return x < d && y < d; }
 	bool operator<=(const Vec2& v) { return x <= v.x && y <= v.y; }
 	bool operator<=(const double& d) { return x <= d && y <= d; }
-	static bool less(const Vec2& a, const Vec2& b) { return Vec2::lessx(a, b) && Vec2::lessy(a, b); }
+	static bool less(const Vec2& a, const Vec2& b) { return lessx(a, b) && lessy(a, b); }
 	static bool lessx(const Vec2& a, const Vec2& b) { return a.x < b.x; }
 	static bool lessy(const Vec2& a, const Vec2& b) { return a.y < b.y; }
 
@@ -179,7 +184,7 @@ public:
 	bool operator>(const double& d) { return x > d && y > d; }
 	bool operator>=(const Vec2& v) { return x >= v.x && y >= v.y; }
 	bool operator>=(const double& d) { return x >= d && y >= d; }
-	static bool greater(const Vec2& a, const Vec2& b) { return Vec2::greaterx(a, b) && Vec2::greatery(a, b); }
+	static bool greater(const Vec2& a, const Vec2& b) { return greaterx(a, b) && greatery(a, b); }
 	static bool greaterx(const Vec2& a, const Vec2& b) { return a.x > b.x; }
 	static bool greatery(const Vec2& a, const Vec2& b) { return a.y > b.y; }
 
@@ -195,21 +200,7 @@ public:
 	{
 		size_t hash = 0;
 		std::hash<double> hasher;
-
-// std::cout << ToString() << std::endl;
-// std::cout << "(" << hasher(x) << ", " << hasher(y) << ")" << std::endl;
-// std::cout << "(" << std::bitset<sizeof(size_t) * 8>(hasher(x)) << ", " << std::bitset<sizeof(size_t) * 8>(hasher(y)) << ")" << std::endl;
-// std::cout << (hasher(x) ^ (hasher(y) << 1)) << std::endl;
-// std::cout << std::bitset<sizeof(size_t) * 8>(hasher(x) ^ (hasher(y) << 1)) << std::endl << std::endl;
-
 		hash = hasher(x) ^ (hasher(y) << 1);
-
-		// Mathf::HashCombine(hash, x);
-		// Mathf::HashCombine(hash, y);
-
-		// hash ^= hasher(x) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-		// hash ^= hasher(y) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-
 		return hash;
 	}
 

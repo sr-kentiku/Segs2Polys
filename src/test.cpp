@@ -2,6 +2,7 @@
 #include "Segs2Polys.cpp"
 
 #ifdef _DEBUG
+#include <bitset>
 #include <iomanip>
 #include <exception>
 #include <stdexcept>
@@ -12,6 +13,9 @@
 #include "AStar.hpp"
 
 #include <stack>
+
+#include "Opengl.hpp"
+#include "Vec3.hpp"
 #endif
 
 #ifdef _DEBUG
@@ -504,103 +508,745 @@
 // #endif
 // }
 
+template <typename T>
+T SetLeftBit(T v) { return v | (1 << (sizeof(T) * 8 - 1)); }
+
+template <typename T>
+bool isLeftBit(T v) { return v & (1 << (sizeof(T) * 8 - 1)); }
+
 int main(int argc, char* argv[])
 {
 	{
-		std::vector<Vec2> hull = std::vector<Vec2>({
-			Vec2(10000,10000, 1),
-			Vec2(16000,10000, 2),
-			Vec2(34000,10000, 3),
-			Vec2(34000,16000, 4),
-			Vec2(28000,21500, 5),
-			Vec2(16000,21500, 6),
-			Vec2(10000,21500, 7),
-			Vec2(10000,16000, 8),
+		std::vector<Vec3> poly;
+		float color[3];
+
+		ClearGlData();
+
+		poly = std::vector<Vec3>({
+			Vec3(1.0, 1.0, 1.0),
+			Vec3(3.0, 1.0, 1.0),
+			Vec3(3.0, 3.0, 1.0),
+			Vec3(1.0, 3.0, 1.0),
 		});
+		color[0] = 1;
+		color[1] = 0;
+		color[2] = 0;
+		AddGlData(poly, color);
 
-		std::vector<Line2> segs = std::vector<Line2>({
-			Line2(Vec2(16000,10000, 2), Vec2(16000,16000, 9)),
-			Line2(Vec2(16000,16000, 9), Vec2(16000,21500, 6)),
-			Line2(Vec2(10000,16000, 8), Vec2(16000,16000, 9)),
-		});
-
-		std::unordered_map<Vec2, std::vector<Vec2>> adj;
-
-		std::vector<Vec2> vlines;
-		Vec2 vs;
-		Vec2 ve;
-
-		std::unordered_map<Vec2, std::vector<Vec2>>::iterator it1;
-		std::vector<Vec2> rangevec;
-		std::vector<Vec2> brangevec;
-
-		size_t ii;
-
-clock_t t0;
-t0 = clock();
-
-		for (size_t i = 0; i < hull.size(); i++)
-		{
-			ii = fmod(i + 1, hull.size());
-			adj[hull[i]].emplace_back(hull[ii]);
-			adj[hull[ii]].emplace_back(hull[i]);
-		}
-
-		for (size_t i = 0; i < segs.size(); i++)
-		{
-			adj[segs[i].s].emplace_back(segs[i].e);
-			adj[segs[i].e].emplace_back(segs[i].s);
-		}
-
-		for (size_t i = 0; i < hull.size(); i++)
-			vlines.emplace_back(hull[i]);
-		for (size_t i = 0; i < segs.size(); i++)
-		{
-			vlines.emplace_back(segs[i].s);
-			vlines.emplace_back(segs[i].e);
-		}
-
-		std::sort(vlines.begin(), vlines.end(), Vec2::lessx);
-
-		vlines.erase(
-			std::unique(vlines.begin(), vlines.end(), Vec2::equalx),
-			vlines.end());
-
-for (size_t i = 0; i < vlines.size(); i++)
-	std::cout << i << "\t" << vlines[i].x << std::endl;
-std::cout << std::endl;
-
-		for (size_t i = 1; i < vlines.size(); i++)
-		{
-			vs = vlines[i - 1];
-			ve = vlines[i];
-			rangevec.clear();
-
-std::cout << vs.x << " - " << ve.x << std::endl;
-
-			for (it1 = adj.begin(); it1 != adj.end(); it1++)
-			{
-				if (vs.x <= it1->first.x && it1->first.x <= ve.x)
-					rangevec.emplace_back(it1->first);
-			}
-
-for (size_t i = 0; i < rangevec.size(); i++)
-{
-	std::cout << rangevec[i].ToString() << std::endl;
-}
-std::cout << std::endl;
-
-			for (size_t i = 0; i < rangevec.size(); i++)
-			{
-				std::cout << rangevec[i].ToString() << std::endl;
-			}
-
-		}
-
-std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
+		NormalizeGlData();
+		ShowGl(800, 800, const_cast<char*>("abc"));
 	}
 
 	return 0;
+
+	// {
+	// 	std::vector<Vec2> tri1 = std::vector<Vec2>({
+	// 		// Vec2(1, 2),
+	// 		// Vec2(2, 2),
+	// 		// Vec2(2, 1),
+
+	// 		Vec2(16000.000000, 10000.000000),
+	// 		Vec2(34000.000000, 10000.000000),
+	// 		Vec2(34000.000000, 16000.000000),
+	// 	});
+	// 	std::vector<Vec2> tri2 = std::vector<Vec2>({
+	// 		// Vec2(2, 1),
+	// 		// Vec2(2, 2),
+	// 		// Vec2(3, 2),
+
+	// 		Vec2(16000.000000, 10000.000000),
+	// 		Vec2(34000.000000, 16000.000000),
+	// 		Vec2(16000.000000, 11500.000000),
+	// 	});
+
+	// 	std::vector<Line2> segs = std::vector<Line2>({
+	// 		Line2(Vec2(16000,10000), Vec2(16000,16000)),
+	// 		Line2(Vec2(16000,16000), Vec2(16000,21500)),
+	// 		Line2(Vec2(10000,16000), Vec2(16000,16000)),
+
+	// 	});
+
+	// 	std::vector<Vec2> tri;
+
+	// 	size_t lap1;// = 1;
+	// 	size_t lap2;// = 0;
+	// 	size_t t1;
+	// 	size_t t2;
+	// 	bool ret;
+
+	// 	ret = TriangleUtil::isTriMerge(tri1, tri2, segs, lap1, lap2, t1, t2);
+	// 	// ret = TriangleUtil::GetTriTIdx(tri1, tri2, lap1, lap2, t1, t2);
+	// 	std::cout << "lap1 : " << lap1 << std::endl;
+	// 	std::cout << "lap2 : " << lap2 << std::endl;
+	// 	std::cout << "t1 :   " << t1 << std::endl;
+	// 	std::cout << "t2 :   " << t2 << std::endl;
+	// 	std::cout << true << "==" << ret << std::endl;
+
+	// 	std::cout << std::endl;
+	// 	tri = TriangleUtil::MergeTri2(tri1, tri2, lap1, lap2, t1, t2);
+	// 	for (size_t i = 0; i < tri.size(); i++)
+	// 		std::cout << tri[i].ToString() << std::endl;
+	// }
+
+	// return 0;
+
+// 	{
+// 		std::vector<Vec2> hull = std::vector<Vec2>({
+// 			Vec2(10000,10000),
+// 			Vec2(16000,10000),
+// 			Vec2(34000,10000),
+// 			Vec2(34000,16000),
+// 			Vec2(28000,21500),
+// 			Vec2(16000,21500),
+// 			Vec2(10000,21500),
+// 			Vec2(10000,16000),
+
+// 		});
+
+// 		std::vector<Line2> segs = std::vector<Line2>({
+// 			Line2(Vec2(16000,10000), Vec2(16000,16000)),
+// 			Line2(Vec2(16000,16000), Vec2(16000,21500)),
+// 			Line2(Vec2(10000,16000), Vec2(16000,16000)),
+
+// 		});
+
+// 		std::vector<std::vector<Vec2>> tris;
+
+// 		clock_t t0;
+// 		t0 = clock();
+
+// 		Clear();
+
+// 		TriangleUtil::EarClip(hull, tris, 1);
+
+// 		TriangleUtil::SplitTrisSegs(tris, segs, tris);
+		
+// std::cout << "# ------------------------------------------------" << std::endl;
+
+// 		for (size_t i = 0; i < tris.size(); i++)
+// 		{
+// 			std::cout << "# " << i << std::endl; 
+// 			for (size_t j = 0; j < tris[i].size(); j++)
+// 				std::cout << "\t" << tris[i][j].ToString() << "," << std::endl;
+// 			std::cout << std::endl;
+// 		}
+
+// std::cout << "# ------------------------------------------------" << std::endl;
+
+// 		tris = TriangleUtil::MergeTrisWithSegsOne(tris, segs);
+
+// 		for (size_t i = 0; i < tris.size(); i++)
+// 		{
+// 			std::cout << "# " << i << std::endl; 
+// 			for (size_t j = 0; j < tris[i].size(); j++)
+// 				std::cout << "\t" << tris[i][j].ToString() << "," << std::endl;
+// 			std::cout << std::endl;
+// 		}
+
+// 		std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
+// 	}
+
+// 	return 0;
+
+// 	{
+// 		std::vector<Vec2> hull = std::vector<Vec2>({
+// 			Vec2(10000,10000, 0, 0),
+// 			Vec2(16000,10000, 1, 0),
+// 			Vec2(34000,10000, 2, 0),
+// 			Vec2(34000,16000, 3, 0),
+// 			Vec2(28000,21500, 4, 0),
+// 			Vec2(16000,21500, 5, 0),
+// 			Vec2(10000,21500, 6, 0),
+// 			Vec2(10000,16000, 7, 0),
+// 		});
+
+// 		std::vector<Line2> segs = std::vector<Line2>({
+// 			Line2(Vec2(16000,10000, 3, 1), Vec2(16000,16000, 9, 1)),
+// 			Line2(Vec2(16000,16000, 9, 2), Vec2(16000,21500, 6, 2)),
+// 			Line2(Vec2(10000,16000, 8, 3), Vec2(16000,16000, 9, 3)),
+// 		});
+
+// 		std::vector<std::pair<Vec2, std::vector<size_t>>> trailer;
+// 		std::vector<size_t> cseg;
+
+// 		std::vector<Vec2> poly;
+		
+// 		size_t startIdx;
+
+// 		bool f;
+
+// 		for (size_t i = 0; i < hull.size(); i++)
+// 		{
+// 			cseg.clear();
+// 			for (size_t j = 0; j < segs.size(); j++)
+// 				if (Line2::equalSoE(hull[i], segs[j]))
+// 					cseg.emplace_back(segs[j].s.w);
+// 			trailer.emplace_back(hull[i], cseg);
+// 		}
+
+// std::cout << "---------------------------------------------------------" << std::endl;
+// std::cout << std::endl;
+// for (size_t i = 0; i < trailer.size(); i++)
+// {
+// 	std::cout << trailer[i].first.ToString() << std::endl;
+// 	for (size_t j = 0; j < trailer[i].second.size(); j++)
+// 		std::cout << "\t" << trailer[i].second[j] << std::endl;
+// 	std::cout << std::endl;
+// }
+// std::cout << "---------------------------------------------------------" << std::endl;
+// std::cout << std::endl;
+
+// 		// first phase
+// 		//
+// 		//   3          Ce                  2   0           3          Ce                  2   0 
+// 		//    +---------+------------------+    As Ae        +---------+------------------+    As
+// 		//    |         |                  |    1            |         |                  |    Ae
+// 		//    |         | Cs               |    2            |         | Cs               |    Be
+// 		// Bs +---------+ Be               |    Ce Cs  →  Bs +<--------+ Be               |    Bs
+// 		//    |         | Ae               |    3            |         ^ Ae               |    0 
+// 		//    |         |                  |    Bs Be        v         |                  |      
+// 		//    +---------+------------------+    0            +-------->+------------------+      
+// 		//   0          As                  1               0          As                  1     
+// 		// 
+// 		//                                             ↙
+// 		// 
+// 		//   3          Ce                  2   1           3          Ce                  2   3 
+// 		//    +---------+<-----------------+    2            +<--------+------------------+    Bs
+// 		//    |         |                  ^    Ce           |         ^                  |    Be
+// 		//    |         v Cs               |    Cs           v         | Cs               |    Cs
+// 		// Bs +---------+ Be               |    Ae     →  Bs +-------->+ Be               |    Ce
+// 		//    |         | Ae               |    As           |         | Ae               |    3 
+// 		//    |         v                  |    1            |         |                  |      
+// 		//    +---------+----------------->+                 +---------+------------------+      
+// 		//   0          As                  1               0          As                  1    
+// 		//
+
+// int dcnt = 0;
+// while (dcnt < 1)
+// 		// while (true)
+// 		{
+// 			poly.clear();
+// 			startIdx = -1;
+// 			for (size_t i = 0; i < trailer.size(); i++)
+// 			{
+// 				// is normal number
+// 				if (trailer[i].second.empty())
+// 				{
+// 					std::cout << "a : " << std::endl;
+// 					continue;
+// 				}
+// 				// finded number
+// 				if (!isLeftBit(trailer[i].first.w))
+// 				{
+// 					std::cout << "b" << std::endl;
+// 					continue;
+// 				}
+
+// 				startIdx = i;
+// 				break;
+// 			}
+// 			if (startIdx == -1)
+// 				break;
+			
+
+// 			std::cout << startIdx << std::endl;
+
+
+// 			f = false;
+// 			for (size_t i = 0; i < trailer.size(); i++)
+// 			{
+// 				// is normal number
+// 				if (trailer[i].second.empty())
+// 					continue;
+// 				// finded number
+// 				if (!isLeftBit(trailer[i].first.w))
+// 					continue;
+// 				f = true;
+// 				break;
+// 			}
+// 			if (f)
+// 				break;
+// dcnt++;
+// 		}
+
+
+// 		// second phase
+// 		// third phase
+
+
+
+
+
+// 	}
+
+// 	return 0;
+
+// 	{
+// 		std::vector<Vec2> hull = std::vector<Vec2>({
+// 			Vec2(10000,10000, 1, 0),
+// 			Vec2(16000,10000, 2, 0),
+// 			Vec2(34000,10000, 3, 0),
+// 			Vec2(34000,16000, 4, 0),
+// 			Vec2(28000,21500, 5, 0),
+// 			Vec2(16000,21500, 6, 0),
+// 			Vec2(10000,21500, 7, 0),
+// 			Vec2(10000,16000, 8, 0),
+
+
+
+// 		});
+
+// 		std::vector<Line2> segs = std::vector<Line2>({
+// 			Line2(Vec2(16000,10000, 2, 1), Vec2(16000,16000, 9, 1)),
+// 			Line2(Vec2(16000,16000, 9, 1), Vec2(16000,21500, 6, 1)),
+// 			Line2(Vec2(10000,16000, 8, 1), Vec2(16000,16000, 9, 1)),
+
+
+// 		});
+
+// 		std::unordered_map<Vec2, std::vector<Vec2>> adj;
+
+// 		std::unordered_map<Vec2, std::vector<Vec2>>::iterator itu1;
+// 		std::vector<Vec2>::iterator itv1;
+
+// 		std::vector<Vec2> links;
+
+// 		std::vector<Vec2> poly;
+// 		std::vector<std::vector<Vec2>> polys;
+
+// 		Vec2 source;
+// 		Vec2 cur;
+// 		Vec2 base;
+// 		Vec2 next;
+
+// 		std::vector<std::pair<size_t, double>> angleList;
+// 		std::pair<size_t, double> angp;
+
+// 		double ang;
+
+// 		bool f;
+
+// 		size_t maxl;
+
+// 		size_t ii;
+
+// clock_t t0;
+// t0 = clock();
+
+// 		for (size_t i = 0; i < hull.size(); i++)
+// 		{
+// 			ii = fmod(i + 1, hull.size());
+// 			adj[hull[i]].emplace_back(hull[ii]);
+// 			// adj[hull[ii]].emplace_back(hull[i]);
+// 		}
+
+// 		for (size_t i = 0; i < segs.size(); i++)
+// 		{
+// 			adj[segs[i].s].emplace_back(segs[i].e);
+// 			adj[segs[i].e].emplace_back(segs[i].s);
+// 		}
+
+// std::cout << "1" << std::endl;
+// 		while (true)
+// 		{
+// 			poly.clear();
+
+// std::cout << "\t1" << std::endl;
+// 			source = Vec2::positiveInfinityVector;
+// 			for (itu1 = adj.begin(); itu1 != adj.end(); itu1++)
+// 			{
+// 				if (itu1->second.empty())
+// 					continue;
+// 				if (itu1->first.x < source.x)
+// 					source = itu1->first;
+// 				else if (itu1->first.x == source.x && itu1->first.y < source.y)
+// 					source = itu1->first;
+// 			}
+// 			if (source == Vec2::positiveInfinityVector)
+// 			{
+// std::cout << "not found" << std::endl;
+// 				return 0;
+// 			}
+// std::cout << "\t2" << std::endl;
+
+// 			poly.emplace_back(source);
+// 			poly.emplace_back(adj[source][0]);
+// std::cout << "\t3" << std::endl;
+// 			while (true)
+// 			{
+// std::cout << "\t\t1\t" << poly.size() << std::endl;
+// 				cur = poly.back();
+// 				links = adj[cur];
+// 				if (links.empty())
+// 				{
+// std::cout << "links empty" << std::endl;
+// 					break;
+// 				}
+// 				base = poly[poly.size() - 2];
+
+// 				angleList.clear();
+// 				for (size_t i = 0; i < links.size(); i++)
+// 				{
+// 					ang = Vec2::signedAngle(base - cur, links[i] - cur);
+// 					if (links[i] == cur)
+// 						continue;
+						
+// 					angleList.emplace_back(
+// 						std::pair<size_t, double>(
+// 							i, 
+// 							ang
+// 						)
+// 					);
+// 				}
+// 				if (angleList.empty())
+// 					break;
+
+// 				angp = angleList[0];
+// 				for (size_t i = 1; i < angleList.size(); i++)
+// 					if (angleList[i].second < angp.second)
+// 						angp = angleList[i];
+
+// 				next = links[angp.first];
+// 				poly.emplace_back(next);
+// 				if (poly.front() == next)
+// 					break;
+// 			}
+
+// std::cout << "\t4" << std::endl;
+// 			if (poly.size() <= 3)
+// 				continue;
+// std::cout << "\t5" << std::endl;
+
+// 			for (size_t i = 0; i < poly.size(); i++)
+// 			{
+// 				ii = fmod(i + 1, poly.size());
+// 				itu1 = adj.find(poly[i]);
+// 				if (itu1 == adj.end())
+// 					continue;
+// 				itv1 = std::find(itu1->second.begin(), itu1->second.end(), poly[ii]);
+// 				if (itv1 == itu1->second.end())
+// 					continue;
+// 				itu1->second.erase(itv1);
+// 			}
+// std::cout << "\t6" << std::endl;
+
+// std::cout << "[" << std::endl;
+// for (size_t j = 0; j < poly.size(); j++)
+// {
+// 	std::cout << "\t" << poly[j].ToString() << "," << "\t" << poly[j].id << std::endl;
+// }
+// std::cout << "]," << std::endl;
+
+// 			polys.emplace_back(poly);
+
+// 			f = true;
+// 			for (itu1 = adj.begin(); itu1 != adj.end(); itu1++)
+// 				if (!itu1->second.empty())
+// 				{
+// 					f = false;
+// 					break;
+// 				}
+// 			if (f)
+// 				break;
+// 		}
+
+// for (size_t i = 0; i < polys.size(); i++)
+// {
+// 	std::cout << "[" << std::endl;
+// 	for (size_t j = 0; j < polys[i].size(); j++)
+// 	{
+// 		std::cout << "\t" << polys[i][j].ToString() << "," << "\t" << polys[i][j].id << std::endl;
+// 	}
+// 	std::cout << "]," << std::endl;
+// }
+
+// std::cout << std::endl;
+// std::cout << "time\t" << clock() - t0 << std::endl;
+// 	}
+
+// 	return 0;
+
+// 	{
+// 		std::vector<Vec2> hull = std::vector<Vec2>({
+// 			Vec2(10000,10000, 1, 0),
+// 			Vec2(16000,10000, 2, 0),
+// 			Vec2(34000,10000, 3, 0),
+// 			Vec2(34000,16000, 4, 0),
+// 			Vec2(28000,21500, 5, 0),
+// 			Vec2(16000,21500, 6, 0),
+// 			Vec2(10000,21500, 7, 0),
+// 			Vec2(10000,16000, 8, 0),
+// 		});
+
+// 		std::vector<Line2> segs = std::vector<Line2>({
+// 			Line2(Vec2(16000,10000, 2, 1), Vec2(16000,16000, 9, 1)),
+// 			Line2(Vec2(16000,16000, 9, 1), Vec2(16000,21500, 6, 1)),
+// 			Line2(Vec2(10000,16000, 8, 1), Vec2(16000,16000, 9, 1)),
+// 		});
+
+// 		std::unordered_map<Vec2, std::vector<Vec2>> adj;
+// 		std::unordered_map<Vec2, std::vector<Vec2>> adjw;
+// 		std::unordered_map<Vec2, std::vector<Vec2>> adjc;
+
+// 		std::vector<Vec2> vlines;
+// 		std::vector<Vec2> vlinerange;
+// 		Vec2 vs;
+// 		Vec2 ve;
+
+// 		std::unordered_map<Vec2, std::vector<Vec2>>::iterator itu1;
+// 		std::unordered_map<Vec2, std::vector<Vec2>>::iterator itu2;
+// 		std::vector<Vec2>::iterator itv1;
+
+// 		std::vector<Vec2> w;
+// 		std::vector<std::vector<Vec2>> polyw;
+// 		std::vector<std::vector<Vec2>> polys;
+
+// 		Vec2 source;
+// 		Vec2 target;
+// 		Vec2 vw;
+
+// 		size_t ii;
+// 		size_t jj;
+
+// clock_t t0;
+// t0 = clock();
+
+// 		for (size_t i = 0; i < hull.size(); i++)
+// 		{
+// 			ii = fmod(i + 1, hull.size());
+// 			adj[hull[i]].emplace_back(hull[ii]);
+// 			// adj[hull[ii]].emplace_back(hull[i]);
+// 		}
+
+// 		for (size_t i = 0; i < segs.size(); i++)
+// 		{
+// 			adj[segs[i].s].emplace_back(segs[i].e);
+// 			adj[segs[i].e].emplace_back(segs[i].s);
+// 		}
+
+// 		for (size_t i = 0; i < hull.size(); i++)
+// 			vlines.emplace_back(hull[i]);
+// 		for (size_t i = 0; i < segs.size(); i++)
+// 		{
+// 			vlines.emplace_back(segs[i].s);
+// 			vlines.emplace_back(segs[i].e);
+// 		}
+
+// 		std::sort(vlines.begin(), vlines.end(), Vec2::lessx);
+
+// 		vlines.erase(
+// 			std::unique(vlines.begin(), vlines.end(), Vec2::equalx),
+// 			vlines.end());
+
+// for (size_t i = 0; i < vlines.size(); i++)
+// 	std::cout << i << "\t" << vlines[i].x << std::endl;
+// std::cout << std::endl;
+
+// 		for (size_t i = 1; i < vlines.size(); i++)
+// 		{
+// 			vs = vlines[i - 1];
+// 			ve = vlines[i];
+
+// std::cout << vs.x << " - " << ve.x << std::endl;
+
+// 			for (itu1 = adj.begin(); itu1 != adj.end(); itu1++)
+// 				if (vs.x <= itu1->first.x && itu1->first.x <= ve.x)
+// 					for (size_t j = 0; j < itu1->second.size(); j++)
+// 					{
+// 						itv1 = std::find(adjw[itu1->first].begin(), adjw[itu1->first].end(), itu1->second[j]);
+// 						if (itv1 != adjw[itu1->first].end())
+// 							continue;
+// 						adjw[itu1->first].emplace_back(itu1->second[j]);
+// 					}
+
+// std::cout << "adjw - 1" << std::endl;
+// for (itu1 = adjw.begin(); itu1 != adjw.end(); itu1++)
+// {
+// 	std::cout << itu1->first.ToString() << "\t" << itu1->first.id << std::endl;
+// 	for (size_t j = 0; j < itu1->second.size(); j++)
+// 	{
+// 		std::cout << "\t" << itu1->second[j].ToString() << "\t" << itu1->second[j].id << "\t" << itu1->second[j].w << std::endl;
+// 	}
+// }
+// std::cout << std::endl;
+
+// 			polyw.clear();
+// 			while (true)
+// 			{
+// 				adjc = adjw;
+// 				itu1 = adjw.end();
+// 				ii = -1;
+// 				for (itu2 = adjw.begin(); itu2 != adjw.end(); itu2++)
+// 				{
+// 					for (size_t j = 0; j < itu2->second.size(); j++)
+// 						if (vs.x <= itu2->second[j].x && itu2->second[j].x <= ve.x)
+// 						{
+// 							ii = j;
+// 							break;
+// 						}
+
+// 					if (ii == -1)
+// 						continue;
+
+// 					itu1 = itu2;
+// 					break;
+// 				}
+// 				if (itu1 == adjw.end())
+// 				{
+// std::cout << "# none first - 1" << std::endl;
+// 					break;
+// 				}
+
+// 				source = itu1->first;
+// 				target = itu1->second[ii];
+// 				itu1->second.erase(itu1->second.begin() + ii);
+
+// std::cout << "adjw - 2.1" << std::endl;
+// for (itu1 = adjw.begin(); itu1 != adjw.end(); ++itu1)
+// {
+// 	std::cout << itu1->first.ToString() << "\t" << itu1->first.id << std::endl;
+// 	for (size_t j = 0; j < itu1->second.size(); j++)
+// 	{
+// 		std::cout << "\t" << itu1->second[j].ToString() << "\t" << itu1->second[j].id << "\t" << itu1->second[j].w << std::endl;
+// 	}
+// }
+// std::cout << std::endl;
+
+
+// std::cout << "source - 1 : " << source.ToString() << "\t" << source.id << "\t" << source.w << std::endl;
+// std::cout << "target - 1 : " << target.ToString() << "\t" << target.id << "\t" << target.w << std::endl;
+// std::cout << std::endl;
+
+// 				w = AStar::CalcAstar(adjw, Vec2::distance(), source, target);
+// 				if (w.size() < 3)
+// 				{
+// std::cout << "AStar - 1 : fail\t" << w.size() << std::endl;
+
+// 					// if (source.w == 0 && target.w == 1)
+// 					// 	break;
+// 					// if (source.w == 1 && target.w == 0)
+// 					// 	break;
+// 					// if (source.w == 1 && target.w == 1)
+// 					// 	break;
+
+// 					adjw = adjc;
+// 					vw = source;
+// 					source = target;
+// 					target = vw;
+
+// 					itu1 = adjw.find(source);
+// 					if (itu1 != adjw.end())
+// 					{
+// 						itv1 = std::find(itu1->second.begin(), itu1->second.end(), target);
+// 						if (itv1 != itu1->second.end())
+// 						{
+// std::cout << "removed\t" << std::distance(itu1->second.begin(), itv1) << std::endl;
+// 							itu1->second.erase(itv1);
+// 						}
+// 					}
+
+// std::cout << "adjw - 2.2" << std::endl;
+// for (itu1 = adjw.begin(); itu1 != adjw.end(); ++itu1)
+// {
+// 	std::cout << itu1->first.ToString() << "\t" << itu1->first.id << std::endl;
+// 	for (size_t j = 0; j < itu1->second.size(); j++)
+// 	{
+// 		std::cout << "\t" << itu1->second[j].ToString() << "\t" << itu1->second[j].id << "\t" << itu1->second[j].w << std::endl;
+// 	}
+// }
+// std::cout << std::endl;
+
+// std::cout << "source - 2 : " << source.ToString() << "\t" << source.id << "\t" << source.w << std::endl;
+// std::cout << "target - 2 : " << target.ToString() << "\t" << target.id << "\t" << target.w << std::endl;
+// std::cout << std::endl;
+
+
+// 					w = AStar::CalcAstar(adjw, Vec2::distance(), source, target);
+// 					if (w.size() < 3)
+// 					{
+// std::cout << "AStar - 2 : fail\t" << w.size() << std::endl;
+// 						break;
+// 					}
+// 				}
+
+// 				polyw.emplace_back(w);
+// 				polys.emplace_back(w);
+
+// std::cout << "w" << std::endl;
+// for (size_t j = 0; j < w.size(); j++)
+// 	std::cout << w[j].ToString() << "," << "\t" << w[j].id << "\t" << w[j].w << std::endl;
+// std::cout << std::endl;
+
+// 				adjw[source].emplace_back(target);
+
+// 				for (size_t j = 0; j < w.size(); j++)
+// 				{
+// 					jj = fmod(j + 1, w.size());
+// 					itu1 = adjw.find(w[j]);
+// 					if (itu1 == adjw.end())
+// 						continue;
+
+// 					itu1->second.erase(
+// 						std::remove(itu1->second.begin(), itu1->second.end(), w[jj]),
+// 						itu1->second.end());
+// 				}
+
+// std::cout << "adjw - 2" << std::endl;
+// for (itu1 = adjw.begin(); itu1 != adjw.end(); itu1++)
+// {
+// 	std::cout << itu1->first.ToString() << "\t" << itu1->first.id << std::endl;
+// 	for (size_t j = 0; j < itu1->second.size(); j++)
+// 	{
+// 		std::cout << "\t" << itu1->second[j].ToString() << "\t" << itu1->second[j].id << "\t" << itu1->second[j].w << std::endl;
+// 	}
+// }
+// std::cout << std::endl;
+
+// 			}
+
+// 			vlinerange.clear();
+// 			for (size_t j = 0; j < polyw.size(); j++)
+// 				for (size_t k = 0; k < polyw[j].size(); k++)
+// 					vlinerange.emplace_back(polyw[j][k]);
+			
+// 			std::sort(vlinerange.begin(), vlinerange.end(), Vec2::equal);
+
+// 			vlinerange.erase(
+// 				std::unique(vlinerange.begin(), vlinerange.end(), Vec2::equal),
+// 				vlinerange.end());
+
+// 			for (size_t j = 0; j < vlinerange.size(); j++)
+// 			{
+// 				itu1 = adjw.find(vlinerange[j]);
+// 				if (itu1 == adjw.end())
+// 					continue;
+// 				if (itu1->second.size() <= 1)
+// 					adjw.erase(itu1);
+// 			}
+
+// std::cout << "adjw - 3" << std::endl;
+// for (itu1 = adjw.begin(); itu1 != adjw.end(); itu1++)
+// {
+// 	std::cout << itu1->first.ToString() << "\t" << itu1->first.id << std::endl;
+// 	for (size_t j = 0; j < itu1->second.size(); j++)
+// 		std::cout << "\t" << itu1->second[j].ToString() << "\t" << itu1->second[j].id << "\t" << itu1->second[j].w << std::endl;
+// }
+// std::cout << std::endl;
+// std::cout << "----------------------------------------------------------" << std::endl;
+
+// 		}
+
+// std::cout << "polys" << std::endl;
+// for (size_t i = 0; i < polys.size(); i++)
+// {
+// 	for (size_t j = 0; j < polys[i].size(); j++)
+// 		std::cout << polys[i][j].ToString() << "," << "\t" << polys[i][j].id << "\t" << polys[i][j].w << std::endl;
+// 	std::cout << std::endl;
+// }
+// std::cout << "\ntime\t" << clock() - t0 << "ms" << std::endl;
+// 	}
+
+// 	return 0;
 
 // 	{
 // 		std::vector<Vec2> hull = std::vector<Vec2>({
@@ -784,72 +1430,84 @@ std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 
 // 	return 0;
 
-	// {
-		// std::vector<Vec2> hull = std::vector<Vec2>({
-		// 	// Vec2(10000,10000),
-		// 	// Vec2(16000,10000),
-		// 	// Vec2(34000,10000),
-		// 	// Vec2(34000,16000),
-		// 	// Vec2(28000,21500),
-		// 	// Vec2(16000,21500),
-		// 	// Vec2(10000,21500),
-		// 	// Vec2(10000,16000),
+// 	{
+// 		std::vector<Vec2> hull = std::vector<Vec2>({
+// 			Vec2(10000,10000),
+// 			Vec2(16000,10000),
+// 			Vec2(34000,10000),
+// 			Vec2(34000,16000),
+// 			Vec2(28000,21500),
+// 			Vec2(16000,21500),
+// 			Vec2(10000,21500),
+// 			Vec2(10000,16000),
 
-		// });
+// 		});
 
-		// std::vector<Line2> segs = std::vector<Line2>({
-		// 	// Line2(Vec2(16000,10000), Vec2(16000,16000)),
-		// 	// Line2(Vec2(16000,16000), Vec2(16000,21500)),
-		// 	// Line2(Vec2(10000,16000), Vec2(16000,16000)),
+// 		std::vector<Line2> segs = std::vector<Line2>({
+// 			Line2(Vec2(16000,10000), Vec2(16000,16000)),
+// 			Line2(Vec2(16000,16000), Vec2(16000,21500)),
+// 			Line2(Vec2(10000,16000), Vec2(16000,16000)),
 
-		// });
+// 		});
 
-	// 	size_t ep;
+// 		size_t ep;
+// 		size_t ep1;
 
-	// 	clock_t t0;
-	// 	t0 = clock();
+// 		clock_t t0;
+// 		t0 = clock();
 
-	// 	Clear();
+// 		Clear();
 
-	// 	for (size_t i = 0; i < segs.size(); i++)
-	// 		AddSeg(segs[i].s.x, segs[i].s.y, 0, segs[i].e.x, segs[i].e.y, 0);
-	// 	std::cout << "segCnt\t" << GetSegCnt() << std::endl;
+// 		for (size_t i = 0; i < segs.size(); i++)
+// 			AddSeg(segs[i].s.x, segs[i].s.y, 0, segs[i].e.x, segs[i].e.y, 0);
+// 		std::cout << "segCnt\t" << GetSegCnt() << std::endl;
 
-	// 	AddPoly();
-	// 	for (size_t i = 0; i < hull.size(); i++)
-	// 		AddPolyVec(0, hull[i].x, hull[i].y, 0);
-	// 	std::cout << "hullCnt\t" << GetPolyCnt() << std::endl;
+// 		AddPoly();
+// 		for (size_t i = 0; i < hull.size(); i++)
+// 			AddPolyVec(0, hull[i].x, hull[i].y, 0);
+// 		std::cout << "hullCnt\t" << GetPolyCnt() << std::endl;
 
-	// 	CalcEarClip(0, 1);
-	// 	ep = GetPolyCnt();
-	// 	std::cout << "earCnt\t" << ep << std::endl;
+// 		CalcEarClip(0, 1);
+// 		ep = GetPolyCnt();
+// 		std::cout << "earCnt\t" << ep << std::endl;
 
-	// 	for (size_t i = 1; i < GetPolyCnt(); i++)
-	// 	{
-	// 		std::cout << "# " << i - 1 << std::endl; 
-	// 		for (size_t j = 0; j < GetPolyVecCnt(i); j++)
-	// 			std::cout << "\t" << gPolys[i][j].ToString() << "," << std::endl;
-	// 		std::cout << std::endl;
-	// 	}
+// 		for (size_t i = 1; i < GetPolyCnt(); i++)
+// 		{
+// 			std::cout << "# " << i - 1 << std::endl; 
+// 			for (size_t j = 0; j < GetPolyVecCnt(i); j++)
+// 				std::cout << "\t" << gPolys[i][j].ToString() << "," << std::endl;
+// 			std::cout << std::endl;
+// 		}
 
-	// 	CalcTrianglesSplitLines(1, ep, 0, segs.size());
-	// 	std::cout << "triCnt\t" << GetPolyCnt() << std::endl;
+// 		CalcTrianglesSplitLines(1, ep, 0, segs.size());
+// 		std::cout << "triCnt\t" << GetPolyCnt() << std::endl;
 
-	// 	for (size_t i = ep; i < GetPolyCnt(); i++)
-	// 	{
-	// 		std::cout << "# " << i - 6 << std::endl; 
-	// 		for (size_t j = 0; j < GetPolyVecCnt(i); j++)
-	// 			std::cout << "\t" << gPolys[i][j].ToString() << "," << std::endl;
-	// 		std::cout << std::endl;
-	// 	}
+// 		for (size_t i = ep; i < GetPolyCnt(); i++)
+// 		{
+// 			std::cout << "# " << i - 6 << std::endl; 
+// 			for (size_t j = 0; j < GetPolyVecCnt(i); j++)
+// 				std::cout << "\t" << gPolys[i][j].ToString() << "," << std::endl;
+// 			std::cout << std::endl;
+// 		}
 
-	// 	CalcParseTrisSegs(ep, GetPolyCnt(), 0, segs.size());
+// 		ep1 = GetPolyCnt();
+// 		CalcParseTrisSegs(ep, GetPolyCnt(), 0, segs.size());
 
+// std::cout << "# ------------------------------------------------" << std::endl;
+// std::cout << GetPolyCnt() - ep1 << std::endl;
+// 		for (size_t i = ep1 + 1; i < GetPolyCnt(); i++)
+// 		{
+// 			std::cout << "# " << i - ep1 << std::endl;
+// 			std::cout << "\t[" << std::endl;
+// 			for (size_t j = 0; j < GetPolyVecCnt(i); j++)
+// 				std::cout << "\t\t" << gPolys[i][j].ToString() << "," << std::endl;
+// 			std::cout << "\t]," << std::endl;
+// 		}
 
-	// 	std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
-	// }
+// 		std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
+// 	}
 
-	// return 0;
+// 	return 0;
 
 // 	{
 // 		std::vector<Vec2> hull = std::vector<Vec2>({
@@ -873,7 +1531,7 @@ std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 // 		std::vector<std::vector<Vec2>> tris;
 // 		std::vector<std::vector<std::vector<Vec2>>> ret;
 // 		std::vector<std::vector<Vec2>> poly;
-// 		std::vector<std::vector<std::vector<Vec2>>> polys = std::vector<std::vector<std::vector<Vec2>>>();
+// 		std::vector<std::vector<std::vector<Vec2>>> polys;
 		
 // clock_t t0;
 // clock_t t1;
@@ -951,7 +1609,7 @@ std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 // 			Vec2(1, 5),
 // 		});
 
-// 		std::vector<std::vector<Vec2>> tris = std::vector<std::vector<Vec2>>();
+// 		std::vector<std::vector<Vec2>> tris;
 
 // 		std::vector<Line2> segs = std::vector<Line2>({
 // 			// Line2(Vec2(1, 3), Vec2(5, 3)),
@@ -965,9 +1623,9 @@ std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 // 			Line2(Vec2(5, 4), Vec2(4, 4)),
 // 		});
 
-// 		std::vector<std::vector<Vec2>> ret = std::vector<std::vector<Vec2>>();
+// 		std::vector<std::vector<Vec2>> ret;
 
-// 		std::vector<Vec2> cof = std::vector<Vec2>();
+// 		std::vector<Vec2> cof;
 
 // 		Vec2 c;
 
@@ -979,7 +1637,7 @@ std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 
 // 		bool f;
 
-// 		std::vector<std::pair<size_t, size_t>> link = std::vector<std::pair<size_t, size_t>>();
+// 		std::vector<std::pair<size_t, size_t>> link;
 
 // 		clock_t t1;
 
@@ -1108,11 +1766,11 @@ std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 
 // t1 = clock();
 
-// 		std::vector<size_t> r = std::vector<size_t>();
-// 		std::vector<std::vector<size_t>> rs = std::vector<std::vector<size_t>>();
+// 		std::vector<size_t> r;
+// 		std::vector<std::vector<size_t>> rs;
 // 		std::vector<std::vector<size_t>> adj;
 // 		std::vector<bool> visited;
-// 		std::stack<size_t> stack = std::stack<size_t>();
+// 		std::stack<size_t> stack;
 // 		size_t cur;
 
 // 		adj.resize(ret.size());
@@ -1204,7 +1862,7 @@ std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 	// 		gPolys.emplace_back(tris[i]);
 	// 	gSegs.emplace_back(line);
 
-	// 	std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
+	// 	std::vector<std::vector<Vec2>> r;
 
 	// 	CalcTrianglesSplitLines(0, tris.size(), 0, 1);
 
@@ -1239,8 +1897,8 @@ std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 	// 	});
 
 	// 	Line2 line = Line2(Vec2(0, 3), Vec2(8, 3));
-	// 	std::vector<std::vector<Vec2>> tris = std::vector<std::vector<Vec2>>();
-	// 	std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
+	// 	std::vector<std::vector<Vec2>> tris;
+	// 	std::vector<std::vector<Vec2>> r;
 
 	// 	TriangleUtil::EarClip(poly, tris);
 	// 	TriangleUtil::SplitTrisSeg(tris, line, r);
@@ -1316,7 +1974,7 @@ std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 	// 		// }),
 	// 	});
 
-	// 	std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
+	// 	std::vector<std::vector<Vec2>> r;
 	// 	// std::cout << TriangleUtil::EarClip(poly, r, 5000) << std::endl;
 	// 	std::cout << TriangleUtil::EarClipHoles(poly, hole, r, 2) << std::endl;
 	// 	std::cout << "[" << std::endl;
@@ -1345,7 +2003,7 @@ std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 	// 		Vec2(3, 4),
 	// 	});
 	// 	Line2 seg = Line2(Vec2(2, 3), Vec2(4, 0));
-	// 	std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
+	// 	std::vector<std::vector<Vec2>> r;
 
 	// 	std::cout << true << "\t" << TriangleUtil::SplitTriSeg(tri, seg, r) << std::endl;
 	// 	std::cout << "[" << std::endl;
@@ -1402,8 +2060,8 @@ std::cout << "time\t" << clock() - t0 << "ms" << std::endl;
 	// 		// Line2(Vec2(5,5), Vec2(0,0)),
 	// 		// Line2(Vec2(4,4.5), Vec2(0,3)),
 	// 	});
-	// 	std::vector<std::vector<Vec2>> r = std::vector<std::vector<Vec2>>();
-	// 	std::vector<std::vector<Vec2>> rr = std::vector<std::vector<Vec2>>();
+	// 	std::vector<std::vector<Vec2>> r;
+	// 	std::vector<std::vector<Vec2>> rr;
 	// 	clock_t t;
 
 	// 	t = clock();

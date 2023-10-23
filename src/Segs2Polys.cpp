@@ -1,30 +1,30 @@
 ﻿#include "Segs2Polys.hpp"
 
-static std::vector<Line2> gSegs = std::vector<Line2>();
-static std::vector<std::vector<Vec2>> gPolys = std::vector<std::vector<Vec2>>();
+static std::vector<Line2> gSegs;
+static std::vector<std::vector<Vec2>> gPolys;
 
-EXPORT INT WINAPI Clear()
+EXPORT int WINAPI Clear()
 {
 	gSegs.clear();
 	gPolys.clear();
 	return 0;
 }
 
-EXPORT INT WINAPI ClearSegs()
+EXPORT int WINAPI ClearSegs()
 {
 	gSegs.clear();
 	return 0;
 }
 
-EXPORT INT WINAPI ClearPolys()
+EXPORT int WINAPI ClearPolys()
 {
 	gPolys.clear();
 	return 0;
 }
 
-EXPORT INT WINAPI ClearRangeSegs(LONG s, LONG e)
+EXPORT int WINAPI ClearRangeSegs(long s, long e)
 {
-	INT o = 0;
+	int o = 0;
 	try
 	{
 		gSegs.erase(gSegs.begin() + (size_t)s, gSegs.begin() + (size_t)e);
@@ -36,9 +36,9 @@ EXPORT INT WINAPI ClearRangeSegs(LONG s, LONG e)
 	return o;
 }
 
-EXPORT INT WINAPI ClearRangePolys(LONG s, LONG e)
+EXPORT int WINAPI ClearRangePolys(long s, long e)
 {
-	INT o = 0;
+	int o = 0;
 	try
 	{
 		gPolys.erase(gPolys.begin() + (size_t)s, gPolys.begin() + (size_t)e);
@@ -50,9 +50,9 @@ EXPORT INT WINAPI ClearRangePolys(LONG s, LONG e)
 	return o;
 }
 
-EXPORT INT WINAPI ClearRangePolyVec(LONG pn, LONG s, LONG e)
+EXPORT int WINAPI ClearRangePolyVec(long pn, long s, long e)
 {
-	INT o = 0;
+	int o = 0;
 	try
 	{
 		gPolys[pn].erase(gPolys[(size_t)pn].begin() + (size_t)s, gPolys[(size_t)pn].begin() + (size_t)e);
@@ -68,23 +68,23 @@ EXPORT INT WINAPI ClearRangePolyVec(LONG pn, LONG s, LONG e)
 // segment
 //
 
-EXPORT INT WINAPI AddSeg(DOUBLE x1, DOUBLE y1, LONG id1, DOUBLE x2, DOUBLE y2, LONG id2)
+EXPORT int WINAPI AddSeg(double x1, double y1, long id1, double x2, double y2, long id2)
 {
-	gSegs.emplace_back(Line2(Vec2((double)x1, (double)y1, (long)id1), Vec2((double)x2, (double)y2, (long)id2)));
+	gSegs.emplace_back(Line2(Vec2(x1, y1, id1), Vec2(x2, y2, id2)));
 	return 0;
 }
 
 // cnavi default 5deg
-EXPORT INT WINAPI AddSegArc(DOUBLE x1, DOUBLE y1, DOUBLE x2, DOUBLE y2, DOUBLE cx, DOUBLE cy, LONG id, DOUBLE r)
+EXPORT int WINAPI AddSegArc(double x1, double y1, double x2, double y2, double cx, double cy, long id, double r)
 {
-	INT o = 0;
+	int o = 0;
 	std::vector<Line2> ls;
 	try
 	{
-		ls = Segs2Polys::arc2segs(Vec2((double)x1, (double)y1),
-							      Vec2((double)x2, (double)y2),
-			                      Vec2((double)cx, (double)cy),
-								  (long)id, (double)r);
+		ls = Segs2Polys::arc2segs(Vec2(x1, y1),
+							      Vec2(x2, y2),
+			                      Vec2(cx, cy),
+								  id, r);
 		for (size_t i = 0; i < ls.size(); i++)
 			gSegs.emplace_back(ls[i]);
 	}
@@ -95,24 +95,24 @@ EXPORT INT WINAPI AddSegArc(DOUBLE x1, DOUBLE y1, DOUBLE x2, DOUBLE y2, DOUBLE c
 	return o;
 }
 
-EXPORT LONG WINAPI GetSegCnt()
+EXPORT long WINAPI GetSegCnt()
 {
-	return (LONG)gSegs.size();
+	return gSegs.size();
 }
 
-EXPORT INT WINAPI GetSeg(LONG sn, DOUBLE* x1, DOUBLE* y1, LONG* id1, DOUBLE* x2, DOUBLE* y2, LONG* id2)
+EXPORT int WINAPI GetSeg(long sn, double* x1, double* y1, long* id1, double* x2, double* y2, long* id2)
 {
-	INT o = 0;
+	int o = 0;
 	Line2 l;
 	try
 	{
 		l = gSegs[(size_t)sn];
-		*x1 = (DOUBLE)l.s.x;
-		*y1 = (DOUBLE)l.s.y;
-		*id1 = (LONG)l.s.id;
-		*x2 = (DOUBLE)l.e.x;
-		*y2 = (DOUBLE)l.e.y;
-		*id2 = (LONG)l.e.id;
+		*x1 = l.s.x;
+		*y1 = l.s.y;
+		*id1 = l.s.id;
+		*x2 = l.e.x;
+		*y2 = l.e.y;
+		*id2 = l.e.id;
 	}
 	catch (...)
 	{
@@ -121,16 +121,16 @@ EXPORT INT WINAPI GetSeg(LONG sn, DOUBLE* x1, DOUBLE* y1, LONG* id1, DOUBLE* x2,
 	return o;
 }
 
-EXPORT INT WINAPI GetSegS(LONG sn, DOUBLE* x, DOUBLE* y, LONG* id)
+EXPORT int WINAPI GetSegS(long sn, double* x, double* y, long* id)
 {
-	INT o = 0;
+	int o = 0;
 	Line2 l;
 	try
 	{
 		l = gSegs[(size_t)sn];
-		*x = (DOUBLE)l.s.x;
-		*y = (DOUBLE)l.s.y;
-		*id = (LONG)l.s.id;
+		*x = l.s.x;
+		*y = l.s.y;
+		*id = l.s.id;
 	}
 	catch (...)
 	{
@@ -139,16 +139,16 @@ EXPORT INT WINAPI GetSegS(LONG sn, DOUBLE* x, DOUBLE* y, LONG* id)
 	return o;
 }
 
-EXPORT INT WINAPI GetSegE(LONG sn, DOUBLE* x, DOUBLE* y, LONG* id)
+EXPORT int WINAPI GetSegE(long sn, double* x, double* y, long* id)
 {
-	INT o = 0;
+	int o = 0;
 	Line2 l;
 	try
 	{
 		l = gSegs[(size_t)sn];
-		*x = (DOUBLE)l.e.x;
-		*y = (DOUBLE)l.e.y;
-		*id = (LONG)l.e.id;
+		*x = l.e.x;
+		*y = l.e.y;
+		*id = l.e.id;
 	}
 	catch (...)
 	{
@@ -157,9 +157,9 @@ EXPORT INT WINAPI GetSegE(LONG sn, DOUBLE* x, DOUBLE* y, LONG* id)
 	return o;
 }
 
-EXPORT INT WINAPI GetSegArc(LONG sn, DOUBLE r, DOUBLE rmargin, LONG minchain, LONG* en, DOUBLE* x1, DOUBLE* y1, DOUBLE* x2, DOUBLE* y2, DOUBLE* cx, DOUBLE* cy, LONG* id)
+EXPORT int WINAPI GetSegArc(long sn, double r, double rmargin, long minchain, long* en, double* x1, double* y1, double* x2, double* y2, double* cx, double* cy, long* id)
 {
-	INT o = 0;
+	int o = 0;
 	std::vector<Line2> ls;
 	size_t ren;
 	Vec2 rs;
@@ -168,17 +168,17 @@ EXPORT INT WINAPI GetSegArc(LONG sn, DOUBLE r, DOUBLE rmargin, LONG minchain, LO
 	long rid;
 	try
 	{
-		o = (INT)Segs2Polys::segs2arc(gSegs, (size_t)sn,
-			                          (double)r, (double)rmargin, (size_t)minchain,
+		o = (int)Segs2Polys::segs2arc(gSegs, (size_t)sn,
+			                          r, rmargin, (size_t)minchain,
 			                          &ren, &rs, &re, &rc, &rid);
-		*en = (LONG)ren;
-		*x1 = (DOUBLE)rs.x;
-		*y1 = (DOUBLE)rs.y;
-		*x2 = (DOUBLE)re.x;
-		*y2 = (DOUBLE)re.y;
-		*cx = (DOUBLE)rc.x;
-		*cy = (DOUBLE)rc.y;
-		*id = (LONG)rid;
+		*en = ren;
+		*x1 = rs.x;
+		*y1 = rs.y;
+		*x2 = re.x;
+		*y2 = re.y;
+		*cx = rc.x;
+		*cy = rc.y;
+		*id = rid;
 	}
 	catch (...)
 	{
@@ -189,9 +189,9 @@ EXPORT INT WINAPI GetSegArc(LONG sn, DOUBLE r, DOUBLE rmargin, LONG minchain, LO
 
 // 最後に付け足すだけ
 // 開始点のみを追加する
-EXPORT INT WINAPI CnvSegs2Poly()
+EXPORT int WINAPI CnvSegs2Poly()
 {
-	INT o = 0;
+	int o = 0;
 	size_t ps;
 	try
 	{
@@ -210,9 +210,9 @@ EXPORT INT WINAPI CnvSegs2Poly()
 // polygon
 //
 
-EXPORT INT WINAPI AddPoly()
+EXPORT int WINAPI AddPoly()
 {
-	INT o = 0;
+	int o = 0;
 	try
 	{
 		gPolys.emplace_back(std::vector<Vec2>());
@@ -224,12 +224,12 @@ EXPORT INT WINAPI AddPoly()
 	return o;
 }
 
-EXPORT INT WINAPI AddPolyVec(LONG pn, DOUBLE x, DOUBLE y, LONG id)
+EXPORT int WINAPI AddPolyVec(long pn, double x, double y, long id)
 {
-	INT o = 0;
+	int o = 0;
 	try
 	{
-		gPolys[(size_t)pn].emplace_back(Vec2((double)x, (double)y, (long)id));
+		gPolys[(size_t)pn].emplace_back(Vec2(x, y, id));
 	}
 	catch (...)
 	{
@@ -239,16 +239,16 @@ EXPORT INT WINAPI AddPolyVec(LONG pn, DOUBLE x, DOUBLE y, LONG id)
 }
 
 // cnavi default 5deg
-EXPORT INT WINAPI AddPolyArc(LONG pn, DOUBLE x1, DOUBLE y1, DOUBLE x2, DOUBLE y2, DOUBLE cx, DOUBLE cy, LONG id, DOUBLE r)
+EXPORT int WINAPI AddPolyArc(long pn, double x1, double y1, double x2, double y2, double cx, double cy, long id, double r)
 {
-	INT o = 0;
+	int o = 0;
 	std::vector<Vec2> vs;
 	try
 	{
-		vs = Segs2Polys::arc2vecs(Vec2((double)x1, (double)y1),
-							      Vec2((double)x2, (double)y2),
-			                      Vec2((double)cx, (double)cy),
-								  (long)id, (double)r);
+		vs = Segs2Polys::arc2vecs(Vec2(x1, y1),
+							      Vec2(x2, y2),
+			                      Vec2(cx, cy),
+								  id, r);
 		for (size_t i = 0; i < vs.size(); i++)
 			gPolys[(size_t)pn].emplace_back(vs[i]);
 	}
@@ -259,17 +259,17 @@ EXPORT INT WINAPI AddPolyArc(LONG pn, DOUBLE x1, DOUBLE y1, DOUBLE x2, DOUBLE y2
 	return o;
 }
 
-EXPORT LONG WINAPI GetPolyCnt()
+EXPORT long WINAPI GetPolyCnt()
 {
-	return (LONG)gPolys.size();
+	return gPolys.size();
 }
 
-EXPORT LONG WINAPI GetPolyVecCnt(LONG pn)
+EXPORT long WINAPI GetPolyVecCnt(long pn)
 {
-	LONG o;
+	long o;
 	try
 	{
-		o = (LONG)gPolys[(size_t)pn].size();
+		o = gPolys[(size_t)pn].size();
 	}
 	catch (...)
 	{
@@ -278,16 +278,16 @@ EXPORT LONG WINAPI GetPolyVecCnt(LONG pn)
 	return o;
 }
 
-EXPORT INT WINAPI GetPolyVec(LONG pn, LONG vn, DOUBLE* x, DOUBLE* y, LONG* id)
+EXPORT int WINAPI GetPolyVec(long pn, long vn, double* x, double* y, long* id)
 {
-	INT o = 0;
+	int o = 0;
 	Vec2 v;
 	try
 	{
 		v = gPolys[(size_t)pn][(size_t)vn];
-		*x = (DOUBLE)v.x;
-		*y = (DOUBLE)v.y;
-		*id = (LONG)v.id;
+		*x = v.x;
+		*y = v.y;
+		*id = v.id;
 	}
 	catch (...)
 	{
@@ -296,9 +296,9 @@ EXPORT INT WINAPI GetPolyVec(LONG pn, LONG vn, DOUBLE* x, DOUBLE* y, LONG* id)
 	return o;
 }
 
-EXPORT INT WINAPI GetPolyArc(LONG pn, LONG vn, DOUBLE r, DOUBLE rmargin, LONG minchain, LONG* en, DOUBLE* x1, DOUBLE* y1, DOUBLE* x2, DOUBLE* y2, DOUBLE* cx, DOUBLE* cy, LONG* id)
+EXPORT int WINAPI GetPolyArc(long pn, long vn, double r, double rmargin, long minchain, long* en, double* x1, double* y1, double* x2, double* y2, double* cx, double* cy, long* id)
 {
-	INT o = 0;
+	int o = 0;
 	std::vector<Line2> ls;
 	size_t ren;
 	Vec2 rs;
@@ -307,17 +307,17 @@ EXPORT INT WINAPI GetPolyArc(LONG pn, LONG vn, DOUBLE r, DOUBLE rmargin, LONG mi
 	long rid;
 	try
 	{
-		o = (INT)Segs2Polys::poly2arc(gPolys[(size_t)pn], (size_t)vn,
-			                          (double)r, (double)rmargin, (size_t)minchain,
+		o = (int)Segs2Polys::poly2arc(gPolys[(size_t)pn], (size_t)vn,
+			                          r, rmargin, (size_t)minchain,
 			                          &ren, &rs, &re, &rc, &rid);
-		*en = (LONG)ren;
-		*x1 = (DOUBLE)rs.x;
-		*y1 = (DOUBLE)rs.y;
-		*x2 = (DOUBLE)re.x;
-		*y2 = (DOUBLE)re.y;
-		*cx = (DOUBLE)rc.x;
-		*cy = (DOUBLE)rc.y;
-		*id = (LONG)rid;
+		*en = ren;
+		*x1 = rs.x;
+		*y1 = rs.y;
+		*x2 = re.x;
+		*y2 = re.y;
+		*cx = rc.x;
+		*cy = rc.y;
+		*id = rid;
 	}
 	catch (...)
 	{
@@ -327,9 +327,9 @@ EXPORT INT WINAPI GetPolyArc(LONG pn, LONG vn, DOUBLE r, DOUBLE rmargin, LONG mi
 }
 
 // 最後に付け足すだけ
-EXPORT INT WINAPI CnvPoly2Segs(LONG pn)
+EXPORT int WINAPI CnvPoly2Segs(long pn)
 {
-	INT o = 0;
+	int o = 0;
 	size_t ps;
 	size_t ii;
 	try
@@ -352,12 +352,12 @@ EXPORT INT WINAPI CnvPoly2Segs(LONG pn)
 // Segs2Polys
 //
 
-EXPORT INT WINAPI CalcExtendMarginIntersection(DOUBLE dist)
+EXPORT int WINAPI CalcextendMarginIntersection(double dist)
 {
-	INT o = 0;
+	int o = 0;
 	try
 	{
-		gSegs = Segs2Polys::extendMarginIntersection(gSegs, (double)dist);
+		gSegs = Segs2Polys::extendMarginIntersection(gSegs, dist);
 	}
 	catch (...)
 	{
@@ -366,9 +366,9 @@ EXPORT INT WINAPI CalcExtendMarginIntersection(DOUBLE dist)
 	return o;
 }
 
-EXPORT INT WINAPI CalcSplitLines()
+EXPORT int WINAPI CalcSplitLines()
 {
-	INT o = 0;
+	int o = 0;
 	try
 	{
 		gSegs = SimpleSplitSegs::splitSegs(gSegs);
@@ -380,9 +380,9 @@ EXPORT INT WINAPI CalcSplitLines()
 	return o;
 }
 
-EXPORT INT WINAPI CalcSegs2Polys()
+EXPORT int WINAPI CalcSegs2Polys()
 {
-	INT o = 0;
+	int o = 0;
 	std::vector<std::vector<Cell>> cells;
 	std::vector<stCellLink> links;
 	try
@@ -398,9 +398,9 @@ EXPORT INT WINAPI CalcSegs2Polys()
 	return o;
 }
 
-EXPORT INT WINAPI CalcMergePolysLines()
+EXPORT int WINAPI CalcMergePolysLines()
 {
-	INT o = 0;
+	int o = 0;
 	try
 	{
 		gPolys = Segs2Polys::mergePolysLines(gPolys);
@@ -416,9 +416,9 @@ EXPORT INT WINAPI CalcMergePolysLines()
 // Poly2Triangle
 //
 
-EXPORT LONG WINAPI CalcEarClip(LONG pn, LONG safety)
+EXPORT long WINAPI CalcEarClip(long pn, long safety)
 {
-	LONG o = 0;
+	long o = 0;
 	std::vector<std::vector<Vec2>> ret;
 	try
 	{
@@ -426,7 +426,7 @@ EXPORT LONG WINAPI CalcEarClip(LONG pn, LONG safety)
 		{
 			for (size_t i = 0; i < ret.size(); i++)
 				gPolys.emplace_back(ret[i]);
-			o = (LONG)ret.size();
+			o = ret.size();
 		}
 		else
 			o = -1;
@@ -438,9 +438,9 @@ EXPORT LONG WINAPI CalcEarClip(LONG pn, LONG safety)
 	return o;
 }
 
-EXPORT LONG WINAPI CalcEarClipHoles(LONG pn, LONG hpn, LONG* hp, LONG safety)
+EXPORT long WINAPI CalcEarClipHoles(long pn, long hpn, long* hp, long safety)
 {
-	LONG o = 0;
+	long o = 0;
 	std::vector<std::vector<Vec2>> ret;
 	std::vector<std::vector<Vec2>> holes;
 	try
@@ -454,7 +454,7 @@ EXPORT LONG WINAPI CalcEarClipHoles(LONG pn, LONG hpn, LONG* hp, LONG safety)
 		{
 			for (size_t i = 0; i < ret.size(); i++)
 				gPolys.emplace_back(ret[i]);
-			o = (LONG)ret.size();
+			o = ret.size();
 		}
 		else
 			o = -1;
@@ -472,9 +472,9 @@ EXPORT LONG WINAPI CalcEarClipHoles(LONG pn, LONG hpn, LONG* hp, LONG safety)
 
 // right = 0
 // left  = 1
-EXPORT INT WINAPI CalcDirectionRotatePoly(LONG pn, INT r)
+EXPORT int WINAPI CalcDirectionRotatePoly(long pn, int r)
 {
-	INT o = 0;
+	int o = 0;
 	try
 	{
 		Vec2Util::directionRotatePoly(gPolys[(size_t)pn], (int)r);
@@ -488,9 +488,9 @@ EXPORT INT WINAPI CalcDirectionRotatePoly(LONG pn, INT r)
 
 // right = 0
 // left  = 1
-EXPORT INT WINAPI CalcDirectionRotatePolys(INT r)
+EXPORT int WINAPI CalcDirectionRotatePolys(int r)
 {
-	INT o = 0;
+	int o = 0;
 	try
 	{
 		Segs2Polys::directionRotatePolys(gPolys, (int)r);
@@ -502,9 +502,9 @@ EXPORT INT WINAPI CalcDirectionRotatePolys(INT r)
 	return o;
 }
 
-EXPORT INT WINAPI CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn)
+EXPORT int WINAPI CalcTrianglesSplitLines(long spn, long epn, long ssn, long esn)
 {
-	INT o = 0;
+	int o = 0;
 	std::vector<std::vector<Vec2>> polys;
 	std::vector<Line2> segs;
 	std::vector<std::vector<Vec2>> ret;
@@ -531,9 +531,9 @@ EXPORT INT WINAPI CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn
 	return o;
 }
 
-EXPORT DOUBLE WINAPI CalcAreaPoly(LONG pn)
+EXPORT double WINAPI CalcAreaPoly(long pn)
 {
-	DOUBLE o = 0;
+	double o = 0;
 	try
 	{
 		o = Vec2Util::AreaTwoPoly(gPolys[(size_t)pn]);
@@ -546,9 +546,9 @@ EXPORT DOUBLE WINAPI CalcAreaPoly(LONG pn)
 	return o;
 }
 
-EXPORT INT WINAPI CalcParseTrisSegs(LONG spn, LONG epn, LONG ssn, LONG esn)
+EXPORT int WINAPI CalcParseTrisSegs(long spn, long epn, long ssn, long esn)
 {
-	INT o = 0;
+	int o = 0;
 	std::vector<std::vector<Vec2>> polys;
 	std::vector<Line2> segs;
 	std::vector<std::vector<std::vector<Vec2>>> ret;
@@ -578,9 +578,9 @@ EXPORT INT WINAPI CalcParseTrisSegs(LONG spn, LONG epn, LONG ssn, LONG esn)
 	return o;
 }
 
-EXPORT INT WINAPI CalcTri2Poly(LONG spn, LONG epn)
+EXPORT int WINAPI CalcTri2Poly(long spn, long epn)
 {
-	INT o = 0;
+	int o = 0;
 	std::vector<std::vector<Vec2>> polys;
 	std::vector<std::vector<Vec2>> ret;
 	try
@@ -604,9 +604,9 @@ EXPORT INT WINAPI CalcTri2Poly(LONG spn, LONG epn)
 // Debug
 //
 
-// EXPORT INT WINAPI DebugCellRays()
+// EXPORT int WINAPI DebugCellRays()
 // {
-// 	INT o = 0;
+// 	int o = 0;
 // 	try
 // 	{
 // 		std::vector<std::vector<Cell>> cells = Segs2Polys::createGrid(gSegs);
@@ -623,9 +623,9 @@ EXPORT INT WINAPI CalcTri2Poly(LONG spn, LONG epn)
 // 	return o;
 // }
 
-// EXPORT INT WINAPI DebugRayLinks()
+// EXPORT int WINAPI DebugRayLinks()
 // {
-// 	INT o = 0;
+// 	int o = 0;
 // 	try
 // 	{
 // 		std::vector<std::vector<Cell>> cells = Segs2Polys::createGrid(gSegs);

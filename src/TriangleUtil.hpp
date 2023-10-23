@@ -4,11 +4,13 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <unordered_set>
 
 // my
 #include "Vec2.hpp"
 #include "Line2.hpp"
 #include "EarClipping.hpp"
+#include "Vec2Util.hpp"
 
 #if DEBUG_LOG
 #include <iostream>
@@ -22,10 +24,9 @@ public:
     static bool SplitTrisSegs(std::vector<std::vector<Vec2>> tris, std::vector<Line2>& segs, std::vector<std::vector<Vec2>>& result)
     {
         bool o = true;
-
         result.clear();
 		for (size_t i = 0; i < segs.size(); i++)
-			o &= TriangleUtil::SplitTrisSeg(tris, segs[i], tris);
+			o &= SplitTrisSeg(tris, segs[i], tris);
         result = tris;
         return o;
     }
@@ -34,11 +35,10 @@ public:
     {
         bool o = true;
         std::vector<std::vector<Vec2>> r;
-
         result.clear();
 		for (size_t i = 0; i < tris.size(); i++)
 		{
-			o &= TriangleUtil::SplitTriSeg(tris[i], seg, r);
+			o &= SplitTriSeg(tris[i], seg, r);
             for (size_t j = 0; j < r.size(); j++)
                 result.emplace_back(r[j]);
 		}
@@ -219,6 +219,77 @@ public:
         return o;
     }
 
+    static std::vector<std::vector<Vec2>> MergeTrisWithSegsAll(std::vector<std::vector<Vec2>> tris, std::vector<Line2>& segs)
+    {
+        size_t s;
+        do
+        {
+            s = tris.size();
+            tris = MergeTrisWithSegsOne(tris, segs);
+        }
+        while (s != tris.size());
+        return tris;
+    }
+
+    static std::vector<std::vector<Vec2>> MergeTrisWithSegsOne(std::vector<std::vector<Vec2>> tris, std::vector<Line2>& segs)
+    {
+        std::vector<std::vector<Vec2>> o;
+        std::unordered_set<size_t> mergedIdx;
+        size_t lap1;
+        size_t lap2;
+        size_t t1;
+        size_t t2;
+
+        for (size_t i = 0; i < tris.size(); i++)
+            Vec2Util::directionRotatePoly(tris[i]);
+
+        for (size_t i = 0; i < tris.size(); i++)
+        {
+            if (mergedIdx.find(i) != mergedIdx.end())
+                continue;
+            for (size_t j = 0; j < tris.size(); j++)
+            {
+                if (i == j)
+                    continue;
+                if (mergedIdx.find(j) != mergedIdx.end())
+                    continue;
+
+                if (!isTriMerge(tris[i], tris[j], segs, lap1, lap2, t1, t2))
+                    continue;
+
+// std::cout << "# tri - 1 - " << i << std::endl;
+// for (size_t k = 0; k < tris[i].size(); k++)
+//     std::cout << tris[i][k].ToString() << std::endl;
+// std::cout << "# tri - 2 - " << j << std::endl;
+// for (size_t k = 0; k < tris[j].size(); k++)
+//     std::cout << tris[j][k].ToString() << std::endl;
+
+                o.emplace_back(MergeTri2(tris[i], tris[j], lap1, lap2, t1, t2));
+
+// std::cout << "lap1 : " << lap1 << std::endl;
+// std::cout << "lap2 : " << lap2 << std::endl;
+// std::cout << "t1 :   " << t1 << std::endl;
+// std::cout << "t2 :   " << t2 << std::endl;
+// std::cout << "# tri - 3 - " << o.size() - 1 << std::endl;
+// for (size_t k = 0; k < o.back().size(); k++)
+//     std::cout << o.back()[k].ToString() << std::endl;
+// std::cout << std::endl;
+
+                mergedIdx.insert(i);
+                mergedIdx.insert(j);
+            }
+        }
+
+        // for (size_t i = 0; i < tris.size(); i++)
+        // {
+        //     if (mergedIdx.find(i) != mergedIdx.end())
+        //         continue;
+        //     o.emplace_back(tris[i]);
+        // }
+
+        return o;
+    }
+
 	// static bool isPointInTriangle(Vec2& a, Vec2& b, Vec2& c, Vec2& p, const bool isInclude = false )
 	// {
 	// 	double c1;
@@ -253,7 +324,98 @@ public:
     //     return b1 == b2 && b2 == b3;
     // }
 
-private:
+// private:
+    // normalized tri
+    static std::vector<Vec2> MergeTri2(std::vector<Vec2>& tri1, std::vector<Vec2>& tri2, size_t& lap1, size_t& lap2, size_t& t1, size_t& t2)
+    {
+        Vec2 p;
+        size_t tm = fmod(t1 + 2, tri1.size());
+        size_t tp = fmod(t1 + 1, tri1.size());
+        if (tm != lap1)
+            p = tri1[tm];
+        else
+            p = tri1[tp];
+        return std::vector<Vec2>({ tri1[t1], tri2[t2], p });
+    }
+
+    // normalized tri
+    static bool isTriMerge(std::vector<Vec2>& tri1, std::vector<Vec2>& tri2, std::vector<Line2>& segs, size_t& lap1, size_t& lap2, size_t& t1, size_t& t2)
+    {
+        Line2 l;
+        if (!GetTriOverlapSegIdx(tri1, tri2, lap1, lap2))
+            return false;
+        if (!GetTriTIdx(tri1, tri2, lap1, lap2, t1, t2))
+            return false;
+        l = Line2(tri1[lap1], tri1[fmod(lap1 + 1, tri1.size())]);
+        for (size_t i = 0; i < segs.size(); i++)
+            switch (Line2::isLineOverlap(l, segs[i]))
+            {
+                case 0:
+                case 1:
+                case 2:
+                    return false;
+            }
+        return true;
+    }
+
+    // normalized tri
+    static bool GetTriTIdx(std::vector<Vec2>& tri1, std::vector<Vec2>& tri2, size_t& lap1, size_t& lap2, size_t& t1, size_t& t2)
+    {
+// std::cout << std::endl;
+        size_t pi11 = fmod(lap1 + 2, tri1.size());
+        size_t pi12 = fmod(lap1 + 1, tri1.size());
+        size_t pi21 = fmod(lap2 + 2, tri2.size());
+        size_t pi22 = fmod(lap2 + 1, tri2.size());
+        if (tri1[lap1] != tri2[pi22])
+            return false;
+        if (tri1[pi12] != tri2[lap2])
+            return false;
+// std::cout << "lap1 : " << tri1[lap1].ToString() << std::endl;
+// std::cout << "pi11 : " << tri1[pi11].ToString() << std::endl;
+// std::cout << "pi12 : " << tri1[pi12].ToString() << std::endl;
+// std::cout << "lap2 : " << tri2[lap2].ToString() << std::endl;
+// std::cout << "pi21 : " << tri2[pi21].ToString() << std::endl;
+// std::cout << "pi22 : " << tri2[pi22].ToString() << std::endl;
+// std::cout << tri1[pi11].ToString() << "\t" << tri2[pi21].ToString() << "\t" << tri1[lap1].ToString() << std::endl;
+// std::cout << tri1[pi11].ToString() << "\t" << tri2[pi21].ToString() << "\t" << tri1[pi12].ToString() << std::endl;
+// std::cout << "00\t" << std::to_string(Vec2::cross3(tri1[pi11], tri2[pi21], tri1[lap1])) << std::endl;
+// std::cout << "\t" << tri1[pi11].ToString() << "\t" << tri2[pi21].ToString() << "\t" << tri1[lap1].ToString() << std::endl;
+// std::cout << "01\t" << std::to_string(Vec2::cross3(tri1[pi11], tri2[pi21], tri2[lap2])) << std::endl;
+// std::cout << "\t" << tri1[pi11].ToString() << "\t" << tri2[pi21].ToString() << "\t" << tri2[lap2].ToString() << std::endl;
+        if (std::abs(Vec2::cross3(tri1[pi11], tri2[pi21], tri1[lap1])) < Vec2::kEpsilond)
+        {
+            t1 = pi11;
+            t2 = pi21;
+// std::cout << "00\t" << tri1[t1].ToString() << " - " << tri2[t2].ToString() << std::endl;
+            return true;
+        }
+        if (std::abs(Vec2::cross3(tri1[pi11], tri2[pi21], tri2[lap2])) < Vec2::kEpsilond)
+        {
+            t1 = pi11;
+            t2 = pi21;
+// std::cout << "01\t" << tri1[t1].ToString() << " - " << tri2[t2].ToString() << std::endl;
+            return true;
+        }
+        return false;
+    }
+
+    static bool GetTriOverlapSegIdx(std::vector<Vec2>& tri1, std::vector<Vec2>& tri2, size_t& lap1, size_t& lap2)
+    {
+        Line2 l;
+        for (size_t i = 0; i < tri1.size(); i++)
+        {
+            l = Line2(tri1[i], tri1[fmod(i + 1, tri1.size())]);
+            for (size_t j = 0; j < tri2.size(); j++)
+                if (l == Line2(tri2[j], tri2[fmod(j + 1, tri2.size())]))
+                {
+                    lap1 = i;
+                    lap2 = j;
+                    return true;
+                }                
+        }
+        return false;
+    }
+
     static void trailVec(std::vector<Vec2>& trailer, std::vector<size_t>& interIdx, std::vector<std::vector<Vec2>>& result)
     {
         std::vector<Vec2> w;

@@ -49,10 +49,10 @@ public:
 		{
 			ii = fmod(i + 1, hull.size());
 			if (p.x >= hull[i].x || p.x >= hull[ii].x)
-				if ((std::min)({ hull[i].y, hull[ii].y }) <= p.y && p.y <= (std::max)({ hull[i].y, hull[ii].y }))
+				if (std::min(hull[i].y, hull[ii].y) <= p.y && p.y <= std::max(hull[i].y, hull[ii].y))
 					dc++;
 			if (p.y >= hull[i].y || p.y >= hull[ii].y)
-				if ((std::min)({ hull[i].x, hull[ii].x }) <= p.x && p.x <= (std::max)({ hull[i].x, hull[ii].x }))
+				if (std::min(hull[i].x, hull[ii].x) <= p.x && p.x <= std::max(hull[i].x, hull[ii].x))
 					rc++;
 		}
 		return fmod(dc, 2) == 1 && fmod(rc, 2) == 1 && dc > 0 && rc > 0;

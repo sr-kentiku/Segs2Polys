@@ -134,7 +134,7 @@ public:
 			return Vec2::distance(s, p, isqr);
 		double d1 = Vec2::distance(s, p, isqr);
 		double d2 = Vec2::distance(e, p, isqr);
-		return (std::min)({ d1, d2 });
+		return std::min(d1, d2);
 	}
 
 	double distancePointLineT(Vec2& p, const int isqr = 0)
@@ -243,7 +243,7 @@ public:
 	// this=segment
 	// l=line
 	double orientation(const Vec2& p, const Vec2& q, const  Vec2& r) const { return (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y); }
-	bool onSegment(const Vec2& p, const  Vec2& q, const  Vec2& r) const { return (std::min)({ p.x, r.x }) <= q.x && q.x <= (std::max)({ p.x, r.x }) && (std::min)({ p.y, r.y }) <= q.y && q.y <= (std::max)({ p.y, r.y }); }
+	bool onSegment(const Vec2& p, const  Vec2& q, const  Vec2& r) const { return std::min(p.x, r.x) <= q.x && q.x <= std::max(p.x, r.x) && std::min(p.y, r.y) <= q.y && q.y <= std::max(p.y, r.y); }
 	static bool isCrossSegInf(const Line2& l1, const  Line2& l2) { return l1.isCrossSegInf(l2); }
 	bool isCrossSegInf(const Line2& l) const
 	{
@@ -385,6 +385,17 @@ public:
 	static bool equalx(const Line2& a, const Line2& b) { return Vec2::equalx(a.s, b.s) && Vec2::equalx(a.e, b.e); }
 	static bool equaly(const Line2& a, const Line2& b) { return Vec2::equaly(a.s, b.s) && Vec2::equaly(a.e, b.e); }
 
+	static bool equalSoE(const Vec2& v, const Line2& l) { return Vec2::equal(v, l.s) || Vec2::equal(v, l.e); }
+	static Vec2 getEqualSoE(const Vec2& v, const Line2& l)
+	{
+		if (Vec2::equal(v, l.s))
+			return l.s;
+		else if (Vec2::equal(v, l.e))
+			return l.e;
+		else
+			return Vec2::positiveInfinityVector;
+	}
+	
 	size_t HashCode() const { return s.HashCode() ^ (e.HashCode() << 1); }
 
 #if DEBUG_LOG
