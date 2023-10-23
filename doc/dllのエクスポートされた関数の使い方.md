@@ -73,7 +73,7 @@ sequenceDiagram
 <details><summary>Clear</summary>
 
 ```cpp
-INT Clear()
+int Clear()
 ```
 > segsとpolysをクリアします
 >
@@ -83,7 +83,7 @@ INT Clear()
 <details><summary>ClearSegs</summary>
 
 ```cpp
-INT ClearSegs()
+int ClearSegs()
 ```
 > segsのみクリアします
 >
@@ -93,7 +93,7 @@ INT ClearSegs()
 <details><summary>ClearPolys</summary>
 
 ```cpp
-INT ClearPolys()
+int ClearPolys()
 ```
 > polysのみクリアします
 >
@@ -103,7 +103,7 @@ INT ClearPolys()
 <details><summary>ClearRangeSegs</summary>
 
 ```cpp
-INT ClearRangeSegs(LONG s, LONG e)
+int ClearRangeSegs(long s, long e)
 ```
 > 指定範囲の線分バッファを削除します
 >
@@ -115,7 +115,7 @@ INT ClearRangeSegs(LONG s, LONG e)
 <details><summary>ClearRangePolys</summary>
 
 ```cpp
-INT ClearRangePolys(LONG s, LONG e)
+int ClearRangePolys(long s, long e)
 ```
 > 指定範囲のポリゴンバッファの図形を削除します
 >
@@ -127,7 +127,7 @@ INT ClearRangePolys(LONG s, LONG e)
 <details><summary>ClearRangePolyVec</summary>
 
 ```cpp
-INT ClearRangePolyVec(LONG pn, LONG s, LONG e)
+int ClearRangePolyVec(long pn, long s, long e)
 ```
 > 指定範囲のポリゴンバッファの頂点を削除します
 >
@@ -145,7 +145,7 @@ INT ClearRangePolyVec(LONG pn, LONG s, LONG e)
 <details><summary>AddSeg</summary>
 
 ```cpp
-INT AddSeg(DOUBLE x1, DOUBLE y1, LONG id1, DOUBLE x2, DOUBLE y2, LONG id2)
+int AddSeg(double x1, double y1, long id1, double x2, double y2, long id2)
 ```
 > 線分を追加します
 >
@@ -159,7 +159,7 @@ INT AddSeg(DOUBLE x1, DOUBLE y1, LONG id1, DOUBLE x2, DOUBLE y2, LONG id2)
 <details><summary>AddSegArc</summary>
 
 ```cpp
-INT AddSegArc(DOUBLE x1, DOUBLE y1, DOUBLE x2, DOUBLE y2, DOUBLE cx, DOUBLE cy, LONG id, DOUBLE r)
+int AddSegArc(double x1, double y1, double x2, double y2, double cx, double cy, long id, double r)
 ```
 > 円弧データを線分に分解して線分として追加します
 >
@@ -179,7 +179,7 @@ INT AddSegArc(DOUBLE x1, DOUBLE y1, DOUBLE x2, DOUBLE y2, DOUBLE cx, DOUBLE cy, 
 <details><summary>GetSegCnt</summary>
 
 ```cpp
-LONG GetSegCnt()
+long GetSegCnt()
 ```
 > segsの総数を返します
 </details>
@@ -187,7 +187,7 @@ LONG GetSegCnt()
 <details><summary>GetSeg</summary>
 
 ```cpp
-INT GetSeg(LONG sn, DOUBLE* x1, DOUBLE* y1, LONG* id1, DOUBLE* x2, DOUBLE* y2, LONG* id2)
+int GetSeg(long sn, double* x1, double* y1, long* id1, double* x2, double* y2, long* id2)
 ```
 > 指定のsegsのインデックスのデータを取得
 >
@@ -203,7 +203,7 @@ INT GetSeg(LONG sn, DOUBLE* x1, DOUBLE* y1, LONG* id1, DOUBLE* x2, DOUBLE* y2, L
 <details><summary>GetSegS</summary>
 
 ```cpp
-INT GetSegS(LONG sn, DOUBLE* x, DOUBLE* y, LONG* id)
+int GetSegS(long sn, double* x, double* y, long* id)
 ```
 > 指定のsegsのインデックスの始点を取得
 >
@@ -217,7 +217,7 @@ INT GetSegS(LONG sn, DOUBLE* x, DOUBLE* y, LONG* id)
 <details><summary>GetSegE</summary>
 
 ```cpp
-INT GetSegE(LONG sn, DOUBLE* x, DOUBLE* y, LONG* id)
+int GetSegE(long sn, double* x, double* y, long* id)
 ```
 > 指定のsegsのインデックスの終点を取得
 >
@@ -231,7 +231,7 @@ INT GetSegE(LONG sn, DOUBLE* x, DOUBLE* y, LONG* id)
 <details><summary>GetSegArc</summary>
 
 ```cpp
-INT GetSegArc(LONG sn, DOUBLE r, DOUBLE rmargin, LONG minchain, LONG* en, DOUBLE* x1, DOUBLE* y1, DOUBLE* x2, DOUBLE* y2, DOUBLE* cx, DOUBLE* cy, LONG* id)
+int GetSegArc(long sn, double r, double rmargin, long minchain, long* en, double* x1, double* y1, double* x2, double* y2, double* cx, double* cy, long* id)
 ```
 > 指定のsegsインデックスのデータが円弧かどうか、円弧だった場合は円弧データを返します
 >
@@ -259,7 +259,7 @@ INT GetSegArc(LONG sn, DOUBLE r, DOUBLE rmargin, LONG minchain, LONG* en, DOUBLE
 <details><summary>CnvSegs2Poly</summary>
 
 ```cpp
-INT CnvSegs2Poly()
+int CnvSegs2Poly()
 ```
 > segsのデータをpolysの末尾に追加します
 >
@@ -275,7 +275,7 @@ INT CnvSegs2Poly()
 <details><summary>AddPoly</summary>
 
 ```cpp
-INT AddPoly()
+int AddPoly()
 ```
 > polysのポリゴンを追加します
 >
@@ -285,7 +285,7 @@ INT AddPoly()
 <details><summary>AddPolyVec</summary>
 
 ```cpp
-INT AddPolyVec(LONG pn, DOUBLE x, DOUBLE y, LONG id)
+int AddPolyVec(long pn, double x, double y, long id)
 ```
 > 指定のポリゴンに頂点を追加します
 >
@@ -299,7 +299,7 @@ INT AddPolyVec(LONG pn, DOUBLE x, DOUBLE y, LONG id)
 <details><summary>AddPolyArc</summary>
 
 ```cpp
-INT AddPolyArc(LONG pn, DOUBLE x1, DOUBLE y1, DOUBLE x2, DOUBLE y2, DOUBLE cx, DOUBLE cy, LONG id, DOUBLE r)
+int AddPolyArc(long pn, double x1, double y1, double x2, double y2, double cx, double cy, long id, double r)
 ```
 > 円弧データを頂点分解して追加します
 >
@@ -321,7 +321,7 @@ INT AddPolyArc(LONG pn, DOUBLE x1, DOUBLE y1, DOUBLE x2, DOUBLE y2, DOUBLE cx, D
 <details><summary>GetPolyCnt</summary>
 
 ```cpp
-LONG GetPolyCnt()
+long GetPolyCnt()
 ```
 > polysの総数を返します
 </details>
@@ -329,7 +329,7 @@ LONG GetPolyCnt()
 <details><summary>GetPolyVecCnt</summary>
 
 ```cpp
-LONG GetPolyVecCnt(LONG pn)
+long GetPolyVecCnt(long pn)
 ```
 > 指定されたポリゴンインデックスの頂点数を返します
 >
@@ -341,7 +341,7 @@ LONG GetPolyVecCnt(LONG pn)
 <details><summary>GetPolyVec</summary>
 
 ```cpp
-LONG GetPolyVec(LONG pn, LONG vn, DOUBLE* x, DOUBLE* y, LONG* id)
+long GetPolyVec(long pn, long vn, double* x, double* y, long* id)
 ```
 > 指定されたポリゴンインデックスの指定された頂点インデックスの頂点データを返します
 >
@@ -357,7 +357,7 @@ LONG GetPolyVec(LONG pn, LONG vn, DOUBLE* x, DOUBLE* y, LONG* id)
 <details><summary>GetPolyArc</summary>
 
 ```cpp
-INT GetPolyArc(LONG pn, LONG vn, DOUBLE r, DOUBLE rmargin, LONG minchain, LONG* en, DOUBLE* x1, DOUBLE* y1, DOUBLE* x2, DOUBLE* y2, DOUBLE* cx, DOUBLE* cy, LONG* id)
+int GetPolyArc(long pn, long vn, double r, double rmargin, long minchain, long* en, double* x1, double* y1, double* x2, double* y2, double* cx, double* cy, long* id)
 ```
 > 指定されたポリゴンインデックスの指定された頂点インデックスの頂点データが円弧かどうか、円弧だった場合は円弧データを返します
 >
@@ -387,7 +387,7 @@ INT GetPolyArc(LONG pn, LONG vn, DOUBLE r, DOUBLE rmargin, LONG minchain, LONG* 
 <details><summary>CnvPoly2Segs</summary>
 
 ```cpp
-INT CnvPoly2Segs(LONG pn)
+int CnvPoly2Segs(long pn)
 ```
 > polysのデータをsegsの末尾に追加します
 >
@@ -401,7 +401,7 @@ INT CnvPoly2Segs(LONG pn)
 <details><summary>CalcExtendMarginIntersection</summary>
 
 ```cpp
-INT CalcExtendMarginIntersection(DOUBLE dist)
+int CalcExtendMarginIntersection(double dist)
 ```
 > segsをマージンを持って交点計算を行います
 >
@@ -413,7 +413,7 @@ INT CalcExtendMarginIntersection(DOUBLE dist)
 <details><summary>CalcSplitLines</summary>
 
 ```cpp
-INT CalcSplitLines()
+int CalcSplitLines()
 ```
 > segsの線分同士を交点で分解します
 >
@@ -425,7 +425,7 @@ INT CalcSplitLines()
 <details><summary>CalcSegs2Polys</summary>
 
 ```cpp
-INT CalcSegs2Polys()
+int CalcSegs2Polys()
 ```
 > segsから最小のポリゴンを見つけpolysに追加します
 >
@@ -437,7 +437,7 @@ INT CalcSegs2Polys()
 <details><summary>CalcMergePolysLines</summary>
 
 ```cpp
-INT CalcMergePolysLines()
+int CalcMergePolysLines()
 ```
 > polysの頂点に交点などがなく頂点を削除しても問題ない頂点を削除します
 >
@@ -449,7 +449,7 @@ INT CalcMergePolysLines()
 <details><summary>CalcEarClip</summary>
 
 ```cpp
-LONG CalcEarClip(LONG pn, LONG safety)
+long CalcEarClip(long pn, long safety)
 ```
 > 任意のpolysを三角形に変換してpolysの末尾に追加します
 >
@@ -465,7 +465,7 @@ LONG CalcEarClip(LONG pn, LONG safety)
 <details><summary>CalcEarClipHoles</summary>
 
 ```cpp
-LONG CalcEarClipHoles(LONG pn, LONG hpn, LONG* hp, LONG safety)
+long CalcEarClipHoles(long pn, long hpn, long* hp, long safety)
 ```
 > 任意のpolysと任意の穴用polysを三角形に変換してpolysの末尾に追加します
 >
@@ -485,7 +485,7 @@ LONG CalcEarClipHoles(LONG pn, LONG hpn, LONG* hp, LONG safety)
 <details><summary>CalcDirectionRotatePoly</summary>
 
 ```cpp
-INT CalcDirectionRotatePoly(LONG pn, INT r)
+int CalcDirectionRotatePoly(long pn, int r)
 ```
 > 指定のpolysを指定の回転方向に変更します
 >
@@ -499,7 +499,7 @@ INT CalcDirectionRotatePoly(LONG pn, INT r)
 <details><summary>CalcDirectionRotatePolys</summary>
 
 ```cpp
-INT CalcDirectionRotatePolys(INT r)
+int CalcDirectionRotatePolys(int r)
 ```
 > polysを指定の回転方向に変更します
 >
@@ -511,7 +511,7 @@ INT CalcDirectionRotatePolys(INT r)
 <details><summary>CalcTrianglesSplitLines</summary>
 
 ```cpp
-INT CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn)
+int CalcTrianglesSplitLines(long spn, long epn, long ssn, long esn)
 ```
 > 三角形データを線分で分割してpolysの末尾に追加します
 >
@@ -525,7 +525,7 @@ INT CalcTrianglesSplitLines(LONG spn, LONG epn, LONG ssn, LONG esn)
 <details><summary>CalcAreaPoly</summary>
 
 ```cpp
-DOUBLE CalcAreaPoly(LONG pn)
+double CalcAreaPoly(long pn)
 ```
 > ポリゴンの面積を返します
 >
@@ -539,7 +539,7 @@ DOUBLE CalcAreaPoly(LONG pn)
 <details><summary>CalcParseTrisSegs</summary>
 
 ```cpp
-INT CalcParseTrisSegs(LONG spn, LONG epn, LONG ssn, LONG esn)
+int CalcParseTrisSegs(long spn, long epn, long ssn, long esn)
 ```
 > 三角形と線分から線分で区切られた範囲の図形をpolysの末尾に追加します
 >
@@ -555,7 +555,7 @@ INT CalcParseTrisSegs(LONG spn, LONG epn, LONG ssn, LONG esn)
 <details><summary>CalcTri2Poly</summary>
 
 ```cpp
-INT CalcTri2Poly(LONG spn, LONG epn)
+int CalcTri2Poly(long spn, long epn)
 ```
 > 三角形同士をマージしてポリゴンに変換してpolysの末尾に追加します
 >
