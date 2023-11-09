@@ -80,7 +80,7 @@ public:
 				else if (cell.shape.isHitRay(ray))
 					f = false;
 				if (f)
-					o.emplace_back(std::vector<size_t>({ i, j }));
+					o.emplace_back(std::vector<size_t>({i, j}));
 			}
 		return o;
 	}

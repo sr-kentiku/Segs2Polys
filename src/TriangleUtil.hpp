@@ -53,7 +53,7 @@ public:
 
         result.clear();
 
-        {        
+        {
             Line2 line;
             Vec2 v;
             Vec2 c;
@@ -87,13 +87,13 @@ public:
         
         if (isPointInTriangle(tri[0], tri[1], tri[2], seg.s))
         {
-            trailer.insert(trailer.begin() + interIdx[0] + 1, { seg.s, trailer[interIdx[0]] });
+            trailer.insert(trailer.begin() + interIdx[0] + 1, {seg.s, trailer[interIdx[0]]});
             EarClip(trailer, result);
             return true;
         }
         if (isPointInTriangle(tri[0], tri[1], tri[2], seg.e))
         {
-            trailer.insert(trailer.begin() + interIdx[0] + 1, { seg.e, trailer[interIdx[0]] });
+            trailer.insert(trailer.begin() + interIdx[0] + 1, {seg.e, trailer[interIdx[0]]});
             EarClip(trailer, result);
             return true;
         }
@@ -328,14 +328,9 @@ public:
     // normalized tri
     static std::vector<Vec2> MergeTri2(std::vector<Vec2>& tri1, std::vector<Vec2>& tri2, size_t& lap1, size_t& lap2, size_t& t1, size_t& t2)
     {
-        Vec2 p;
         size_t tm = fmod(t1 + 2, tri1.size());
         size_t tp = fmod(t1 + 1, tri1.size());
-        if (tm != lap1)
-            p = tri1[tm];
-        else
-            p = tri1[tp];
-        return std::vector<Vec2>({ tri1[t1], tri2[t2], p });
+        return std::vector<Vec2>({tri1[t1], tri2[t2], tm != lap1 ? tri1[tm] : tri1[tp]});
     }
 
     // normalized tri

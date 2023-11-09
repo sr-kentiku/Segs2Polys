@@ -518,23 +518,72 @@ int main(int argc, char* argv[])
 {
 	{
 		std::vector<Vec3> poly;
-		float color[3];
+		GLfloat color[4];
 
 		ClearGlData();
 
+		// bottom
+		poly = std::vector<Vec3>({
+			Vec3(1.0, 3.0, 1.0),
+			Vec3(3.0, 3.0, 1.0),
+			Vec3(3.0, 1.0, 1.0),
+			Vec3(1.0, 1.0, 1.0),
+		});
+		color[0] = 1.0; color[1] = 0.0; color[2] = 0.0; color[3] = 1.0;
+		AddGlData(poly, color);
+
+		// front
 		poly = std::vector<Vec3>({
 			Vec3(1.0, 1.0, 1.0),
 			Vec3(3.0, 1.0, 1.0),
+			Vec3(3.0, 1.0, 3.0),
+			Vec3(1.0, 1.0, 3.0),
+		});
+		color[0] = 0.0; color[1] = 1.0; color[2] = 0.0; color[3] = 1.0;
+		AddGlData(poly, color);
+
+		// back
+		poly = std::vector<Vec3>({
+			Vec3(1.0, 3.0, 3.0),
+			Vec3(3.0, 3.0, 3.0),
 			Vec3(3.0, 3.0, 1.0),
 			Vec3(1.0, 3.0, 1.0),
 		});
-		color[0] = 1;
-		color[1] = 0;
-		color[2] = 0;
+		color[0] = 0.0; color[1] = 0.0; color[2] = 1.0; color[3] = 1.0;
+		AddGlData(poly, color);
+
+		// right
+		poly = std::vector<Vec3>({
+			Vec3(3.0, 1.0, 3.0),
+			Vec3(3.0, 1.0, 1.0),
+			Vec3(3.0, 3.0, 1.0),
+			Vec3(3.0, 3.0, 3.0),
+		});
+		color[0] = 1.0; color[1] = 1.0; color[2] = 0.0; color[3] = 1.0;
+		AddGlData(poly, color);
+
+		// left
+		poly = std::vector<Vec3>({
+			Vec3(1.0, 3.0, 3.0),
+			Vec3(1.0, 3.0, 1.0),
+			Vec3(1.0, 1.0, 1.0),
+			Vec3(1.0, 1.0, 3.0),
+		});
+		color[0] = 1.0; color[1] = 0.0; color[2] = 1.0; color[3] = 1.0;
+		AddGlData(poly, color);
+
+		// top
+		poly = std::vector<Vec3>({
+			Vec3(1.0, 1.0, 3.0),
+			Vec3(3.0, 1.0, 3.0),
+			Vec3(3.0, 3.0, 3.0),
+			Vec3(1.0, 3.0, 3.0),
+		});
+		color[0] = 0.0; color[1] = 1.0; color[2] = 1.0; color[3] = 1.0;
 		AddGlData(poly, color);
 
 		NormalizeGlData();
-		ShowGl(800, 800, const_cast<char*>("abc"));
+		ShowGl(800, 800, const_cast<char*>("test"));
 	}
 
 	return 0;
@@ -2344,7 +2393,7 @@ int main(int argc, char* argv[])
 	// return 0;
 
 	// {
-	// 	std::vector<Vec2> vs = std::vector<Vec2>({ 
+	// 	std::vector<Vec2> vs = std::vector<Vec2>({
 	// 		Vec2(10000, 10000),
 	// 		Vec2(34000, 10000),
 	// 		Vec2(34000, 16000),

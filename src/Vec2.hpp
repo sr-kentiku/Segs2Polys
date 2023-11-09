@@ -45,21 +45,12 @@ public:
 
 	Vec2 Set(const Vec2& v) { x = v.x; y = v.y; return *this; }
 
-	Vec2 normalized(const int isqr = 0) const
+	static Vec2 normalize(Vec2& v, const int isqr = 0)
 	{
-		Vec2 v(x, y);
-		v.normalize(isqr);
-		return v;
+		double m = v.magnitude(isqr);
+		return m != 0 ? v / m : zero;
 	}
-	Vec2 normalize(const int isqr = 0)
-	{
-		double d = magnitude(isqr);
-		if (d > kEpsilon)
-			*this /= d;
-		else
-			*this *= zero;
-		return *this;
-	}
+	Vec2 normalized(const int isqr = 0) { *this = normalize(*this, isqr); return *this; }
 
 	static double distance(const Vec2& a, const Vec2& b, const int isqr = 0) { return magnitude(CalcSub(b, a), isqr); }
 	static std::function<double(Vec2, Vec2)> distance() { return [](Vec2 a, Vec2 b) { return distance(b, a); }; }
@@ -98,18 +89,12 @@ public:
 	static double cross3(const Vec2& bhs, const Vec2& lhs, const Vec2& rhs) { return cross(CalcSub(lhs, bhs), CalcSub(rhs, bhs)); }
 
 	static Vec2 Lerp(Vec2& a, Vec2& b, double t) { return a + (b - a) * t; }
-	static Vec2 InverseLerp(Vec2& a, Vec2& b, Vec2& v)
-	{
-		if (a != b)
-			return (v - a) / (b - a);
-		else
-			return zero;
-	}
+	static Vec2 InverseLerp(Vec2& a, Vec2& b, Vec2& v) { return a != b ? (v - a) / (b - a) : zero; }
 
 	static Vec2 perpendicular(const Vec2& a) { return Vec2(-a.y, a.x); }
 	Vec2 perpendicular() { return Set(Vec2(-y, x)); }
 
-	double operator[](int i) const
+	double operator[](size_t i) const
 	{
 		switch (i)
 		{
@@ -119,7 +104,7 @@ public:
 			return 0;
 		}
 	}
-	double& operator[](int i)
+	double& operator[](size_t i)
 	{
 		switch (i)
 		{
@@ -129,6 +114,9 @@ public:
 			return x;
 		}
 	}
+	
+	template <typename T>
+	T* GetList() { return {x, y}; }
 
 	Vec2 xy() { return Vec2(x, y); }
 	Vec2 yx() { return Vec2(y, x); }

@@ -90,7 +90,7 @@ public:
 
 		for (size_t i = 0; i < segs.size(); i++)
 		{
-			se = std::vector<Vec2>({ segs[i].s, segs[i].e });
+			se = std::vector<Vec2>({segs[i].s, segs[i].e});
 			for (size_t j = 0; j < se.size(); j++)
 			{
 				f = true;
@@ -1041,7 +1041,7 @@ private:
 					}
 				}
 				if (lks.size() > 0 && ff && fp)
-					link.emplace_back((stLineLink){ lines[i], lks });		
+					link.emplace_back((stLineLink){lines[i], lks});		
 				else
 					desLines.emplace_back(lines[i]);
 			}

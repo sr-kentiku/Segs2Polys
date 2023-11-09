@@ -53,21 +53,12 @@ public:
 	Vec3 Set(const Vec2& v) { x = v.x; y = v.y; return *this; }
 	Vec3 Set(const Vec3& v) { x = v.x; y = v.y; z = v.z; return *this; }
 
-	Vec3 normalized(const int isqr = 0) const
+	static Vec3 normalize(Vec3& v, const int isqr = 0)
 	{
-		Vec3 v(x, y);
-		v.normalize(isqr);
-		return v;
+		double m = v.magnitude(isqr);
+		return m != 0 ? v / m : zero;
 	}
-	Vec3 normalize(const int isqr = 0)
-	{
-		double d = magnitude(isqr);
-		if (d > kEpsilon)
-			*this /= d;
-		else
-			*this *= zero;
-		return *this;
-	}
+	Vec3 normalized(const int isqr = 0) { *this = normalize(*this, isqr); return *this; }
 
 	static double distance(const Vec3& a, const Vec3& b, const int isqr = 0) { return magnitude(CalcSub(b, a), isqr); }
 	static std::function<double(Vec3, Vec3)> distance() { return [](Vec3 a, Vec3 b) { return distance(b, a); }; }
@@ -120,13 +111,7 @@ public:
 	static Vec3 cross3(const Vec3& bhs, const Vec3& lhs, const Vec3& rhs) { return cross(CalcSub(lhs, bhs), CalcSub(rhs, bhs)); }
 
 	static Vec3 Lerp(Vec3& a, Vec3& b, double t) { return a + (b - a) * t; }
-	static Vec3 InverseLerp(Vec3& a, Vec3& b, Vec3& v)
-	{
-		if (a != b)
-			return (v - a) / (b - a);
-		else
-			return zero;
-	}
+	static Vec3 InverseLerp(Vec3& a, Vec3& b, Vec3& v) { a != b ? (v - a) / (b - a) : zero; }
 
 	static Vec3 perpendicularxy(const Vec3& a) { return Vec3(-a.y, a.x, a.z); }
 	Vec3 perpendicularxy() { return Set(Vec3(-y, x, z)); }
@@ -135,7 +120,7 @@ public:
 	static Vec3 perpendicularyz(const Vec3& a) { return Vec3(a.x, -a.z, a.y); }
 	Vec3 perpendicularyz() { return Set(Vec3(x, -z, y)); }
 
-	double operator[](int i) const
+	double operator[](size_t i) const
 	{
 		switch (i)
 		{
@@ -146,7 +131,7 @@ public:
 			return 0;
 		}
 	}
-	double& operator[](int i)
+	double& operator[](size_t i)
 	{
 		switch (i)
 		{
@@ -157,6 +142,9 @@ public:
 			return x;
 		}
 	}
+
+	template <typename T>
+	T* GetList() { static T d[] = { (T)x, (T)y, (T)z }; return d; }
 
 	Vec2 xy() { return Vec2(x, y); }
 	Vec2 yx() { return Vec2(y, x); }
@@ -171,6 +159,8 @@ public:
 	Vec3 yzx() { return Vec3(y, z, x); }
 	Vec3 zxy() { return Vec3(z, x, y); }
 	Vec3 zyx() { return Vec3(z, y, x); }
+
+	Vec3 glgrid() { return Vec3(x, z, -y); }
 	
 	static Vec3 min(Vec3& a, Vec3& b) { return Vec3(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z)); }
 	static Vec3 max(Vec3& a, Vec3& b) { return Vec3(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z)); }

@@ -28,13 +28,7 @@ public:
 		return v;
 	}
 
-	static double sign(double v) 
-	{
-		if (v >= 0)
-			return 1;
-		else
-			return -1;
-	}
+	static double sign(double v) { return v >= 0 ? 1 : -1; }
 
 	static double invsqrtd(double& v, const int isqr = 0)
 	{
@@ -99,13 +93,7 @@ public:
 	static double sqrt2d(const double& x) { return 1.0 / invsqrt2d(x); }
 
 	static double Lerp(double a, double b, double t) { return a + (b - a) * t; }
-	static double InverseLerp(double a, double b, double v)
-	{
-		if (a != b)
-			return (v - a) / (b - a);
-		else
-			return 0;
-	}
+	static double InverseLerp(double a, double b, double v) { return a != b ? (v - a) / (b - a) : 0; }
 
     template <typename T>
 	static void HashCombine(size_t& hash, const T& v)

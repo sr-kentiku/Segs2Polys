@@ -43,7 +43,7 @@ public:
 
         csf[source] = 0;
         pri = heuristic(source, target);
-        ft.push({ 0, pri, source });
+        ft.push({0, pri, source});
 
         while (!ft.empty()) {
             cur = ft.top().node;
@@ -66,7 +66,7 @@ public:
                 if (!csf.count(*next) || ncost < csf[*next]) {
                     csf[*next] = ncost;
                     pri = ncost + heuristic(*next, target);
-                    ft.push({ ncost, pri, *next });
+                    ft.push({ncost, pri, *next});
                     cf[*next] = cur;
                 }
             }
